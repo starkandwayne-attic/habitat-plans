@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  database:
+    image: starkandwayne/postgresql
+    container_name: pg
+    ports:
+    - "5432:5432"
+    volumes:
+    - "~/projects/starkandwayne/habitat-plans/postgresql:/conf"
+    environment:
+    - RUST_BACKTRACE=1
+    command: "start starkandwayne/postgresql --group shield --config-from /conf"
+

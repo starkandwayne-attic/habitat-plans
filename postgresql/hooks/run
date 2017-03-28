@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+echo "Starting PostgreSQL"
+
+export PGDATA={{pkg.svc_data_path}}
+
+exec 2>&1
+exec {{pkg.path}}/bin/postmaster \
+     -c config_file={{pkg.svc_config_path}}/postgresql.conf
