@@ -1,0 +1,34 @@
+#!/bin/bash
+
+superuser_uri="postgres://{{bind.database.members.cfg.superuser_name}}:{{bind.database.members.cfg.superuser_password}}@{{bind.database.members.sys.ip}}:{{bind.database.membrs.cfg.port}}"
+
+until pg_isready -d ${superuser_uri}; do
+  echo "Waiting for database to start"
+  sleep 1
+done
+
+{{#with cfg.db}}
+echo "Trying to create role {{username}}..."
+
+psql -d ${superuser_uri} \
+  -c "CREATE ROLE \"{{username}}\""
+
+echo "Setting password for role {{username}}..."
+psql -d ${superuser_uri} \
+  -c "ALTER ROLE \"{{username}}\" \
+  WITH LOGIN PASSWORD '{{password}}'"
+
+echo "Trying to create database {{name}}..."
+createdb "{{name}}" ${superuser_uri}
+
+echo "Trying to install citext..."
+psql -d ${superuser_uri} \
+  -d "{{name}}" \
+  -c "CREATE EXTENSION citext"
+psql -d ${superuser_uri} \
+  -d "{{name}}" \
+  -c "CREATE EXTENSION citext FROM UNPACKAGED"
+{{/with}}
+
+shield-schema -t postgres -d "postgres://{{cfg.db.username}}:{{cfg.db.password}}@{{bind.database.members.sys.ip}}:{{bind.database.members.cfg.port}}/{{bind.database.members.cfg.port}}?sslmode=disable"
+
