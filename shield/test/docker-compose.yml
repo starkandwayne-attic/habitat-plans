@@ -4,7 +4,7 @@ services:
   shield:
     image: starkandwayne/shield
     container_name: shield
-    command: "start starkandwayne/shield --peer database"
+    command: "start starkandwayne/shield --peer database --bind database:postgresql.shield"
     ports:
     - "9632:9631"
     links:
