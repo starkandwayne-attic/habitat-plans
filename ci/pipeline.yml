@@ -1,0 +1,43 @@
+groups:
+- jobs:
+  - build-habitat-image
+  name: images
+jobs:
+- name: build-habitat-image
+  plan:
+  - aggregate:
+    - get: habitat-concourse
+      trigger: true
+    - get: habitat-release
+      trigger: true
+  - params:
+      build: habitat-concourse/images/habitat
+      tag: habitat-release/version
+      tag_as_latest: true
+    put: habitat-concourse-image
+  public: true
+meta:
+  dockerhub:
+    email: REDACTED
+    password: REDACTED
+    username: REDACTED
+resources:
+- name: habitat-concourse
+  source:
+    paths:
+    - images/habitat/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: habitat-release
+  source:
+    repository: habitat
+    user: habitat-sh
+  type: github-release
+- name: habitat-concourse-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/habitat-concourse
+    username: REDACTED
+  type: docker-image
+

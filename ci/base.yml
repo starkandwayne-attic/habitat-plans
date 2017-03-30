@@ -1,0 +1,45 @@
+---
+meta:
+  dockerhub:
+    email: (( vault "secret/pipelines/habitat-plans/dockerhub:email" ))
+    username: (( vault "secret/pipelines/habitat-plans/dockerhub:username" ))
+    password: (( vault "secret/pipelines/habitat-plans/dockerhub:password" ))
+
+groups:
+- name: images
+  jobs: [build-habitat-image]
+
+jobs:
+- name: build-habitat-image
+  public: true
+  plan:
+  - aggregate:
+    - {get: habitat-concourse, trigger: true}
+    - {get: habitat-release, trigger: true}
+  - put: habitat-concourse-image
+    params:
+      build: habitat-concourse/images/habitat
+      tag: habitat-release/version
+      tag_as_latest: true
+
+resources:
+- name: habitat-concourse
+  type: git
+  source:
+    uri: https://github.com/starkandwayne/habitat-plans.git
+    paths: [images/habitat/*]
+
+- name: habitat-release
+  type: github-release
+  source:
+    user:         habitat-sh
+    repository:   habitat
+
+- name: habitat-concourse-image
+  type: docker-image
+  source:
+    email: (( grab meta.dockerhub.email ))
+    username: (( grab meta.dockerhub.username ))
+    password: (( grab meta.dockerhub.password ))
+    repository: starkandwayne/habitat-concourse
+
