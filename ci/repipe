@@ -5,7 +5,7 @@ PIPELINE=$(cd $(dirname ${BASH_SOURCE[0]}) ; pwd)
 pushd $PIPELINE >/dev/null
   trap "rm -f ${PIPELINE}/.deploy.yml" INT QUIT TERM EXIT
   spruce merge base.yml > .deploy.yml  && \
-    REDACT=yes spruce merge base.yml > pipeline.yml && \
+    REDACT=yes spruce merge --prune meta base.yml > pipeline.yml && \
     fly --target sw set-pipeline --pipeline habitat-plans --config .deploy.yml     &&
     fly --target sw unpause-pipeline --pipeline habitat-plans
 popd >/dev/null

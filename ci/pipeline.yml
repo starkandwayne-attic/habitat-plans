@@ -1,9 +1,9 @@
 groups:
 - jobs:
-  - build-habitat-image
+  - build-habitat-concourse-image
   name: images
 jobs:
-- name: build-habitat-image
+- name: build-habitat-concourse-image
   plan:
   - aggregate:
     - get: habitat-concourse
@@ -16,11 +16,6 @@ jobs:
       tag_as_latest: true
     put: habitat-concourse-image
   public: true
-meta:
-  dockerhub:
-    email: REDACTED
-    password: REDACTED
-    username: REDACTED
 resources:
 - name: habitat-concourse
   source:

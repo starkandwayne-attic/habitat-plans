@@ -7,10 +7,10 @@ meta:
 
 groups:
 - name: images
-  jobs: [build-habitat-image]
+  jobs: [build-habitat-concourse-image]
 
 jobs:
-- name: build-habitat-image
+- name: build-habitat-concourse-image
   public: true
   plan:
   - aggregate:
