@@ -1,26 +1,72 @@
 groups:
 - jobs:
-  - build-habitat-concourse-image
+  - build-habitat-plans-pipeline-image
   name: images
+- jobs:
+  - postgresql
+  - shield
+  name: packages
 jobs:
-- name: build-habitat-concourse-image
+- name: build-habitat-plans-pipeline-image
   plan:
   - aggregate:
-    - get: habitat-concourse
+    - get: habitat-plans-pipeline
       trigger: true
     - get: habitat-release
       trigger: true
   - params:
-      build: habitat-concourse/images/habitat
+      build: habitat-plans-pipeline/images/habitat-plans-pipeline
       tag: habitat-release/version
       tag_as_latest: true
-    put: habitat-concourse-image
+    put: habitat-plans-pipeline-image
+  public: true
+- name: postgresql
+  plan:
+  - get: postgresql-plan
+    trigger: true
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: postgresql-plan
+      outputs:
+      - name: out
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: out
+        PACKAGE_CONTEXT: postgresql-plan/postgresql
+      platform: linux
+      run:
+        path: ./postgresql-plan/ci/scripts/build
+    privileged: true
+    task: build-postgresql
+  public: true
+- name: shield
+  plan:
+  - get: shield-plan
+    trigger: true
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: shield-plan
+      outputs:
+      - name: out
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: out
+        PACKAGE_CONTEXT: shield-plan/shield
+      platform: linux
+      run:
+        path: ./shield-plan/ci/scripts/build
+    privileged: true
+    task: build-shield
   public: true
 resources:
-- name: habitat-concourse
+- name: habitat-plans-pipeline
   source:
     paths:
-    - images/habitat/*
+    - images/habitat-plans-pipeline/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: habitat-release
@@ -28,11 +74,25 @@ resources:
     repository: habitat
     user: habitat-sh
   type: github-release
-- name: habitat-concourse-image
+- name: habitat-plans-pipeline-image
   source:
     email: REDACTED
     password: REDACTED
-    repository: starkandwayne/habitat-concourse
+    repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
+- name: postgresql-plan
+  source:
+    paths:
+    - postgresql/*
+    - ci/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: shield-plan
+  source:
+    paths:
+    - shield/*
+    - ci/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
 

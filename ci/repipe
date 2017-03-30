@@ -3,9 +3,56 @@
 PIPELINE=$(cd $(dirname ${BASH_SOURCE[0]}) ; pwd)
 
 pushd $PIPELINE >/dev/null
+  rm -rf packages
+  mkdir packages
+  for package in $(find .. -d -maxdepth 1); do
+    if [[ -f ${package}/plan.sh ]]; then
+      package_name=$(basename ${package})
+      cat > packages/${package_name}.yml <<EOF
+---
+groups:
+- name: packages
+  jobs:
+  - (( append ))
+  - ${package_name}
+
+jobs:
+- name: ${package_name}
+  public: true
+  plan:
+  - {get: ${package_name}-plan, trigger: true}
+  - task: build-${package_name}
+    privileged: true
+    config:
+      platform: linux
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: ${package_name}-plan
+      outputs:
+      - name: out
+      run:
+        path: ./${package_name}-plan/ci/scripts/build
+      params:
+        PACKAGE_CONTEXT: ${package_name}-plan/${package_name}
+        OUT: out
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: (( grab meta.habitat.origin_key ))
+
+resources:
+- name: ${package_name}-plan
+  type: git
+  source:
+    uri: https://github.com/starkandwayne/habitat-plans.git
+    paths: [${package_name}/*, ci/*]
+EOF
+    fi
+  done
+
   trap "rm -f ${PIPELINE}/.deploy.yml" INT QUIT TERM EXIT
-  spruce merge base.yml > .deploy.yml  && \
-    REDACT=yes spruce merge --prune meta base.yml > pipeline.yml && \
+  spruce merge base.yml packages/*.yml > .deploy.yml  && \
+    REDACT=yes spruce merge --prune meta base.yml packages/*.yml > pipeline.yml && \
     fly --target sw set-pipeline --pipeline habitat-plans --config .deploy.yml     &&
     fly --target sw unpause-pipeline --pipeline habitat-plans
+
+  rm -rf packages
 popd >/dev/null
