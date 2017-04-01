@@ -104,7 +104,6 @@ resources:
     auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
-    origin_key: REDACTED
   type: hab-pkg
 - name: shield-plan
   source:
@@ -118,6 +117,5 @@ resources:
     auth_token: REDACTED
     name: shield
     origin: starkandwayne
-    origin_key: REDACTED
   type: hab-pkg
 
