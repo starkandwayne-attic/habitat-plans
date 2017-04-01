@@ -29,14 +29,17 @@ jobs:
       inputs:
       - name: ${package_name}-plan
       outputs:
-      - name: out
+      - name: result
       run:
         path: ./${package_name}-plan/ci/scripts/build
       params:
         PACKAGE_CONTEXT: ${package_name}-plan/${package_name}
-        OUT: out
-        HAB_ORIGIN: starkandwayne
+        OUT: result
+        HAB_ORIGIN: (( grab meta.habitat.origin ))
         HAB_ORIGIN_KEY: (( grab meta.habitat.origin_key ))
+  - put: ${package_name}-pkg
+    params:
+      result: result
 
 resources:
 - name: ${package_name}-plan
@@ -44,6 +47,13 @@ resources:
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
     paths: [${package_name}/*, ci/*]
+
+- name: ${package_name}-pkg
+  type: hab-pkg
+  source:
+    origin: (( grab meta.habitat.origin ))
+    name: ${package_name}
+    origin_key: (( grab meta.habitat.origin_key ))
 EOF
     fi
   done

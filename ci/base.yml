@@ -6,6 +6,7 @@ meta:
     password: (( vault "secret/pipelines/habitat-plans/dockerhub:password" ))
   habitat:
     origin_key: (( vault "secret/pipelines/habitat-plans/habitat:origin_key" ))
+    origin: starkandwayne
 
 groups:
 - name: images
@@ -45,3 +46,8 @@ resources:
     password: (( grab meta.dockerhub.password ))
     repository: starkandwayne/habitat-plans-pipeline
 
+resource_types:
+- name: hab-pkg
+  type: docker-image
+  source:
+    repository: starkandwayne/habitat-resource

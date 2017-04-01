@@ -29,17 +29,20 @@ jobs:
       inputs:
       - name: postgresql-plan
       outputs:
-      - name: out
+      - name: result
       params:
         HAB_ORIGIN: starkandwayne
         HAB_ORIGIN_KEY: REDACTED
-        OUT: out
+        OUT: result
         PACKAGE_CONTEXT: postgresql-plan/postgresql
       platform: linux
       run:
         path: ./postgresql-plan/ci/scripts/build
     privileged: true
     task: build-postgresql
+  - params:
+      result: result
+    put: postgresql-pkg
   public: true
 - name: shield
   plan:
@@ -50,18 +53,26 @@ jobs:
       inputs:
       - name: shield-plan
       outputs:
-      - name: out
+      - name: result
       params:
         HAB_ORIGIN: starkandwayne
         HAB_ORIGIN_KEY: REDACTED
-        OUT: out
+        OUT: result
         PACKAGE_CONTEXT: shield-plan/shield
       platform: linux
       run:
         path: ./shield-plan/ci/scripts/build
     privileged: true
     task: build-shield
+  - params:
+      result: result
+    put: shield-pkg
   public: true
+resource_types:
+- name: hab-pkg
+  source:
+    repository: starkandwayne/habitat-resource
+  type: docker-image
 resources:
 - name: habitat-plans-pipeline
   source:
@@ -88,6 +99,12 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
+- name: postgresql-pkg
+  source:
+    name: postgresql
+    origin: starkandwayne
+    origin_key: REDACTED
+  type: hab-pkg
 - name: shield-plan
   source:
     paths:
@@ -95,4 +112,10 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
+- name: shield-pkg
+  source:
+    name: shield
+    origin: starkandwayne
+    origin_key: REDACTED
+  type: hab-pkg
 
