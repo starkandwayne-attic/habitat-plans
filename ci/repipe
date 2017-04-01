@@ -14,10 +14,10 @@ groups:
 - name: packages
   jobs:
   - (( append ))
-  - ${package_name}
+  - build-${package_name}
 
 jobs:
-- name: ${package_name}
+- name: build-${package_name}
   public: true
   plan:
   - {get: ${package_name}-plan, trigger: true}

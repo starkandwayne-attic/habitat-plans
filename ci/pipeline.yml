@@ -3,8 +3,8 @@ groups:
   - build-habitat-plans-pipeline-image
   name: images
 - jobs:
-  - postgresql
-  - shield
+  - build-postgresql
+  - build-shield
   name: packages
 jobs:
 - name: build-habitat-plans-pipeline-image
@@ -20,7 +20,7 @@ jobs:
       tag_as_latest: true
     put: habitat-plans-pipeline-image
   public: true
-- name: postgresql
+- name: build-postgresql
   plan:
   - get: postgresql-plan
     trigger: true
@@ -44,7 +44,7 @@ jobs:
       result: result
     put: postgresql-pkg
   public: true
-- name: shield
+- name: build-shield
   plan:
   - get: shield-plan
     trigger: true
