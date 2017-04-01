@@ -54,6 +54,7 @@ resources:
     origin: (( grab meta.habitat.origin ))
     name: ${package_name}
     origin_key: (( grab meta.habitat.origin_key ))
+    auth_token: (( grab meta.habitat.auth_token ))
 EOF
     fi
   done

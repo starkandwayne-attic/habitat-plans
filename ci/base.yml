@@ -6,6 +6,7 @@ meta:
     password: (( vault "secret/pipelines/habitat-plans/dockerhub:password" ))
   habitat:
     origin_key: (( vault "secret/pipelines/habitat-plans/habitat:origin_key" ))
+    auth_token: (( vault "secret/pipelines/habitat-plans/habitat:auth_token" ))
     origin: starkandwayne
 
 groups:

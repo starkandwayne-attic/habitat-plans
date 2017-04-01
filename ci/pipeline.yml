@@ -101,6 +101,7 @@ resources:
   type: git
 - name: postgresql-pkg
   source:
+    auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
     origin_key: REDACTED
@@ -114,6 +115,7 @@ resources:
   type: git
 - name: shield-pkg
   source:
+    auth_token: REDACTED
     name: shield
     origin: starkandwayne
     origin_key: REDACTED
