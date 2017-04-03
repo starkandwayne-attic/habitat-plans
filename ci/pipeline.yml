@@ -1,5 +1,6 @@
 groups:
 - jobs:
+  - build-docker
   - build-postgresql
   - build-shield
   name: packages
@@ -92,6 +93,31 @@ jobs:
       result: result
     put: starkandwayne-shield
   public: true
+- name: build-docker
+  plan:
+  - get: docker-plan
+    trigger: true
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: docker-plan
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: docker-plan/docker
+        PLAN_NAME: docker
+      platform: linux
+      run:
+        path: ./docker-plan/ci/scripts/build
+    privileged: true
+    task: build-docker
+  - params:
+      result: result
+    put: starkandwayne-docker
+  public: true
 resource_types:
 - name: hab-pkg
   source:
@@ -162,6 +188,19 @@ resources:
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
+- name: starkandwayne-docker
+  source:
+    auth_token: REDACTED
+    name: docker
+    origin: starkandwayne
+  type: hab-pkg
+- name: docker-plan
+  source:
+    paths:
+    - docker/*
+    - ci/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
 - name: postgresql-plan
   source:
     paths:
