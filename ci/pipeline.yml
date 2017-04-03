@@ -164,7 +164,6 @@ resources:
   source:
     paths:
     - postgresql/*
-    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: starkandwayne-shield
@@ -177,7 +176,6 @@ resources:
   source:
     paths:
     - shield/*
-    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 

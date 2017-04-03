@@ -76,7 +76,7 @@ resources:
   type: git
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
-    paths: [${package_name}/*, ci/*]
+    paths: [${package_name}/*]
 EOF
     fi
   done
