@@ -10,24 +10,36 @@ pushd $PIPELINE >/dev/null
     if [[ -f ${package}/plan.sh ]]; then
       package_name=$(basename ${package})
       source ${package}/plan.sh
+
       for dep in "${pkg_deps[@]}"; do
+        version=""
+        version_key=""
         dep_origin=$(dirname ${dep})
         dep_name=$(basename ${dep})
-        cat > deps/${package_name}-${dep_origin}-${dep_name}-dep.yml <<EOF
+
+        if [[ $(dirname ${dep_origin}) != "." ]]; then
+          version_entry="    version: ${dep_name}"
+          version="-${dep_name}"
+          dep_name="$(basename ${dep_origin})"
+          dep_origin=$(dirname ${dep_origin})
+        fi
+
+        cat > deps/${package_name}-${dep_origin}-${dep_name}${version}-dep.yml <<EOF
 jobs:
 - name: build-${package_name}
   plan:
   - (( inline ))
   - aggregate:
     - (( append ))
-    - {get: ${dep_origin}-${dep_name}, trigger: true}
+    - {get: ${dep_origin}-${dep_name}${version}, trigger: true}
 
 resources:
-- name: ${dep_origin}-${dep_name}
+- name: ${dep_origin}-${dep_name}${version}
   type: hab-pkg
   source:
     origin: ${dep_origin}
     name: ${dep_name}
+${version_entry}
 EOF
       done
       cat > packages/${package_name}.yml <<EOF
