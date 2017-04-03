@@ -12,3 +12,5 @@ RUN hab pkg install starkandwayne/docker && \
       hab pkg binlink starkandwayne/docker docker-containerd && \
       hab pkg binlink starkandwayne/docker docker-init && \
       hab pkg binlink starkandwayne/docker docker-runc
+
+COPY start_docker /bin/
