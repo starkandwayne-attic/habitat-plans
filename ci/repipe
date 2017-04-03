@@ -71,6 +71,7 @@ jobs:
         PACKAGE_CONTEXT: ${package_name}-plan/${package_name}
         OUT: result
         HAB_ORIGIN: (( grab meta.habitat.origin ))
+        PLAN_NAME: ${package_name}
         HAB_ORIGIN_KEY: (( grab meta.habitat.origin_key ))
   - put: ${hab_origin}-${package_name}
     params:
@@ -88,7 +89,7 @@ resources:
   type: git
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
-    paths: [${package_name}/*]
+    paths: [${package_name}/*, ci/*]
 EOF
     fi
   done

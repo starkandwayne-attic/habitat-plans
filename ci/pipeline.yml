@@ -50,6 +50,7 @@ jobs:
         HAB_ORIGIN_KEY: REDACTED
         OUT: result
         PACKAGE_CONTEXT: postgresql-plan/postgresql
+        PLAN_NAME: postgresql
       platform: linux
       run:
         path: ./postgresql-plan/ci/scripts/build
@@ -81,6 +82,7 @@ jobs:
         HAB_ORIGIN_KEY: REDACTED
         OUT: result
         PACKAGE_CONTEXT: shield-plan/shield
+        PLAN_NAME: shield
       platform: linux
       run:
         path: ./shield-plan/ci/scripts/build
@@ -164,6 +166,7 @@ resources:
   source:
     paths:
     - postgresql/*
+    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: starkandwayne-shield
@@ -176,6 +179,7 @@ resources:
   source:
     paths:
     - shield/*
+    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 

@@ -14,3 +14,5 @@ hab pkg build .
 
 mv results/* ${outdir}
 ls ${outdir}/${HAB_ORIGIN}* > ${outdir}/pkg_name
+
+hab pkg export docker ${HAB_ORIGIN}/${PLAN_NAME}
