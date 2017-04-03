@@ -78,7 +78,7 @@ jobs:
       load_file: result/${hab_origin}-${package_name}-docker.tar
       load_repository: ${hab_origin}/${package_name}
       load_tag: habitat
-      tag_name: result/docker_tag
+      tag: result/docker_tag
   - put: ${hab_origin}-${package_name}-edge-image
     params:
       load_file: result/${hab_origin}-${package_name}-docker.tar

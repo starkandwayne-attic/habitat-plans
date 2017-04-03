@@ -61,7 +61,7 @@ jobs:
       load_file: result/starkandwayne-postgresql-docker.tar
       load_repository: starkandwayne/postgresql
       load_tag: habitat
-      tag_name: result/docker_tag
+      tag: result/docker_tag
     put: starkandwayne-postgresql-image
   - params:
       load_file: result/starkandwayne-postgresql-docker.tar
@@ -104,7 +104,7 @@ jobs:
       load_file: result/starkandwayne-shield-docker.tar
       load_repository: starkandwayne/shield
       load_tag: habitat
-      tag_name: result/docker_tag
+      tag: result/docker_tag
     put: starkandwayne-shield-image
   - params:
       load_file: result/starkandwayne-shield-docker.tar
@@ -140,7 +140,7 @@ jobs:
       load_file: result/starkandwayne-docker-docker.tar
       load_repository: starkandwayne/docker
       load_tag: habitat
-      tag_name: result/docker_tag
+      tag: result/docker_tag
     put: starkandwayne-docker-image
   - params:
       load_file: result/starkandwayne-docker-docker.tar
