@@ -35,6 +35,12 @@ resources:
     uri: https://github.com/starkandwayne/habitat-plans.git
     paths: [images/habitat-plans-pipeline/*]
 
+- name: habitat-plans-ci
+  type: git
+  source:
+    uri: https://github.com/starkandwayne/habitat-plans.git
+    paths: [ci/*]
+
 - name: habitat-release
   type: github-release
   source:

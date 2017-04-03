@@ -40,6 +40,7 @@ jobs:
       trigger: true
   - get: postgresql-plan
     trigger: true
+  - get: habitat-plans-ci
   - config:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
@@ -54,20 +55,21 @@ jobs:
         PLAN_NAME: postgresql
       platform: linux
       run:
-        path: ./postgresql-plan/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build
     privileged: true
     task: build-postgresql
-  - params:
-      load_file: result/starkandwayne-postgresql-docker.tar
-      load_repository: starkandwayne/postgresql
-      load_tag: habitat
-      tag: result/docker_tag
-    put: starkandwayne-postgresql-image
-  - params:
-      load_file: result/starkandwayne-postgresql-docker.tar
-      load_repository: starkandwayne/postgresql
-      load_tag: habitat
-    put: starkandwayne-postgresql-edge-image
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-postgresql-docker.tar
+        load_repository: starkandwayne/postgresql
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-postgresql-image
+    - params:
+        load_file: result/starkandwayne-postgresql-docker.tar
+        load_repository: starkandwayne/postgresql
+        load_tag: habitat
+      put: starkandwayne-postgresql-edge-image
   - params:
       result: result
     put: starkandwayne-postgresql
@@ -83,6 +85,7 @@ jobs:
       trigger: true
   - get: shield-plan
     trigger: true
+  - get: habitat-plans-ci
   - config:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
@@ -97,20 +100,21 @@ jobs:
         PLAN_NAME: shield
       platform: linux
       run:
-        path: ./shield-plan/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build
     privileged: true
     task: build-shield
-  - params:
-      load_file: result/starkandwayne-shield-docker.tar
-      load_repository: starkandwayne/shield
-      load_tag: habitat
-      tag: result/docker_tag
-    put: starkandwayne-shield-image
-  - params:
-      load_file: result/starkandwayne-shield-docker.tar
-      load_repository: starkandwayne/shield
-      load_tag: habitat
-    put: starkandwayne-shield-edge-image
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-shield-docker.tar
+        load_repository: starkandwayne/shield
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-shield-image
+    - params:
+        load_file: result/starkandwayne-shield-docker.tar
+        load_repository: starkandwayne/shield
+        load_tag: habitat
+      put: starkandwayne-shield-edge-image
   - params:
       result: result
     put: starkandwayne-shield
@@ -119,6 +123,7 @@ jobs:
   plan:
   - get: docker-plan
     trigger: true
+  - get: habitat-plans-ci
   - config:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
@@ -133,20 +138,21 @@ jobs:
         PLAN_NAME: docker
       platform: linux
       run:
-        path: ./docker-plan/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build
     privileged: true
     task: build-docker
-  - params:
-      load_file: result/starkandwayne-docker-docker.tar
-      load_repository: starkandwayne/docker
-      load_tag: habitat
-      tag: result/docker_tag
-    put: starkandwayne-docker-image
-  - params:
-      load_file: result/starkandwayne-docker-docker.tar
-      load_repository: starkandwayne/docker
-      load_tag: habitat
-    put: starkandwayne-docker-edge-image
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-docker-docker.tar
+        load_repository: starkandwayne/docker
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-docker-image
+    - params:
+        load_file: result/starkandwayne-docker-docker.tar
+        load_repository: starkandwayne/docker
+        load_tag: habitat
+      put: starkandwayne-docker-edge-image
   - params:
       result: result
     put: starkandwayne-docker
@@ -161,6 +167,12 @@ resources:
   source:
     paths:
     - images/habitat-plans-pipeline/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: habitat-plans-ci
+  source:
+    paths:
+    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: habitat-release
@@ -231,7 +243,6 @@ resources:
   source:
     paths:
     - docker/*
-    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: starkandwayne-docker-image
@@ -253,7 +264,6 @@ resources:
   source:
     paths:
     - postgresql/*
-    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: starkandwayne-postgresql-image
@@ -281,7 +291,6 @@ resources:
   source:
     paths:
     - shield/*
-    - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: starkandwayne-shield-image

@@ -56,6 +56,7 @@ jobs:
   plan:
   - (( append ))
   - {get: ${package_name}-plan, trigger: true}
+  - {get: habitat-plans-ci}
   - task: build-${package_name}
     privileged: true
     config:
@@ -66,24 +67,25 @@ jobs:
       outputs:
       - name: result
       run:
-        path: ./${package_name}-plan/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build
       params:
         PACKAGE_CONTEXT: ${package_name}-plan/${package_name}
         OUT: result
         HAB_ORIGIN: ${hab_origin}
         PLAN_NAME: ${package_name}
         HAB_ORIGIN_KEY: (( grab meta.habitat.origin_key ))
-  - put: ${hab_origin}-${package_name}-image
-    params:
-      load_file: result/${hab_origin}-${package_name}-docker.tar
-      load_repository: ${hab_origin}/${package_name}
-      load_tag: habitat
-      tag: result/docker_tag
-  - put: ${hab_origin}-${package_name}-edge-image
-    params:
-      load_file: result/${hab_origin}-${package_name}-docker.tar
-      load_repository: ${hab_origin}/${package_name}
-      load_tag: habitat
+  - aggregate:
+    - put: ${hab_origin}-${package_name}-image
+      params:
+        load_file: result/${hab_origin}-${package_name}-docker.tar
+        load_repository: ${hab_origin}/${package_name}
+        load_tag: habitat
+        tag: result/docker_tag
+    - put: ${hab_origin}-${package_name}-edge-image
+      params:
+        load_file: result/${hab_origin}-${package_name}-docker.tar
+        load_repository: ${hab_origin}/${package_name}
+        load_tag: habitat
   - put: ${hab_origin}-${package_name}
     params:
       result: result
@@ -100,7 +102,7 @@ resources:
   type: git
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
-    paths: [${package_name}/*, ci/*]
+    paths: [${package_name}/*]
 
 - name: ${hab_origin}-${package_name}-image
   type: docker-image
