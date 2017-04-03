@@ -38,13 +38,14 @@ jobs:
       trigger: true
     - get: core-zlib
       trigger: true
-  - get: postgresql-plan
-    trigger: true
-  - get: habitat-plans-ci
+    - get: postgresql-plan
+      trigger: true
+    - get: habitat-plans-ci
   - config:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
       - name: postgresql-plan
+      - name: habitat-plans-ci
       outputs:
       - name: result
       params:
@@ -83,13 +84,14 @@ jobs:
       trigger: true
     - get: starkandwayne-postgresql
       trigger: true
-  - get: shield-plan
-    trigger: true
-  - get: habitat-plans-ci
+    - get: shield-plan
+      trigger: true
+    - get: habitat-plans-ci
   - config:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
       - name: shield-plan
+      - name: habitat-plans-ci
       outputs:
       - name: result
       params:
@@ -121,13 +123,15 @@ jobs:
   public: true
 - name: build-docker
   plan:
-  - get: docker-plan
-    trigger: true
-  - get: habitat-plans-ci
+  - aggregate:
+    - get: docker-plan
+      trigger: true
+    - get: habitat-plans-ci
   - config:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
       - name: docker-plan
+      - name: habitat-plans-ci
       outputs:
       - name: result
       params:

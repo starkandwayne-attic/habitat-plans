@@ -54,9 +54,11 @@ jobs:
 - name: build-${package_name}
   public: true
   plan:
-  - (( append ))
-  - {get: ${package_name}-plan, trigger: true}
-  - {get: habitat-plans-ci}
+  - (( inline ))
+  - aggregate:
+    - (( append ))
+    - {get: ${package_name}-plan, trigger: true}
+    - {get: habitat-plans-ci}
   - task: build-${package_name}
     privileged: true
     config:
@@ -64,6 +66,7 @@ jobs:
       image: docker:///starkandwayne/habitat-plans-pipeline
       inputs:
       - name: ${package_name}-plan
+      - name: habitat-plans-ci
       outputs:
       - name: result
       run:
