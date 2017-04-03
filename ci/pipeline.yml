@@ -59,8 +59,15 @@ jobs:
     task: build-postgresql
   - params:
       load_file: result/starkandwayne-postgresql-docker.tar
-      load_tag: edge
+      load_repository: starkandwayne/postgresql
+      load_tag: habitat
+      tag_name: result/docker_tag
     put: starkandwayne-postgresql-image
+  - params:
+      load_file: result/starkandwayne-postgresql-docker.tar
+      load_repository: starkandwayne/postgresql
+      load_tag: habitat
+    put: starkandwayne-postgresql-edge-image
   - params:
       result: result
     put: starkandwayne-postgresql
@@ -95,8 +102,15 @@ jobs:
     task: build-shield
   - params:
       load_file: result/starkandwayne-shield-docker.tar
-      load_tag: edge
+      load_repository: starkandwayne/shield
+      load_tag: habitat
+      tag_name: result/docker_tag
     put: starkandwayne-shield-image
+  - params:
+      load_file: result/starkandwayne-shield-docker.tar
+      load_repository: starkandwayne/shield
+      load_tag: habitat
+    put: starkandwayne-shield-edge-image
   - params:
       result: result
     put: starkandwayne-shield
@@ -124,8 +138,15 @@ jobs:
     task: build-docker
   - params:
       load_file: result/starkandwayne-docker-docker.tar
-      load_tag: edge
+      load_repository: starkandwayne/docker
+      load_tag: habitat
+      tag_name: result/docker_tag
     put: starkandwayne-docker-image
+  - params:
+      load_file: result/starkandwayne-docker-docker.tar
+      load_repository: starkandwayne/docker
+      load_tag: habitat
+    put: starkandwayne-docker-edge-image
   - params:
       result: result
     put: starkandwayne-docker
@@ -220,6 +241,14 @@ resources:
     repository: starkandwayne/docker
     username: REDACTED
   type: docker-image
+- name: starkandwayne-docker-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/docker
+    tag: edge
+    username: REDACTED
+  type: docker-image
 - name: postgresql-plan
   source:
     paths:
@@ -232,6 +261,14 @@ resources:
     email: REDACTED
     password: REDACTED
     repository: starkandwayne/postgresql
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-postgresql-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/postgresql
+    tag: edge
     username: REDACTED
   type: docker-image
 - name: starkandwayne-shield
@@ -252,6 +289,14 @@ resources:
     email: REDACTED
     password: REDACTED
     repository: starkandwayne/shield
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield
+    tag: edge
     username: REDACTED
   type: docker-image
 

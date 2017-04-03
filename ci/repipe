@@ -76,7 +76,14 @@ jobs:
   - put: ${hab_origin}-${package_name}-image
     params:
       load_file: result/${hab_origin}-${package_name}-docker.tar
-      load_tag: edge
+      load_repository: ${hab_origin}/${package_name}
+      load_tag: habitat
+      tag_name: result/docker_tag
+  - put: ${hab_origin}-${package_name}-edge-image
+    params:
+      load_file: result/${hab_origin}-${package_name}-docker.tar
+      load_repository: ${hab_origin}/${package_name}
+      load_tag: habitat
   - put: ${hab_origin}-${package_name}
     params:
       result: result
@@ -102,6 +109,15 @@ resources:
     username: (( grab meta.dockerhub.username ))
     password: (( grab meta.dockerhub.password ))
     repository: starkandwayne/${package_name}
+
+- name: ${hab_origin}-${package_name}-edge-image
+  type: docker-image
+  source:
+    email: (( grab meta.dockerhub.email ))
+    username: (( grab meta.dockerhub.username ))
+    password: (( grab meta.dockerhub.password ))
+    repository: starkandwayne/${package_name}
+    tag: "edge"
 EOF
     fi
   done
