@@ -1,11 +1,11 @@
 groups:
 - jobs:
-  - build-habitat-plans-pipeline-image
-  name: images
-- jobs:
   - build-postgresql
   - build-shield
   name: packages
+- jobs:
+  - build-habitat-plans-pipeline-image
+  name: images
 jobs:
 - name: build-habitat-plans-pipeline-image
   plan:
@@ -22,6 +22,21 @@ jobs:
   public: true
 - name: build-postgresql
   plan:
+  - aggregate:
+    - get: core-bash
+      trigger: true
+    - get: core-glibc
+      trigger: true
+    - get: core-libossp-uuid
+      trigger: true
+    - get: core-openssl
+      trigger: true
+    - get: core-perl
+      trigger: true
+    - get: core-readline
+      trigger: true
+    - get: core-zlib
+      trigger: true
   - get: postgresql-plan
     trigger: true
   - config:
@@ -42,10 +57,17 @@ jobs:
     task: build-postgresql
   - params:
       result: result
-    put: postgresql-pkg
+    put: starkandwayne-postgresql
   public: true
 - name: build-shield
   plan:
+  - aggregate:
+    - get: core-busybox-static
+      trigger: true
+    - get: core-glibc
+      trigger: true
+    - get: starkandwayne-postgresql
+      trigger: true
   - get: shield-plan
     trigger: true
   - config:
@@ -66,7 +88,7 @@ jobs:
     task: build-shield
   - params:
       result: result
-    put: shield-pkg
+    put: starkandwayne-shield
   public: true
 resource_types:
 - name: hab-pkg
@@ -92,6 +114,52 @@ resources:
     repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
+- name: core-bash
+  source:
+    name: bash
+    origin: core
+  type: hab-pkg
+- name: core-glibc
+  source:
+    name: glibc
+    origin: core
+  type: hab-pkg
+- name: core-libossp-uuid
+  source:
+    name: libossp-uuid
+    origin: core
+  type: hab-pkg
+- name: core-openssl
+  source:
+    name: openssl
+    origin: core
+  type: hab-pkg
+- name: core-perl
+  source:
+    name: perl
+    origin: core
+  type: hab-pkg
+- name: core-readline
+  source:
+    name: readline
+    origin: core
+  type: hab-pkg
+- name: core-zlib
+  source:
+    name: zlib
+    origin: core
+  type: hab-pkg
+- name: core-busybox-static
+  source:
+    name: busybox-static
+    origin: core
+  type: hab-pkg
+- name: starkandwayne-postgresql
+  source:
+    auth_token: REDACTED
+    name: postgresql
+    origin: starkandwayne
+  type: hab-pkg
 - name: postgresql-plan
   source:
     paths:
@@ -99,10 +167,10 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
-- name: postgresql-pkg
+- name: starkandwayne-shield
   source:
     auth_token: REDACTED
-    name: postgresql
+    name: shield
     origin: starkandwayne
   type: hab-pkg
 - name: shield-plan
@@ -112,10 +180,4 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
-- name: shield-pkg
-  source:
-    auth_token: REDACTED
-    name: shield
-    origin: starkandwayne
-  type: hab-pkg
 

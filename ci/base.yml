@@ -10,6 +10,8 @@ meta:
     origin: starkandwayne
 
 groups:
+- name: packages
+  jobs: []
 - name: images
   jobs: [build-habitat-plans-pipeline-image]
 
