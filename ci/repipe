@@ -70,9 +70,13 @@ jobs:
       params:
         PACKAGE_CONTEXT: ${package_name}-plan/${package_name}
         OUT: result
-        HAB_ORIGIN: (( grab meta.habitat.origin ))
+        HAB_ORIGIN: ${hab_origin}
         PLAN_NAME: ${package_name}
         HAB_ORIGIN_KEY: (( grab meta.habitat.origin_key ))
+  - put: ${hab_origin}-${package_name}-image
+    params:
+      load_file: result/${hab_origin}-${package_name}-docker.tar
+      load_tag: edge
   - put: ${hab_origin}-${package_name}
     params:
       result: result
@@ -90,6 +94,14 @@ resources:
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
     paths: [${package_name}/*, ci/*]
+
+- name: ${hab_origin}-${package_name}-image
+  type: docker-image
+  source:
+    email: (( grab meta.dockerhub.email ))
+    username: (( grab meta.dockerhub.username ))
+    password: (( grab meta.dockerhub.password ))
+    repository: starkandwayne/${package_name}
 EOF
     fi
   done

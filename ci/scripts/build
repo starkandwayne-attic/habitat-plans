@@ -15,7 +15,10 @@ hab pkg build .
 mv results/* ${outdir}
 ls ${outdir}/${HAB_ORIGIN}* > ${outdir}/pkg_name
 
-source /helpers/docker.sh
-start_docker
+dockerd &
 hab pkg export docker ${HAB_ORIGIN}/${PLAN_NAME}
-stop_docker
+
+docker_tag=$(docker images | grep ${HAB_ORIGIN} | grep -v 'latest' | awk '{print $2}')
+docker save -o ${outdir}/${HAB_ORIGIN}-${PLAN_NAME}-docker.tar ${HAB_ORIGIN}/${PLAN_NAME}:${docker_tag}
+
+echo ${docker_tag} > ${outdir}/docker_tag

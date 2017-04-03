@@ -58,6 +58,10 @@ jobs:
     privileged: true
     task: build-postgresql
   - params:
+      load_file: result/starkandwayne-postgresql-docker.tar
+      load_tag: edge
+    put: starkandwayne-postgresql-image
+  - params:
       result: result
     put: starkandwayne-postgresql
   public: true
@@ -90,6 +94,10 @@ jobs:
     privileged: true
     task: build-shield
   - params:
+      load_file: result/starkandwayne-shield-docker.tar
+      load_tag: edge
+    put: starkandwayne-shield-image
+  - params:
       result: result
     put: starkandwayne-shield
   public: true
@@ -114,6 +122,10 @@ jobs:
         path: ./docker-plan/ci/scripts/build
     privileged: true
     task: build-docker
+  - params:
+      load_file: result/starkandwayne-docker-docker.tar
+      load_tag: edge
+    put: starkandwayne-docker-image
   - params:
       result: result
     put: starkandwayne-docker
@@ -201,6 +213,13 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
+- name: starkandwayne-docker-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/docker
+    username: REDACTED
+  type: docker-image
 - name: postgresql-plan
   source:
     paths:
@@ -208,6 +227,13 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
+- name: starkandwayne-postgresql-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/postgresql
+    username: REDACTED
+  type: docker-image
 - name: starkandwayne-shield
   source:
     auth_token: REDACTED
@@ -221,4 +247,11 @@ resources:
     - ci/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
+- name: starkandwayne-shield-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield
+    username: REDACTED
+  type: docker-image
 
