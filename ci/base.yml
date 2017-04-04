@@ -1,5 +1,7 @@
 ---
 meta:
+  delmo:
+    machine_name: habitat-plans-pipeline-machine
   dockerhub:
     email: (( vault "secret/pipelines/habitat-plans/dockerhub:email" ))
     username: (( vault "secret/pipelines/habitat-plans/dockerhub:username" ))
@@ -10,15 +12,21 @@ meta:
     origin: starkandwayne
   aws:
     habitat-artifacts-bucket: snw-habitat-packages
+    docker-machine-bucket: docker-machine-exports
     access_key_id: (( vault "secret/pipelines/habitat-plans/aws:access_key_id" ))
     secret_access_key: (( vault "secret/pipelines/habitat-plans/aws:secret_access_key" ))
     region: eu-central-1
+  digitalocean:
+    access_token: (( vault "secret/pipelines/habitat-plans/digitalocean:access_token" ))
+    region: fra1
 
 groups:
 - name: packages
   jobs: []
 - name: images
   jobs: [build-habitat-plans-pipeline-image]
+- name: docker-machine-setup
+  jobs: [docker-machine-setup]
 
 jobs:
 - name: build-habitat-plans-pipeline-image
@@ -32,6 +40,25 @@ jobs:
       build: habitat-plans-pipeline/images/habitat-plans-pipeline
       tag: habitat-release/version
       tag_as_latest: true
+
+- name: docker-machine-setup
+  serial: true
+  plan:
+  - task: docker-machine-setup
+    config:
+      platform: linux
+      image: docker:///bodymindarts/docker-machine-setup
+      params:
+        MACHINE_NAME: (( grab meta.delmo.machine_name ))
+        DIGITALOCEAN_ACCESS_TOKEN: (( grab meta.digitalocean.access_token ))
+        DIGITALOCEAN_REGION: (( grab meta.digitalocean.region ))
+        AWS_DEFAULT_REGION: (( grab meta.aws.region ))
+        AWS_ACCESS_KEY_ID: (( grab meta.aws.access_key_id ))
+        AWS_SECRET_ACCESS_KEY: (( grab meta.aws.secret_access_key ))
+        AWS_BUCKET: (( grab meta.aws.docker-machine-bucket ))
+
+      run:
+        path: /setup-digitalocean
 
 resources:
 - name: habitat-plans-pipeline

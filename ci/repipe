@@ -5,7 +5,7 @@ hab_origin=starkandwayne
 
 pushd $PIPELINE >/dev/null
   rm -rf packages
-  mkdir packages deps
+  mkdir packages deps tests
   for package in $(find .. -d -maxdepth 1); do
     if [[ -f ${package}/plan.sh ]]; then
       package_name=$(basename ${package})
@@ -122,6 +122,7 @@ resources:
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
     paths: [${package_name}/*]
+    ignore_paths: [${package_name}/tests/*]
 
 - name: ${hab_origin}-${package_name}-image
   type: docker-image
@@ -149,14 +150,72 @@ resources:
     secret_access_key: (( grab meta.aws.secret_access_key ))
     region_name: (( grab meta.aws.region ))
 EOF
+      if [[ -f ${package}/tests/delmo.yml ]]; then
+        cat > tests/${package_name}-tests.yml <<EOF
+---
+groups:
+- name: packages
+  jobs:
+  - (( append ))
+  - test-${package_name}
+jobs:
+- name: test-${package_name}
+  serial: true
+  serial_group: [delmo]
+  plan:
+  - aggregate:
+    - get: ${hab_origin}-${package_name}-edge-image
+      params: {skip_download: true}
+      trigger: true
+      passed: [build-${package_name}]
+    - {get: ${package_name}-tests, trigger: true}
+    - {get: ${hab_origin}-${package_name}-artifact, passed: [build-${package_name}]}
+    - get: ${hab_origin}-${package_name}-image
+      passed: [build-${package_name}]
+      params: {skip_download: true}
+  - task: test-${package_name}
+    config:
+      platform: linux
+      image: docker:///bodymindarts/delmo-concourse
+      params:
+        MACHINE_EXPORT_AWS_ACCESS_KEY_ID: (( grab meta.aws.access_key_id ))
+        MACHINE_EXPORT_AWS_SECRET_ACCESS_KEY: (( grab meta.aws.secret_access_key ))
+        MACHINE_EXPORT_AWS_REGION: (( grab meta.aws.region ))
+        MACHINE_EXPORT_AWS_BUCKET: (( grab meta.aws.docker-machine-bucket ))
+        MACHINE_NAME: (( grab meta.delmo.machine_name ))
+      inputs:
+      - name: ${package_name}-tests
+      run:
+        path: /entrypoint.sh
+        args: [delmo, --only-build-task, -f, ${package_name}-tests/${package_name}/tests/delmo.yml, -m, (( grab meta.delmo.machine_name ))]
+- name: release-${package_name}
+  plan:
+  - (( inline ))
+  - aggregate:
+    - (( inline ))
+    - get: ${hab_origin}-${package_name}-artifact
+      passed:
+      - test-${package_name}
+    - get: ${hab_origin}-${package_name}-image
+      passed:
+      - test-${package_name}
+
+resources:
+- name: ${package_name}-tests
+  type: git
+  source:
+    uri: https://github.com/starkandwayne/habitat-plans.git
+    paths: [${package_name}/tests/*]
+EOF
+      fi
     fi
   done
 
   trap "rm -f ${PIPELINE}/.deploy.yml" INT QUIT TERM EXIT
-  spruce merge base.yml deps/*.yml packages/*.yml > .deploy.yml  && \
-    REDACT=yes spruce merge --prune meta base.yml deps/*.yml packages/*.yml > pipeline.yml && \
+  spruce merge base.yml deps/*.yml packages/*.yml > .deploy.yml tests/*.yml && \
+    REDACT=yes spruce merge --prune meta base.yml deps/*.yml packages/*.yml tests/*.yml > pipeline.yml && \
     fly --target sw set-pipeline --pipeline habitat-plans --config .deploy.yml     &&
     fly --target sw unpause-pipeline --pipeline habitat-plans
 
-  rm -rf packages deps
+  rm -rf packages deps tests
 popd >/dev/null
