@@ -4,10 +4,7 @@ RUN apt-get update && apt-get install -y curl iptables
 
 RUN curl https://raw.githubusercontent.com/habitat-sh/habitat/master/components/hab/install.sh | bash
 RUN hab -V
-
-RUN hab studio new && \
-      hab studio run hab pkg install core/hab-pkg-dockerize && \
-      hab studio run hab pkg install core/hab
+RUN hab pkg install core/hab-pkg-dockerize
 
 RUN hab pkg install starkandwayne/docker && \
       hab pkg binlink starkandwayne/docker docker && \

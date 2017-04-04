@@ -10,6 +10,8 @@ cat <<EOF | hab origin key import
 ${HAB_ORIGIN_KEY}
 EOF
 
+hab studio new
+
 hab studio run build .
 
 mv results/* ${outdir}
