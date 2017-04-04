@@ -1,8 +1,11 @@
 groups:
 - jobs:
   - build-docker
+  - release-docker
   - build-postgresql
+  - release-postgresql
   - build-shield
+  - release-shield
   name: packages
 - jobs:
   - build-habitat-plans-pipeline-image
@@ -24,19 +27,19 @@ jobs:
 - name: build-postgresql
   plan:
   - aggregate:
-    - get: core-bash
+    - get: core-bash-pkg
       trigger: true
-    - get: core-glibc
+    - get: core-glibc-pkg
       trigger: true
-    - get: core-libossp-uuid
+    - get: core-libossp-uuid-pkg
       trigger: true
-    - get: core-openssl
+    - get: core-openssl-pkg
       trigger: true
-    - get: core-perl
+    - get: core-perl-pkg
       trigger: true
-    - get: core-readline
+    - get: core-readline-pkg
       trigger: true
-    - get: core-zlib
+    - get: core-zlib-pkg
       trigger: true
     - get: postgresql-plan
       trigger: true
@@ -71,18 +74,18 @@ jobs:
         load_repository: starkandwayne/postgresql
         load_tag: habitat
       put: starkandwayne-postgresql-edge-image
-  - params:
-      result: result
-    put: starkandwayne-postgresql
+    - params:
+        file: result/*.hart
+      put: starkandwayne-postgresql-artifact
   public: true
 - name: build-shield
   plan:
   - aggregate:
-    - get: core-busybox-static
+    - get: core-busybox-static-pkg
       trigger: true
-    - get: core-glibc
+    - get: core-glibc-pkg
       trigger: true
-    - get: starkandwayne-postgresql
+    - get: starkandwayne-postgresql-pkg
       trigger: true
     - get: shield-plan
       trigger: true
@@ -117,9 +120,9 @@ jobs:
         load_repository: starkandwayne/shield
         load_tag: habitat
       put: starkandwayne-shield-edge-image
-  - params:
-      result: result
-    put: starkandwayne-shield
+    - params:
+        file: result/*.hart
+      put: starkandwayne-shield-artifact
   public: true
 - name: build-docker
   plan:
@@ -157,10 +160,67 @@ jobs:
         load_repository: starkandwayne/docker
         load_tag: habitat
       put: starkandwayne-docker-edge-image
-  - params:
-      result: result
-    put: starkandwayne-docker
+    - params:
+        file: result/*.hart
+      put: starkandwayne-docker-artifact
   public: true
+- name: release-docker
+  plan:
+  - aggregate:
+    - get: starkandwayne-docker-artifact
+      passed:
+      - build-docker
+    - get: starkandwayne-docker-image
+      params:
+        save: true
+      passed:
+      - build-docker
+  - aggregate:
+    - params:
+        load: starkandwayne-docker-image
+        tag_as_latest: true
+      put: starkandwayne-docker-image
+    - params:
+        result: starkandwayne-docker-artifact
+      put: starkandwayne-docker-pkg
+- name: release-postgresql
+  plan:
+  - aggregate:
+    - get: starkandwayne-postgresql-artifact
+      passed:
+      - build-postgresql
+    - get: starkandwayne-postgresql-image
+      params:
+        save: true
+      passed:
+      - build-postgresql
+  - aggregate:
+    - params:
+        load: starkandwayne-postgresql-image
+        tag_as_latest: true
+      put: starkandwayne-postgresql-image
+    - params:
+        result: starkandwayne-postgresql-artifact
+      put: starkandwayne-postgresql-pkg
+- name: release-shield
+  plan:
+  - aggregate:
+    - get: starkandwayne-shield-artifact
+      passed:
+      - build-shield
+    - get: starkandwayne-shield-image
+      params:
+        save: true
+      passed:
+      - build-shield
+  - aggregate:
+    - params:
+        load: starkandwayne-shield-image
+        tag_as_latest: true
+      put: starkandwayne-shield-image
+    - params:
+        result: starkandwayne-shield-artifact
+      put: starkandwayne-shield-pkg
 resource_types:
 - name: hab-pkg
   source:
@@ -191,53 +251,53 @@ resources:
     repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
-- name: core-bash
+- name: core-bash-pkg
   source:
     name: bash
     origin: core
   type: hab-pkg
-- name: core-glibc
+- name: core-glibc-pkg
   source:
     name: glibc
     origin: core
   type: hab-pkg
-- name: core-libossp-uuid
+- name: core-libossp-uuid-pkg
   source:
     name: libossp-uuid
     origin: core
   type: hab-pkg
-- name: core-openssl
+- name: core-openssl-pkg
   source:
     name: openssl
     origin: core
   type: hab-pkg
-- name: core-perl
+- name: core-perl-pkg
   source:
     name: perl
     origin: core
   type: hab-pkg
-- name: core-readline
+- name: core-readline-pkg
   source:
     name: readline
     origin: core
   type: hab-pkg
-- name: core-zlib
+- name: core-zlib-pkg
   source:
     name: zlib
     origin: core
   type: hab-pkg
-- name: core-busybox-static
+- name: core-busybox-static-pkg
   source:
     name: busybox-static
     origin: core
   type: hab-pkg
-- name: starkandwayne-postgresql
+- name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
-- name: starkandwayne-docker
+- name: starkandwayne-docker-pkg
   source:
     auth_token: REDACTED
     name: docker
@@ -264,6 +324,14 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
+- name: starkandwayne-docker-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-docker/starkandwayne-docker-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
 - name: postgresql-plan
   source:
     paths:
@@ -285,7 +353,15 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-shield
+- name: starkandwayne-postgresql-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-postgresql/starkandwayne-postgresql-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-shield-pkg
   source:
     auth_token: REDACTED
     name: shield
@@ -312,4 +388,12 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
+- name: starkandwayne-shield-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-shield/starkandwayne-shield-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
 

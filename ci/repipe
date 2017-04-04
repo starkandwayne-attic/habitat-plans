@@ -31,10 +31,10 @@ jobs:
   - (( inline ))
   - aggregate:
     - (( append ))
-    - {get: ${dep_origin}-${dep_name}${version}, trigger: true}
+    - {get: ${dep_origin}-${dep_name}${version}-pkg, trigger: true}
 
 resources:
-- name: ${dep_origin}-${dep_name}${version}
+- name: ${dep_origin}-${dep_name}${version}-pkg
   type: hab-pkg
   source:
     origin: ${dep_origin}
@@ -49,6 +49,7 @@ groups:
   jobs:
   - (( append ))
   - build-${package_name}
+  - release-${package_name}
 
 jobs:
 - name: build-${package_name}
@@ -89,12 +90,27 @@ jobs:
         load_file: result/${hab_origin}-${package_name}-docker.tar
         load_repository: ${hab_origin}/${package_name}
         load_tag: habitat
-  - put: ${hab_origin}-${package_name}
-    params:
-      result: result
-
+    - put: ${hab_origin}-${package_name}-artifact
+      params:
+        file: result/*.hart
+- name: release-${package_name}
+  plan:
+  - aggregate:
+    - {get: ${hab_origin}-${package_name}-artifact, passed: [build-${package_name}]}
+    - get: ${hab_origin}-${package_name}-image
+      passed: [build-${package_name}]
+      params:
+        save: true
+  - aggregate:
+    - put: ${hab_origin}-${package_name}-image
+      params:
+        load: ${hab_origin}-${package_name}-image
+        tag_as_latest: true
+    - put: ${hab_origin}-${package_name}-pkg
+      params:
+        result: ${hab_origin}-${package_name}-artifact
 resources:
-- name: ${hab_origin}-${package_name}
+- name: ${hab_origin}-${package_name}-pkg
   type: hab-pkg
   source:
     origin: (( grab meta.habitat.origin ))
@@ -123,6 +139,15 @@ resources:
     password: (( grab meta.dockerhub.password ))
     repository: starkandwayne/${package_name}
     tag: "edge"
+
+- name: ${hab_origin}-${package_name}-artifact
+  type: s3
+  source:
+    bucket: (( grab meta.aws.habitat-artifacts-bucket ))
+    regexp: ${hab_origin}-${package_name}/${hab_origin}-${package_name}-(.*)-x86_64-linux.hart
+    access_key_id: (( grab meta.aws.access_key_id ))
+    secret_access_key: (( grab meta.aws.secret_access_key ))
+    region_name: (( grab meta.aws.region ))
 EOF
     fi
   done
