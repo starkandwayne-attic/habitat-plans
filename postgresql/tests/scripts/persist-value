@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+test_table="tests"
+value="test-value"
+
+psql <<EOF
+DROP TABLE IF EXISTS ${test_table};
+CREATE TABLE ${test_table}(value text);
+INSERT INTO ${test_table} VALUES ('${value}');
+EOF
+
+psql -c "SELECT value FROM ${test_table};" | grep "${value}" || {
+  echo Could not store and retrieve value in cluster!
+    exit 1
+  }

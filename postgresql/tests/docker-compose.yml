@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  database:
+    image: starkandwayne/postgresql:edge
+    container_name: pg
+    command: "start starkandwayne/postgresql"
+  tests:
+    image: starkandwayne-postgresql-tests
+    build: ./
+    environment:
+      PGUSER: admin
+      PGPASSWORD: admin
+      PGHOST: database
+      PGDATABASE: postgres
+    links:
+    - database
