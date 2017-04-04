@@ -204,6 +204,7 @@ jobs:
     - params:
         result: starkandwayne-docker-artifact
       put: starkandwayne-docker-pkg
+  public: true
 - name: release-postgresql
   plan:
   - aggregate:
@@ -223,6 +224,7 @@ jobs:
     - params:
         result: starkandwayne-postgresql-artifact
       put: starkandwayne-postgresql-pkg
+  public: true
 - name: release-shield
   plan:
   - aggregate:
@@ -242,6 +244,7 @@ jobs:
     - params:
         result: starkandwayne-shield-artifact
       put: starkandwayne-shield-pkg
+  public: true
 - name: test-postgresql
   plan:
   - aggregate:
@@ -282,6 +285,7 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-postgresql
+  public: true
   serial: true
   serial_group:
   - delmo

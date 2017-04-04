@@ -94,6 +94,7 @@ jobs:
       params:
         file: result/*.hart
 - name: release-${package_name}
+  public: true
   plan:
   - aggregate:
     - {get: ${hab_origin}-${package_name}-artifact, passed: [build-${package_name}]}
@@ -160,6 +161,7 @@ groups:
   - test-${package_name}
 jobs:
 - name: test-${package_name}
+  public: true
   serial: true
   serial_group: [delmo]
   plan:
