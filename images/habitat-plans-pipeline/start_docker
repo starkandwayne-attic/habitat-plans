@@ -54,7 +54,7 @@ run_docker() {
   dockerd >/tmp/docker.log 2>&1 &
   echo $! > /tmp/docker.pid
 
-  trap stop_docker EXIT
+  # trap stop_docker EXIT
 
   sleep 1
 
