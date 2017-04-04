@@ -6,9 +6,12 @@ suite:
 tests:
 - name: persist-value
   spec:
+  - wait: pg_is_ready
   - assert: [persist-value]
 
 tasks:
+- name: pg_is_ready
+  command: pg_isready
 - name: persist-value
   command: /scripts/persist-value
 
