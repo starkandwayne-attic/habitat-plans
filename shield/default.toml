@@ -40,6 +40,10 @@ fkJlK83kBN1qiFBAcxdapE3ac1XFEA4jyQDdOIDjy3oV05su7gRN
 basic_user = 'admin'
 basic_password = 'admin'
 
+[[auth.api_keys]]
+name = 'default'
+key = 'default'
+
 [db]
 name = 'shielddb'
 username = 'shield'

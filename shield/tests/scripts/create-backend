@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "CONFIGURING SHIELD"
-
-shield create-backend test-shield http://shield:8080
-shield backend

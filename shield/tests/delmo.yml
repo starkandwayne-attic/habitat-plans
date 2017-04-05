@@ -6,9 +6,9 @@ suite:
 tests:
 - name: create-backend
   spec:
-  - assert: [create-backend]
+  - wait: setup
 
 tasks:
-- name: create-backend
-  command: /scripts/create-backend
+- name: setup
+  command: /scripts/setup
 
