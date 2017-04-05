@@ -21,7 +21,7 @@ psql -d "${PG_SUPERUSER_URI}" \
   WITH LOGIN PASSWORD '{{password}}'"
 
 echo "Trying to create database {{name}}..."
-PGPASSWORD="${PG_SUPERUSER_PASSWORD}" createdb -h "${PGHOST}" -p "${PGPORT}" -U "${PG_SUPERUSER}" "{{name}}"
+PGPASSWORD="${PG_SUPERUSER_PASSWORD}" createdb -U "${PG_SUPERUSER}" -h "${PGHOST}" -p "${PGPORT}" "{{name}}"
 
 echo "Trying to install citext..."
 PGPASSWORD="${PG_SUPERUSER_PASSWORD}" psql -U "${PG_SUPERUSER}" -h "${PGHOST}" -p "${PGPORT}" -d "{{name}}" \
