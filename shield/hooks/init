@@ -2,10 +2,11 @@
 
 superuser_uri="postgres://{{bind.database.members.cfg.superuser_name}}:{{bind.database.members.cfg.superuser_password}}@{{bind.database.members.sys.ip}}:{{bind.database.membrs.cfg.port}}"
 
-until pg_isready -d ${superuser_uri}; do
-  echo "Waiting for database to start"
-  sleep 1
-done
+pg_isready -d ${superuser_uri}
+if [[ $? != 0 ]]; then
+  echo "Unable to initialize database is not ready."
+  exit 1
+fi
 
 {{#with cfg.db}}
 echo "Trying to create role {{username}}..."
