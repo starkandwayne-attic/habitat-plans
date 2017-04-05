@@ -1,0 +1,4 @@
+echo "CONFIGURING SHIELD"
+
+shield create-backend http://shield:8080
+shield backend

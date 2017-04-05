@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  shield:
+    image: starkandwayne/shield:edge
+    command: "start starkandwayne/shield --bind postgresql.shield"
+  database:
+    image: starkandwayne/postgresql:edge
+    command: "start starkandwayne/postgresql --group shield"
+  tests:
+    image: starkandwayne-shield-tests
+    build: ./
+    links:
+    - shield

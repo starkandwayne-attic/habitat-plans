@@ -1,0 +1,14 @@
+suite:
+  name: starkandwayne-shield
+  system: docker-compose.yml
+  task_service: tests
+
+tests:
+- name: create-backend
+  spec:
+  - assert: create-backend
+
+tasks:
+- name: create-backend
+  command: /scripts/create-backend
+

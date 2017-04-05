@@ -7,6 +7,7 @@ groups:
   - build-shield
   - release-shield
   - test-postgresql
+  - test-shield
   name: packages
 - jobs:
   - build-habitat-plans-pipeline-image
@@ -230,12 +231,12 @@ jobs:
   - aggregate:
     - get: starkandwayne-shield-artifact
       passed:
-      - build-shield
+      - test-shield
     - get: starkandwayne-shield-image
       params:
         save: true
       passed:
-      - build-shield
+      - test-shield
   - aggregate:
     - params:
         load: starkandwayne-shield-image
@@ -285,6 +286,50 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-postgresql
+  public: true
+  serial: true
+  serial_group:
+  - delmo
+- name: test-shield
+  plan:
+  - aggregate:
+    - get: starkandwayne-shield-edge-image
+      params:
+        skip_download: true
+      passed:
+      - build-shield
+      trigger: true
+    - get: shield-tests
+      trigger: true
+    - get: starkandwayne-shield-artifact
+      passed:
+      - build-shield
+    - get: starkandwayne-shield-image
+      params:
+        skip_download: true
+      passed:
+      - build-shield
+  - config:
+      image: docker:///bodymindarts/delmo-concourse
+      inputs:
+      - name: shield-tests
+      params:
+        MACHINE_EXPORT_AWS_ACCESS_KEY_ID: REDACTED
+        MACHINE_EXPORT_AWS_BUCKET: docker-machine-exports
+        MACHINE_EXPORT_AWS_REGION: eu-central-1
+        MACHINE_EXPORT_AWS_SECRET_ACCESS_KEY: REDACTED
+        MACHINE_NAME: habitat-plans-pipeline-machine
+      platform: linux
+      run:
+        args:
+        - delmo
+        - --only-build-task
+        - -f
+        - shield-tests/shield/tests/delmo.yml
+        - -m
+        - habitat-plans-pipeline-machine
+        path: /entrypoint.sh
+    task: test-shield
   public: true
   serial: true
   serial_group:
@@ -474,6 +519,12 @@ resources:
   source:
     paths:
     - postgresql/tests/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: shield-tests
+  source:
+    paths:
+    - shield/tests/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 
