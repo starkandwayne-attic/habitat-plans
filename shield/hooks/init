@@ -10,17 +10,17 @@ pg_isready -d "${PG_SUPERUSER_URI}"
 set +e
 
 {{#with cfg.db}}
-echo "Trying to create role {{username}}..."
+echo "Trying to create role '{{username}}'..."
 
 psql -d "${PG_SUPERUSER_URI}" \
   -c "CREATE ROLE \"{{username}}\""
 
-echo "Setting password for role {{username}}..."
+echo "Setting password for role '{{username}}'..."
 psql -d "${PG_SUPERUSER_URI}" \
   -c "ALTER ROLE \"{{username}}\" \
   WITH LOGIN PASSWORD '{{password}}'"
 
-echo "Trying to create database {{name}}..."
+echo "Trying to create database '{{name}}'..."
 PGPASSWORD="${PG_SUPERUSER_PASSWORD}" createdb -U "${PG_SUPERUSER}" -h "${PGHOST}" -p "${PGPORT}" "{{name}}"
 
 echo "Trying to install citext..."
