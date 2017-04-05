@@ -6,7 +6,7 @@ suite:
 tests:
 - name: create-backend
   spec:
-  - assert: create-backend
+  - assert: [create-backend]
 
 tasks:
 - name: create-backend
