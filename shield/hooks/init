@@ -1,35 +1,35 @@
 #!/bin/bash
 
-superuser_uri="postgres://{{bind.database.members.cfg.superuser_name}}:{{bind.database.members.cfg.superuser_password}}@{{bind.database.members.sys.ip}}:{{bind.database.membrs.cfg.port}}"
+exec 2>&1
 
-pg_isready -d ${superuser_uri}
-if [[ $? != 0 ]]; then
-  echo "Unable to initialize database is not ready."
-  exit 1
-fi
+source {{pkg.svc_config_path}}/environment.sh
+
+echo "Testing if pg is ready"
+set -e
+pg_isready -d "${PG_SUPERUSER_URI}"
+set +e
 
 {{#with cfg.db}}
 echo "Trying to create role {{username}}..."
 
-psql -d ${superuser_uri} \
+psql -d "${PG_SUPERUSER_URI}" \
   -c "CREATE ROLE \"{{username}}\""
 
 echo "Setting password for role {{username}}..."
-psql -d ${superuser_uri} \
+psql -d "${PG_SUPERUSER_URI}" \
   -c "ALTER ROLE \"{{username}}\" \
   WITH LOGIN PASSWORD '{{password}}'"
 
 echo "Trying to create database {{name}}..."
-createdb "{{name}}" ${superuser_uri}
+PGPASSWORD="${PG_SUPERUSER_PASSWORD}" createdb -h "${PGHOST}" -p "${PGPORT}" -U "${PG_SUPERUSER}" "{{name}}"
 
 echo "Trying to install citext..."
-psql -d ${superuser_uri} \
-  -d "{{name}}" \
+PGPASSWORD="${PG_SUPERUSER_PASSWORD}" psql -U "${PG_SUPERUSER}" -h "${PGHOST}" -p "${PGPORT}" -d "{{name}}" \
   -c "CREATE EXTENSION citext"
-psql -d ${superuser_uri} \
-  -d "{{name}}" \
-  -c "CREATE EXTENSION citext FROM UNPACKAGED"
+
+DATABASE_DSN="postgres://{{username}}:{{password}}@${PGHOST}:${PGPORT}/{{name}}?sslmode=disable"
 {{/with}}
 
-shield-schema -t postgres -d "postgres://{{cfg.db.username}}:{{cfg.db.password}}@{{bind.database.members.sys.ip}}:{{bind.database.members.cfg.port}}/{{bind.database.members.cfg.port}}?sslmode=disable"
+set -e
+shield-schema -t postgres -d "${DATABASE_DSN}"
 
