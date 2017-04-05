@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+echo "CONFIGURING SHIELD"
+
+export SHIELD_API_TOKEN="${SHIELD_API_TOKEN:-default}"
+
+echo ${SHIELD_API_TOKEN}
+
+shield create-backend test-shield http://shield:8080
+shield backend
+
+echo "> Creating daily-schedule Schedule"
+shield create-schedule --raw <<EOF
+{
+  "name"    : "daily-schedule",
+  "summary" : "Default Schedule",
+  "when"    : "daily 4am"
+}
+EOF
+echo "> Creating short-term Retention Policy"
+shield create-policy --raw <<EOF
+{
+  "name"    : "short-term",
+  "summary" : "Short-term Retention",
+  "expires" : 3600
+}
+EOF
+echo "> Configuring s3-store Storage"
+shield create-store --raw <<EOF
+{
+  "name"     : "s3-store",
+  "summary"  : "Default S3 Storage",
+  "plugin"   : "s3",
+  "endpoint" : "{\"access_key_id\":\"$AWS_ACCESS_KEY\",\"secret_access_key\":\"$AWS_SECRET_KEY\",\"bucket\":\"$BUCKET\",\"prefix\":\"phalanx\"}",
+  "agent"    : "127.0.0.1:5444"
+}
+EOF
+echo "> Finding UUIDs"
+export SCHEDULE_UUID=$( shield schedule daily-schedule --raw | jq -r '.uuid')
+export RETENTION_UUID=$(shield policy   short-term     --raw | jq -r '.uuid')
+export STORE_UUID=$(    shield store    s3-store       --raw | jq -r '.uuid')
+echo "  - SCHEDULE  = $SCHEDULE_UUID"
+echo "  - RETENTION = $RETENTION_UUID"
+echo "  - STORE     = $STORE_UUID"
+echo
