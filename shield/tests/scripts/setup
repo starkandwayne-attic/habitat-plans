@@ -2,11 +2,9 @@
 
 set -e
 
-echo "CONFIGURING SHIELD"
+echo "Setting up shield for testing"
 
 export SHIELD_API_TOKEN="${SHIELD_API_TOKEN:-default}"
-
-echo ${SHIELD_API_TOKEN}
 
 shield create-backend test-shield http://shield:8080
 shield backend
