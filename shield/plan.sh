@@ -12,21 +12,10 @@ pkg_deps=(core/busybox-static core/glibc starkandwayne/postgresql)
 
 pkg_bin_dirs=(bin)
 
-# Optional.
-# An associative array representing configuration data which should be gossiped to peers. The keys
-# in this array represent the name the value will be assigned and the values represent the toml path
-# to read the value.
-# pkg_exports=(
-#   [host]=srv.address
-#   [port]=srv.port
-#   [ssl-port]=srv.ssl.port
-# )
-
-# Optional.
-# An array of `pkg_exports` keys containing default values for which ports that this package
-# exposes. These values are used as sensible defaults for other tools. For example, when exporting
-# a package to a container format.
-# pkg_exposes=(port ssl-port)
+pkg_exports=(
+  [port]=port
+)
+pkg_exposes=(port)
 
 # Optional.
 # An associative array representing services which you depend on and the configuration keys that

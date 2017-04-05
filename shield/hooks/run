@@ -1,6 +1,5 @@
 #!/bin/bash
 
-while true; do
-echo running
-sleep 1000
-done
+echo "Starting $JOB_NAME"
+export SHIELD_NAME="{{cfg.name}}"
+exec shieldd -c {{pkg.svc_config_path}}/shieldd.conf --log-level {{cfg.log_level}} 2>&1

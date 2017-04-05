@@ -2,6 +2,15 @@
 # See the docs at https://www.habitat.sh/docs/create-packages-configure/.
 # You can safely delete this file if you don't need it.
 
+name = "(none)"
+
+log_level = "info"
+
+port = 8080
+
+[auth]
+basic_user = 'admin'
+basic_password = 'admin'
 
 [db]
 name = 'shielddb'
