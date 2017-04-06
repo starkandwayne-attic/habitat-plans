@@ -9,7 +9,6 @@ pkg_source="https://github.com/starkandwayne/shield/releases/download/v${pkg_ver
 pkg_shasum="c70b11d92d18a12bd52a1d8d5907fcb5b386fda6742dff1d184aa63d417b5a5c"
 
 pkg_deps=(core/curl core/bash core/bzip2 core/glibc)
-pkg_build_deps=(core/sed)
 
 pkg_bin_dirs=(bin)
 
@@ -69,7 +68,6 @@ do_install() {
 
   cp daemon/shield-pipe   ${pkg_prefix}/bin
   fix_interpreter ${pkg_prefix}/bin/shield-pipe core/bash bin/bash
-  sed -i'' 's/XXXXX/XXXXXX/' ${pkg_prefix}/bin/shield-pipe
 }
 
 cgo_wrap_binaries() {
