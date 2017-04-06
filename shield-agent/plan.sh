@@ -60,13 +60,16 @@ do_install() {
   cd "${HAB_CACHE_SRC_PATH}/shield-server-linux-amd64" || exit
 
   cp agent/shield-agent   ${pkg_prefix}/bin
-  cp plugins/* ${pkg_prefix}/bin
+  cp daemon/shield-pipe   ${pkg_prefix}/bin
+
+  mkdir ${pkg_prefix}/plugins
+  cp plugins/* ${pkg_prefix}/plugins
 
   cgo_wrap_binaries
 }
 
 cgo_wrap_binaries() {
-  for binary in ${pkg_prefix}/bin/*; do
+  for binary in ${pkg_prefix}/{bin,plugins}/* ; do
     build_line "Adding wrapper $(basename ${binary}) to $(basename ${binary}.real)"
     mv ${binary} ${binary}.real
     cat <<EOF > "${binary}"
