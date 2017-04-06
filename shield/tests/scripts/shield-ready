@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+curl http://${SHIELD_ENDPOINT}:8080/v1/ping

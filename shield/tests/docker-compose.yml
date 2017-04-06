@@ -12,5 +12,11 @@ services:
   tests:
     image: starkandwayne-shield-tests
     build: ./
+    environment:
+      SHIELD_ENDPOINT: shield
+      PGHOST: database
+      PGUSER: admin
+      PGPASSWORD: admin
     links:
     - shield
+    - database

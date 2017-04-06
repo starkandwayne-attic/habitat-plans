@@ -2,11 +2,13 @@
 
 set -e
 
+export TMP=/tmp ; mkdir -p $TMP
+
 echo "Setting up shield for testing"
 
 export SHIELD_API_TOKEN="${SHIELD_API_TOKEN:-default}"
 
-shield create-backend test-shield http://shield:8080
+shield create-backend test-shield http://${SHIELD_ENDPOINT}:8080
 shield backend
 
 echo "> Creating daily-schedule Schedule"
@@ -43,3 +45,20 @@ echo "  - SCHEDULE  = $SCHEDULE_UUID"
 echo "  - RETENTION = $RETENTION_UUID"
 echo "  - STORE     = $STORE_UUID"
 echo
+
+echo "RUNNING TARGET TESTS"
+failed=0
+rm -f $TMP/FAILURE $TMP/SUCCESS
+for run in /scripts/tests/*; do
+  job=${run##*/}
+  chmod 0755 $run
+  if ! $run $*; then
+    failed=$(( failed + 1 ))
+    echo "- $job failed" >>$TMP/FAILURE
+  else
+    echo
+    echo "$job succeeded" | tr a-z A-Z
+    echo "- $job OK" >>$TMP/SUCCESS
+    echo
+  fi
+done

@@ -6,9 +6,12 @@ suite:
 tests:
 - name: create-backend
   spec:
-  - wait: setup
+  - wait: shield-is-ready
+  - assert: [run]
 
 tasks:
-- name: setup
-  command: /scripts/setup
+- name: shield-is-ready
+  command: /scripts/shield-ready
+- name: run
+  command: /scripts/run
 

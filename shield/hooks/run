@@ -1,5 +1,6 @@
 #!/bin/bash
 
-echo "Starting $JOB_NAME"
+exec 2>&1
+
 export SHIELD_NAME="{{cfg.name}}"
 exec shieldd -c {{pkg.svc_config_path}}/shieldd.conf --log-level {{cfg.log_level}} 2>&1
