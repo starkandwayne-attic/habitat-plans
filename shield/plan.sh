@@ -68,10 +68,11 @@ do_install() {
   cp cli/shield           ${pkg_prefix}/bin
   cp daemon/shieldd       ${pkg_prefix}/bin
   cp daemon/shield-schema ${pkg_prefix}/bin
-  cp daemon/shield-pipe   ${pkg_prefix}/bin
   cp -R webui             ${pkg_prefix}/webui
 
   cgo_wrap_binaries
+
+  cp daemon/shield-pipe   ${pkg_prefix}/bin
 }
 
 cgo_wrap_binaries() {

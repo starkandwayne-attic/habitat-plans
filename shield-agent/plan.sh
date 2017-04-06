@@ -60,12 +60,13 @@ do_install() {
   cd "${HAB_CACHE_SRC_PATH}/shield-server-linux-amd64" || exit
 
   cp agent/shield-agent   ${pkg_prefix}/bin
-  cp daemon/shield-pipe   ${pkg_prefix}/bin
 
   mkdir ${pkg_prefix}/plugins
   cp plugins/* ${pkg_prefix}/plugins
 
   cgo_wrap_binaries
+
+  cp daemon/shield-pipe   ${pkg_prefix}/bin
 }
 
 cgo_wrap_binaries() {
