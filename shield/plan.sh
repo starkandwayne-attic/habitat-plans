@@ -65,7 +65,6 @@ do_build() {
 do_install() {
   cd "${HAB_CACHE_SRC_PATH}/shield-server-linux-amd64" || exit
 
-  cp agent/shield-agent   ${pkg_prefix}/bin
   cp cli/shield           ${pkg_prefix}/bin
   cp daemon/shieldd       ${pkg_prefix}/bin
   cp daemon/shield-schema ${pkg_prefix}/bin
