@@ -8,7 +8,7 @@ pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/releases/download/v${pkg_version}/shield-server-linux-amd64.tar.gz"
 pkg_shasum="c70b11d92d18a12bd52a1d8d5907fcb5b386fda6742dff1d184aa63d417b5a5c"
 
-pkg_deps=(core/curl core/busybox-static core/glibc)
+pkg_deps=(core/curl core/bash core/glibc)
 
 pkg_bin_dirs=(bin)
 
@@ -67,7 +67,7 @@ do_install() {
   cgo_wrap_binaries
 
   cp daemon/shield-pipe   ${pkg_prefix}/bin
-  fix_interpreter ${pkg_prefix}/bin/shield-pipe core/busybox-static bin/bash
+  fix_interpreter ${pkg_prefix}/bin/shield-pipe core/bash bin/bash
 }
 
 cgo_wrap_binaries() {
@@ -75,7 +75,7 @@ cgo_wrap_binaries() {
     build_line "Adding wrapper $(basename ${binary}) to $(basename ${binary}.real)"
     mv ${binary} ${binary}.real
     cat <<EOF > "${binary}"
-    #!$(pkg_path_for busybox-static)/bin/sh
+    #!$(pkg_path_for bash)/bin/bash
     set -e
     export LD_LIBRARY_PATH="$LD_RUN_PATH"
     exec $(pkg_path_for glibc)/lib/ld-linux-x86-64.so.2 ${binary}.real \$@
