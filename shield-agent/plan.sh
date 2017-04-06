@@ -67,6 +67,7 @@ do_install() {
   cgo_wrap_binaries
 
   cp daemon/shield-pipe   ${pkg_prefix}/bin
+  fix_interpreter ${pkg_prefix}/bin/shield-pipe core/busybox-static bin/bash
 }
 
 cgo_wrap_binaries() {
