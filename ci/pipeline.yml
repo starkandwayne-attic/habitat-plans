@@ -105,7 +105,7 @@ jobs:
 - name: build-shield-agent
   plan:
   - aggregate:
-    - get: core-busybox-static-pkg
+    - get: core-bash-pkg
       trigger: true
     - get: core-curl-pkg
       trigger: true
@@ -151,7 +151,7 @@ jobs:
 - name: build-shield
   plan:
   - aggregate:
-    - get: core-busybox-static-pkg
+    - get: core-bash-pkg
       trigger: true
     - get: core-glibc-pkg
       trigger: true
@@ -479,11 +479,6 @@ resources:
 - name: core-zlib-pkg
   source:
     name: zlib
-    origin: core
-  type: hab-pkg
-- name: core-busybox-static-pkg
-  source:
-    name: busybox-static
     origin: core
   type: hab-pkg
 - name: core-curl-pkg
