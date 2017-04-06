@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source {{pkg.svc_config_path}}/environment.sh
+
+set -e
+
+echo "Checking if shield-daemon is available"
+
+curl "${SHIELD_ENDPOINT}/v1/ping"
