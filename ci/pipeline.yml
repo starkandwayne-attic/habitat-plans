@@ -107,6 +107,8 @@ jobs:
   - aggregate:
     - get: core-bash-pkg
       trigger: true
+    - get: core-bzip2-pkg
+      trigger: true
     - get: core-curl-pkg
       trigger: true
     - get: core-glibc-pkg
@@ -479,6 +481,11 @@ resources:
 - name: core-zlib-pkg
   source:
     name: zlib
+    origin: core
+  type: hab-pkg
+- name: core-bzip2-pkg
+  source:
+    name: bzip2
     origin: core
   type: hab-pkg
 - name: core-curl-pkg
