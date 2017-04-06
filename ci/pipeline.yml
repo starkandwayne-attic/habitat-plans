@@ -4,6 +4,8 @@ groups:
   - release-docker
   - build-postgresql
   - release-postgresql
+  - build-shield-agent
+  - release-shield-agent
   - build-shield
   - release-shield
   - test-postgresql
@@ -99,6 +101,50 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-postgresql-artifact
+  public: true
+- name: build-shield-agent
+  plan:
+  - aggregate:
+    - get: core-busybox-static-pkg
+      trigger: true
+    - get: core-glibc-pkg
+      trigger: true
+    - get: shield-agent-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: shield-agent-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: shield-agent-plan/shield-agent
+        PLAN_NAME: shield-agent
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-shield-agent
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-shield-agent-docker.tar
+        load_repository: starkandwayne/shield-agent
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-shield-agent-image
+    - params:
+        load_file: result/starkandwayne-shield-agent-docker.tar
+        load_repository: starkandwayne/shield-agent
+        load_tag: habitat
+      put: starkandwayne-shield-agent-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-shield-agent-artifact
   public: true
 - name: build-shield
   plan:
@@ -225,6 +271,26 @@ jobs:
     - params:
         result: starkandwayne-postgresql-artifact
       put: starkandwayne-postgresql-pkg
+  public: true
+- name: release-shield-agent
+  plan:
+  - aggregate:
+    - get: starkandwayne-shield-agent-artifact
+      passed:
+      - build-shield-agent
+    - get: starkandwayne-shield-agent-image
+      params:
+        save: true
+      passed:
+      - build-shield-agent
+  - aggregate:
+    - params:
+        load: starkandwayne-shield-agent-image
+        tag_as_latest: true
+      put: starkandwayne-shield-agent-image
+    - params:
+        result: starkandwayne-shield-agent-artifact
+      put: starkandwayne-shield-agent-pkg
   public: true
 - name: release-shield
   plan:
@@ -475,6 +541,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-postgresql/starkandwayne-postgresql-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-shield-agent-pkg
+  source:
+    auth_token: REDACTED
+    name: shield-agent
+    origin: starkandwayne
+  type: hab-pkg
+- name: shield-agent-plan
+  source:
+    ignore_paths:
+    - shield-agent/tests/*
+    paths:
+    - shield-agent/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-shield-agent-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield-agent
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-agent-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield-agent
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-agent-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-shield-agent/starkandwayne-shield-agent-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
