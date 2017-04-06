@@ -19,6 +19,7 @@ services:
     build: ./
     environment:
       SHIELD_ENDPOINT: shield
+      AGENT_ENDPOINT: agent
       PGHOST: database
       PGUSER: admin
       PGPASSWORD: admin

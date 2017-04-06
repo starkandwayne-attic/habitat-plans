@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 export TMP=/tmp ; mkdir -p $TMP
 
 echo "Setting up shield for testing"
@@ -61,3 +59,24 @@ for run in /scripts/tests/*; do
     echo
   fi
 done
+echo
+
+echo
+echo "DONE"
+if [[ $failed -eq 0 ]]; then
+  echo "ALL TESTS PASSED"
+  echo "----------------------------------"
+  cat $TMP/SUCCESS
+  echo "----------------------------------"
+  echo
+  echo "SHIELD IS OKAY TO RELEASE"
+  exit 0
+else
+  echo "$failed TEST(S) FAILED!"
+  echo "----------------------------------"
+  cat $TMP/FAILURE
+  echo "----------------------------------"
+  echo
+  echo "SHIELD CANNOT BE RELEASED UNTIL THIS IS FIXED"
+  exit 1
+fi

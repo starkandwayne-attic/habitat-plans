@@ -25,29 +25,31 @@ echo "   db2.t_keys contains:"
 sed -e 's/^/    /' <$TMP/db2.dat
 echo
 
-# echo ">> configuring SHIELD"
-# shield create-target <<EOF | jq -r .
-# {
-#   "name"     : "postgres-all",
-#   "summary"  : "Postgres All Databases",
-#   "plugin"   : "postgres",
-#   "endpoint" : "{\"pg_host\":\"localhost\",\"pg_user\":\"vcap\",\"pg_password\":\"\"}",
-#   "agent"    : "$TARGET:5444"
-# }
-# EOF
-# shield create-job <<EOF | jq -r .
-# {
-#   "name"      : "postgres-all-daily",
-#   "summary"   : "Postgres All Databases",
-#   "paused"    : true,
-#   "retention" : "$RETENTION_UUID",
-#   "schedule"  : "$SCHEDULE_UUID",
-#   "store"     : "$STORE_UUID",
-#   "target"    : "$(shield target postgres-all | jq -r '.uuid')"
-# }
-# EOF
-# echo
+echo ">> configuring SHIELD"
+shield create-target <<EOF | jq -r .
+{
+  "name"     : "postgres-all",
+  "summary"  : "Postgres All Databases",
+  "plugin"   : "postgres",
+  "endpoint" : "{\"pg_host\":\"${PGHOST}\",\"pg_user\":\"${PGUSER}\",\"pg_password\":\"${PGPASSWORD}\"}",
+  "agent"    : "$AGENT_ENDPOINT:5444"
+}
+EOF
+shield create-job <<EOF | jq -r .
+{
+  "name"      : "postgres-all-daily",
+  "summary"   : "Postgres All Databases",
+  "paused"    : true,
+  "retention" : "$RETENTION_UUID",
+  "schedule"  : "$SCHEDULE_UUID",
+  "store"     : "$STORE_UUID",
+  "target"    : "$(shield target postgres-all | jq -r '.uuid')"
+}
+EOF
+echo
 
-# echo ">> running backup job"
-# wait_for_task $(shield run $(shield job postgres-all-daily | jq -r '.uuid') | jq -r '.task_uuid')
-# echo
+echo ">> running backup job"
+wait_for_task $(shield run $(shield job postgres-all-daily | jq -r '.uuid') | jq -r '.task_uuid')
+echo
+
+exit $rc;
