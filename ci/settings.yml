@@ -1,0 +1,30 @@
+---
+jobs:
+- name: test-shield
+  plan:
+  - (( inline ))
+  - aggregate:
+    - (( append ))
+    - get: starkandwayne-shield-agent-edge-image
+      params:
+        skip_download: true
+      passed:
+      - build-shield-agent
+      trigger: true
+    - get: starkandwayne-shield-agent-artifact
+      passed:
+      - build-shield-agent
+    - get: starkandwayne-shield-agent-image
+      params:
+        skip_download: true
+      passed:
+      - build-shield-agent
+- name: release-shield-agent
+  plan:
+  - (( inline ))
+  - aggregate:
+    - (( inline ))
+    - passed:
+      - test-shield
+    - passed:
+      - test-shield

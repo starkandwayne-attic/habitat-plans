@@ -107,6 +107,8 @@ jobs:
   - aggregate:
     - get: core-busybox-static-pkg
       trigger: true
+    - get: core-curl-pkg
+      trigger: true
     - get: core-glibc-pkg
       trigger: true
     - get: shield-agent-plan
@@ -277,12 +279,12 @@ jobs:
   - aggregate:
     - get: starkandwayne-shield-agent-artifact
       passed:
-      - build-shield-agent
+      - test-shield
     - get: starkandwayne-shield-agent-image
       params:
         save: true
       passed:
-      - build-shield-agent
+      - test-shield
   - aggregate:
     - params:
         load: starkandwayne-shield-agent-image
@@ -375,6 +377,20 @@ jobs:
         skip_download: true
       passed:
       - build-shield
+    - get: starkandwayne-shield-agent-edge-image
+      params:
+        skip_download: true
+      passed:
+      - build-shield-agent
+      trigger: true
+    - get: starkandwayne-shield-agent-artifact
+      passed:
+      - build-shield-agent
+    - get: starkandwayne-shield-agent-image
+      params:
+        skip_download: true
+      passed:
+      - build-shield-agent
   - config:
       image: docker:///bodymindarts/delmo-concourse
       inputs:
@@ -468,6 +484,11 @@ resources:
 - name: core-busybox-static-pkg
   source:
     name: busybox-static
+    origin: core
+  type: hab-pkg
+- name: core-curl-pkg
+  source:
+    name: curl
     origin: core
   type: hab-pkg
 - name: starkandwayne-postgresql-pkg
