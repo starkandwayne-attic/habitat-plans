@@ -71,8 +71,6 @@ do_install() {
   cp -R webui             ${pkg_prefix}/webui
 
   cgo_wrap_binaries
-
-  cp daemon/shield-pipe   ${pkg_prefix}/bin
 }
 
 cgo_wrap_binaries() {
