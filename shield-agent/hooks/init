@@ -1,8 +1,8 @@
 #!/bin/bash
 
-source {{pkg.svc_config_path}}/environment.sh
-
 set -e
+
+source {{pkg.svc_config_path}}/environment.sh
 
 echo "Checking if shield-daemon is available"
 

@@ -4,6 +4,10 @@ exec 2>&1
 
 source {{pkg.svc_config_path}}/environment.sh
 
+# this is to satisfy the hard coded path in the postgresql plugin
+sudo mkdir -p /var/vcap/packages/postgres
+ln -s $(dirname $(which psql))/bin /var/vcap/packages/postgres/bin
+
 echo "Attempting to set up SSH public keys"
 AUTHKEYS={{pkg.svc_var_path}}/authorized_keys
 {{~#with bind.daemon.members.[0]}}

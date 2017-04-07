@@ -38,11 +38,11 @@ pkg_binds=(
 
 # Optional.
 # The user to run the service as. The default is hab.
-# pkg_svc_user="hab"
+pkg_svc_user="root"
 
 # Optional.
 # The group to run the service as. The default is hab.
-# pkg_svc_group="$pkg_svc_user"
+pkg_svc_group="$pkg_svc_user"
 
 do_build() {
   return 0
