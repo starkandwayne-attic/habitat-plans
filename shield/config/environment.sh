@@ -1,5 +1,5 @@
 #!/bin/bash
-{{ #with bind.database.members.[0] }}
+{{ #with bind.database.first }}
 PGPORT="{{cfg.port}}"
 PGHOST="{{sys.ip}}"
 PG_SUPERUSER="{{cfg.superuser_name}}"
