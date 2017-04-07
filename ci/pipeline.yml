@@ -109,9 +109,13 @@ jobs:
       trigger: true
     - get: core-bzip2-pkg
       trigger: true
+    - get: core-coreutils-pkg
+      trigger: true
     - get: core-curl-pkg
       trigger: true
     - get: core-glibc-pkg
+      trigger: true
+    - get: starkandwayne-postgresql-pkg
       trigger: true
     - get: shield-agent-plan
       trigger: true
@@ -486,6 +490,11 @@ resources:
 - name: core-bzip2-pkg
   source:
     name: bzip2
+    origin: core
+  type: hab-pkg
+- name: core-coreutils-pkg
+  source:
+    name: coreutils
     origin: core
   type: hab-pkg
 - name: core-curl-pkg
