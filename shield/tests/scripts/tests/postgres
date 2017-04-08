@@ -52,4 +52,49 @@ echo ">> running backup job"
 wait_for_task $(shield run $(shield job postgres-all-daily | jq -r '.uuid') | jq -r '.task_uuid')
 echo
 
+
+echo ">> trashing the data"
+echo "   deleting all db1.t_vals records with id's greater than 2"
+psql db1 -c 'DELETE FROM t_vals WHERE id > 2'
+echo "   db1.t_vals contains:"
+psql db1 -c 'SELECT * FROM t_vals ORDER BY ID ASC' | sed -e 's/^/    /';
+
+echo "   dropping the db2 databse outright"
+psql postgres -c 'DROP DATABASE db2'
+echo "   current databases:"
+psql db1 -c '\l' | sed -e 's/^/    /';
+echo
+
+echo ">> restoring from backups"
+wait_for_task $(shield restore $(shield archives -t $(shield target postgres-all | jq -r '.uuid') | jq -r '.[0].uuid') | jq -r '.task_uuid')
+echo
+
+echo ">> verifying data, post-restore"
+echo "   contents of db1.t_vals:"
+psql db1 -c 'SELECT * FROM t_vals ORDER BY ID ASC' | sed -e 's/^/    /'
+
+echo "   contents of db2.t_keys:"
+psql db2 -c 'SELECT * FROM t_keys ORDER BY ID ASC' | sed -e 's/^/    /'
+echo
+
+psql db1 -c 'SELECT * FROM t_vals ORDER BY ID ASC' >$TMP/db1.post
+psql db2 -c 'SELECT * FROM t_keys ORDER BY ID ASC' >$TMP/db2.post
+
+if ! diff -u $TMP/db1.dat $TMP/db1.post &>/dev/null; then
+  echo "!! db1 was not properly restored!"
+  echo
+  diff -u $TMP/db1.dat $TMP/db1.post || true
+  echo
+  rc=1
+fi
+
+if ! diff -u $TMP/db2.dat $TMP/db2.post &>/dev/null; then
+  echo "!! db2 was not properly restored!"
+  echo
+  diff -u $TMP/db2.dat $TMP/db2.post || true
+  echo
+  rc=1
+fi
+# }}}
+
 exit $rc;

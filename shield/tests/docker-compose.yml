@@ -14,6 +14,9 @@ services:
   database:
     image: starkandwayne/postgresql:edge
     command: "start starkandwayne/postgresql --group shield"
+  target:
+    image: starkandwayne/postgresql:edge
+    command: "start starkandwayne/postgresql --group target"
   tests:
     image: starkandwayne-shield-tests
     build: ./
@@ -24,9 +27,9 @@ services:
       AWS_BUCKET:
       SHIELD_ENDPOINT: shield
       AGENT_ENDPOINT: agent
-      PGHOST: database
+      PGHOST: target
       PGUSER: admin
       PGPASSWORD: admin
     links:
     - shield
-    - database
+    - target
