@@ -1,19 +1,25 @@
 #!/bin/bash
 
-set -e
-
 source {{pkg.svc_config_path}}/environment.sh
 
 echo "Checking if shield-daemon is available"
 
 curl "${SHIELD_ENDPOINT}/v1/ping"
+if [[ $? != 0 ]]; then
+  echo "Shield is not available"
+  exit 1
+fi
 
-# This is to satisfy the hard coded path in the postgresql plugin
-mkdir -p /var/vcap/packages/postgres-9.4
-ln -s $(dirname $(which psql)) /var/vcap/packages/postgres-9.4/bin
+if [[ ! -f /var/vcap/packages/postgres-9.4/bin ]]; then
+  # This is to satisfy the hard coded path in the postgresql plugin
+  mkdir -p /var/vcap/packages/postgres-9.4
+  ln -s $(dirname $(which psql)) /var/vcap/packages/postgres-9.4/bin
+fi
 
-# This is a hack to setup a cert path that golang will find (https://golang.org/src/crypto/x509/root_linux.go)
-# Also currently the {{pkgPathFor "core/cacerts"}} helper invocation will initially fail (https://github.com/habitat-sh/habitat/issues/1904)
-# This can be ignored... eventually the hook will render correctly and things will work!
-mkdir -p /etc/ssl
-ln -s {{pkgPathFor "core/cacerts"}}/ssl/certs/cacert.pem /etc/ssl/ca-bundle.pem
+if [[ ! -f /etc/ssl/ca-bundle.pem ]] ; then
+  # This is a hack to setup a cert path that golang will find (https://golang.org/src/crypto/x509/root_linux.go)
+  # Also currently the {{pkgPathFor "core/cacerts"}} helper invocation will initially fail (https://github.com/habitat-sh/habitat/issues/1904)
+  # This can be ignored... eventually the hook will render correctly and things will work!
+  mkdir -p /etc/ssl
+  ln -s {{pkgPathFor "core/cacerts"}}/ssl/certs/cacert.pem /etc/ssl/ca-bundle.pem
+fi
