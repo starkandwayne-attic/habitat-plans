@@ -109,6 +109,8 @@ jobs:
       trigger: true
     - get: core-bzip2-pkg
       trigger: true
+    - get: core-cacerts-pkg
+      trigger: true
     - get: core-coreutils-pkg
       trigger: true
     - get: core-curl-pkg
@@ -490,6 +492,11 @@ resources:
 - name: core-bzip2-pkg
   source:
     name: bzip2
+    origin: core
+  type: hab-pkg
+- name: core-cacerts-pkg
+  source:
+    name: cacerts
     origin: core
   type: hab-pkg
 - name: core-coreutils-pkg
