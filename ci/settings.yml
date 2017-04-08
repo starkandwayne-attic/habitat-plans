@@ -19,6 +19,14 @@ jobs:
         skip_download: true
       passed:
       - build-shield-agent
+  - task: test-shield
+    config:
+      params:
+        AWS_ACCESS_KEY: (( grab meta.aws.access_key_id ))
+        AWS_SECRET_KEY: (( grab meta.aws.secret_access_key ))
+        AWS_REGION: (( grab meta.aws.region ))
+        AWS_BUCKET: (( grab meta.aws.shield-test-bucket ))
+
 - name: release-shield-agent
   plan:
   - (( inline ))

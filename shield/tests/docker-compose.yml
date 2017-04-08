@@ -18,6 +18,10 @@ services:
     image: starkandwayne-shield-tests
     build: ./
     environment:
+      AWS_ACCESS_KEY:
+      AWS_SECRET_KEY:
+      AWS_REGION:
+      AWS_BUCKET:
       SHIELD_ENDPOINT: shield
       AGENT_ENDPOINT: agent
       PGHOST: database

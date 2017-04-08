@@ -13,6 +13,7 @@ meta:
   aws:
     habitat-artifacts-bucket: snw-habitat-packages
     docker-machine-bucket: docker-machine-exports
+    shield-test-bucket: shield-habitat-test
     access_key_id: (( vault "secret/pipelines/habitat-plans/aws:access_key_id" ))
     secret_access_key: (( vault "secret/pipelines/habitat-plans/aws:secret_access_key" ))
     region: eu-central-1

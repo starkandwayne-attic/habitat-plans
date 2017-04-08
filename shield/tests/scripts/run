@@ -1,11 +1,27 @@
 #!/bin/bash
 
+set -eu
+exec 2>&1
+
 export TMP=/tmp ; mkdir -p $TMP
-
-echo "Setting up shield for testing"
-
 export SHIELD_API_TOKEN="${SHIELD_API_TOKEN:-default}"
 
+BUCKET_PREFIX=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | sha1sum | awk '{print $1}')-delmo
+echo "> Configuring AWS CLI"
+rm -rf /root/.aws ; mkdir /root/.aws
+cat >/root/.aws/config <<EOF
+[default]
+region = $AWS_REGION
+EOF
+cat >/root/.aws/credentials <<EOF
+[default]
+aws_access_key_id = $AWS_ACCESS_KEY
+aws_secret_access_key = $AWS_SECRET_KEY
+EOF
+echo
+
+echo "CONFIGURING SHIELD AT ${SHIELD_ENDPOINT}"
+echo "> Targeting backend at ${SHIELD_ENDPOINT}"
 shield create-backend test-shield http://${SHIELD_ENDPOINT}:8080
 shield backend
 
@@ -31,8 +47,8 @@ shield create-store --raw <<EOF
   "name"     : "s3-store",
   "summary"  : "Default S3 Storage",
   "plugin"   : "s3",
-  "endpoint" : "{\"access_key_id\":\"$AWS_ACCESS_KEY\",\"secret_access_key\":\"$AWS_SECRET_KEY\",\"bucket\":\"$BUCKET\",\"prefix\":\"phalanx\"}",
-  "agent"    : "127.0.0.1:5444"
+  "endpoint" : "{\"access_key_id\":\"$AWS_ACCESS_KEY\",\"secret_access_key\":\"$AWS_SECRET_KEY\",\"bucket\":\"$AWS_BUCKET\",\"prefix\":\"$BUCKET_PREFIX\"}",
+  "agent"    : "$AGENT_ENDPOINT:5444"
 }
 EOF
 echo "> Finding UUIDs"
@@ -60,6 +76,11 @@ for run in /scripts/tests/*; do
   fi
 done
 echo
+
+echo
+echo "CLEANING UP AWS AWS_BUCKET '$AWS_BUCKET'"
+echo "> Removing all files in AWS bucket '$AWS_BUCKET/$BUCKET_PREFIX'"
+aws s3 rm --recursive s3://$AWS_BUCKET/$BUCKET_PREFIX
 
 echo
 echo "DONE"
