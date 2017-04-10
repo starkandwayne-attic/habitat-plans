@@ -2,7 +2,7 @@ name = "(none)"
 
 log_level = "info"
 
-port = 8080
+port = '8080'
 ssh_private_key = """
 -----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAu6syloBqOSglqJ6RYYWchWkfaw239sqUNgM41k+B3GRTnAeO
