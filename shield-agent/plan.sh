@@ -18,7 +18,7 @@ pkg_bin_dirs=(bin)
 # pkg_exposes=(port)
 
 pkg_binds=(
-[daemon]="port"
+[daemon]="port provisioning_key"
 )
 
 pkg_svc_user="root"
