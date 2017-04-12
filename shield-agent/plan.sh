@@ -21,27 +21,7 @@ pkg_binds=(
 [daemon]="port"
 )
 
-# Optional.
-# Same as `pkg_binds` but these represent optional services to connect to.
-# pkg_binds_optional=(
-#   [storage]="port host"
-# )
-
-# Optional.
-# An array of interpreters used in shebang lines for scripts. Specify the
-# subdirectory where the binary is relative to the package, for example,
-# bin/bash or libexec/neverland, since binaries can be located in directories
-# besides bin. This list of interpreters will be written to the metadata
-# INTERPRETERS file, located inside a package, with their fully-qualified path.
-# Then these can be used with the fix_interpreter function.
-# pkg_interpreters=(bin/bash)
-
-# Optional.
-# The user to run the service as. The default is hab.
 pkg_svc_user="root"
-
-# Optional.
-# The group to run the service as. The default is hab.
 pkg_svc_group="$pkg_svc_user"
 
 do_build() {
