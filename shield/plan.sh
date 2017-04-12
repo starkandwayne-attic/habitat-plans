@@ -14,6 +14,7 @@ pkg_bin_dirs=(bin)
 
 pkg_exports=(
   [port]=port
+  [provisioning_key]=auth.provisioning_key
 )
 pkg_exposes=(port)
 
