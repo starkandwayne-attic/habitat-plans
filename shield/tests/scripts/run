@@ -4,7 +4,7 @@ set -eu
 exec 2>&1
 
 export TMP=/tmp ; mkdir -p $TMP
-export SHIELD_API_TOKEN="${SHIELD_API_TOKEN:-default}"
+export SHIELD_API_TOKEN="${SHIELD_API_TOKEN:-autoprovision}"
 
 BUCKET_PREFIX=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | sha1sum | awk '{print $1}')-delmo
 echo "> Configuring AWS CLI"
