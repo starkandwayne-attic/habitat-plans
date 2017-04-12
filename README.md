@@ -32,13 +32,13 @@ this has the same effect as `hab pkg build redis` (that command creates an on th
 
 ## Export to docker
 
-If you have build your package in the studio and remain in the context you can export your pkg to docker via:
+If you have built your package in the studio and remain in the context you can export your pkg to docker via:
 
 ```
 [2][default:/src:130]# hab pkg export docker starkandwayne/redis
 ```
 
-This will export the latest version of starkandwayne/redis to docker (if you have just build one it will use the local version).
+This will export the latest version of starkandwayne/redis to docker (if you have just built one it will use the local version).
 On the host you can see the result:
 
 ```
@@ -50,7 +50,7 @@ starkandwayne/redis                         3.2.8-20170412082113    7f9496bb6bba
 
 ## Via pipeline
 
-Instead of building and exporting the images manually you can also use https://ci.starkandwayne.com/teams/main/pipelines/habitat-plans to help you with your workflow.
+Instead of building and exporting the images manually you can also use the [habitat-plans pipeline](https://ci.starkandwayne.com/teams/main/pipelines/habitat-plans) to help you with your workflow.
 When you have decided on a version of `plan.sh` file you like commit and push it to origin. This will trigger a build of the plan and make the image available via
 ```
 $ docker pull starkandwayne/redis:edge
@@ -65,4 +65,4 @@ Many of the plans are testable via [delmo](https://github.com/bodymindarts/delmo
 $ delmo -f redis/tests/delmo.yml
 ```
 
-The tests will run against the latest image build by the pipeine (`starkandwayne/redis:edge`). When a file `<pkg>/tests/delmo.yml` is found the same tests will also be run in the pipeline.
+The tests will run against the latest image built by the pipeline (`starkandwayne/redis:edge`). When a file `<pkg>/tests/delmo.yml` is found the same tests will also be run in the pipeline.
