@@ -39,15 +39,16 @@ do_build() {
 do_install() {
   cd "${HAB_CACHE_SRC_PATH}/shield-server-linux-amd64" || exit
 
+  cp cli/shield-agent     ${pkg_prefix}/bin
   cp agent/shield-agent   ${pkg_prefix}/bin
 
-  mkdir ${pkg_prefix}/plugins
-  cp plugins/* ${pkg_prefix}/plugins
+  mkdir                   ${pkg_prefix}/plugins
+  cp plugins/*            ${pkg_prefix}/plugins
 
   cgo_wrap_binaries
 
   cp daemon/shield-pipe   ${pkg_prefix}/bin
-  fix_interpreter ${pkg_prefix}/bin/shield-pipe core/bash bin/bash
+  fix_interpreter         ${pkg_prefix}/bin/shield-pipe core/bash bin/bash
 }
 
 cgo_wrap_binaries() {
