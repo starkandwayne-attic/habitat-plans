@@ -4,6 +4,8 @@ groups:
   - release-docker
   - build-postgresql
   - release-postgresql
+  - build-redis
+  - release-redis
   - build-shield-agent
   - release-shield-agent
   - build-shield
@@ -101,6 +103,48 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-postgresql-artifact
+  public: true
+- name: build-redis
+  plan:
+  - aggregate:
+    - get: core-glibc-pkg
+      trigger: true
+    - get: redis-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: redis-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: redis-plan/redis
+        PLAN_NAME: redis
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-redis
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-redis-docker.tar
+        load_repository: starkandwayne/redis
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-redis-image
+    - params:
+        load_file: result/starkandwayne-redis-docker.tar
+        load_repository: starkandwayne/redis
+        load_tag: habitat
+      put: starkandwayne-redis-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-redis-artifact
   public: true
 - name: build-shield-agent
   plan:
@@ -281,6 +325,26 @@ jobs:
     - params:
         result: starkandwayne-postgresql-artifact
       put: starkandwayne-postgresql-pkg
+  public: true
+- name: release-redis
+  plan:
+  - aggregate:
+    - get: starkandwayne-redis-artifact
+      passed:
+      - build-redis
+    - get: starkandwayne-redis-image
+      params:
+        save: true
+      passed:
+      - build-redis
+  - aggregate:
+    - params:
+        load: starkandwayne-redis-image
+        tag_as_latest: true
+      put: starkandwayne-redis-image
+    - params:
+        result: starkandwayne-redis-artifact
+      put: starkandwayne-redis-pkg
   public: true
 - name: release-shield-agent
   plan:
@@ -584,6 +648,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-postgresql/starkandwayne-postgresql-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-redis-pkg
+  source:
+    auth_token: REDACTED
+    name: redis
+    origin: starkandwayne
+  type: hab-pkg
+- name: redis-plan
+  source:
+    ignore_paths:
+    - redis/tests/*
+    paths:
+    - redis/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-redis-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/redis
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-redis-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/redis
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-redis-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-redis/starkandwayne-redis-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
