@@ -3,9 +3,9 @@
 set -e
 
 cat <<EOF | redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD}
-set foo 100
-incr foo
-append foo xxx
+SET foo 100
+INCR foo
+APPEND foo xxx
 EOF
 
 if [[ $(redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD} get foo) != "101xxx" ]]; then

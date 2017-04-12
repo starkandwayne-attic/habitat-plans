@@ -2,4 +2,4 @@
 # If port 0 is specified Redis will not listen on a TCP socket.
 port = 6379
 password = 'password'
-loglevel = "notice"
+loglevel = 'notice'
