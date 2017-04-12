@@ -110,8 +110,6 @@ jobs:
   - aggregate:
     - get: core-glibc-pkg
       trigger: true
-    - get: starkandwayne-shield-agent-pkg
-      trigger: true
     - get: redis-plan
       trigger: true
     - get: habitat-plans-ci
@@ -604,12 +602,6 @@ resources:
     name: zlib
     origin: core
   type: hab-pkg
-- name: starkandwayne-shield-agent-pkg
-  source:
-    auth_token: REDACTED
-    name: shield-agent
-    origin: starkandwayne
-  type: hab-pkg
 - name: core-bzip2-pkg
   source:
     name: bzip2
@@ -741,6 +733,12 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: starkandwayne-shield-agent-pkg
+  source:
+    auth_token: REDACTED
+    name: shield-agent
+    origin: starkandwayne
+  type: hab-pkg
 - name: shield-agent-plan
   source:
     ignore_paths:
