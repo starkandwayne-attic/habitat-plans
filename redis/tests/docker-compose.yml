@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  redis:
+    image: starkandwayne/redis:edge
+    command: "start starkandwayne/redis"
+    environment:
+      HAB_REDIS: 'password="mypassword"'
+  tests:
+    image: starkandwayne-redis-tests
+    build: ./
+    environment:
+      REDIS_PASSWORD: mypassword
+      REDIS_HOST: redis
+    links:
+    - redis

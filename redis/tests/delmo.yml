@@ -1,0 +1,14 @@
+suite:
+  name: starkandwayne-redis
+  system: docker-compose.yml
+  task_service: tests
+
+tests:
+- name: persist-value
+  spec:
+  - assert: [persist-value]
+
+tasks:
+- name: persist-value
+  command: /scripts/persist-value
+
