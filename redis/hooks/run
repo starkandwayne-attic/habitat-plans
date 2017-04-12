@@ -1,0 +1,4 @@
+$!/bin/bash
+
+redis-server {{pkg.svc_config_path}}/redis.config
+
