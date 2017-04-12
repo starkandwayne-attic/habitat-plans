@@ -48,7 +48,7 @@ do_install() {
   cgo_wrap_binaries
 
   cp daemon/shield-pipe   ${pkg_prefix}/bin
-  fix_interpreter         ${pkg_prefix}/bin/shield-pipe core/bash bin/bash
+  fix_interpreter ${pkg_prefix}/bin/shield-pipe core/bash bin/bash
 }
 
 cgo_wrap_binaries() {
