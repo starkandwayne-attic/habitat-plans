@@ -11,13 +11,13 @@ if [[ $? != 0 ]]; then
 fi
 
 # This is to satisfy the hard coded path in the postgresql plugin
-rm /var/vcap/packages/postgres-9.4/bin
+rm /var/vcap/packages/postgres-9.4/bin 2>/dev/null
 mkdir -p /var/vcap/packages/postgres-9.4
 ln -s $(dirname $(which psql)) /var/vcap/packages/postgres-9.4/bin
 
 # This is a hack to setup a cert path that golang will find (https://golang.org/src/crypto/x509/root_linux.go)
 # Also currently the pkgPathFor helper invocation will initially fail (https://github.com/habitat-sh/habitat/issues/1904)
 # This can be ignored... eventually the hook will render correctly and things will work!
-rm /etc/ssl/ca-bundle.pem
+rm /etc/ssl/ca-bundle.pem 2>/dev/null
 mkdir -p /etc/ssl
 ln -s $(find /hab/pkgs/core/cacerts -path '*ssl/certs/cacert.pem') /etc/ssl/ca-bundle.pem
