@@ -58,26 +58,26 @@ cat <<EOF | provision '{{@key}}' policy
 EOF
 {{ /each }}
 {{ #each cfg.targets }}
-{{name}}_target_config=$(cat <<EOF | tr -d [[:space:]] | sed 's/"/\\"/g'
+target_config_{{@index}}=$(cat <<EOF | tr -d [[:space:]] | sed 's/"/\\"/g'
 {{toJson config}}
 EOF
 )
 cat <<EOF | provision '{{name}}' target
 {"name":     "{{name}}",
  "plugin":   "{{plugin}}",
- "endpoint": "${{name}}_target_config",
+ "endpoint": "$target_config_{{@index}}",
  "agent":    "$my_ip:$my_port"}
 EOF
 {{ /each }}
 {{ #each cfg.stores }}
-{{name}}_store_config=$(cat <<EOF | tr -d [[:space:]] | sed 's/"/\\"/g'
+store_config_{{@index}}=$(cat <<EOF | tr -d [[:space:]] | sed 's/"/\\"/g'
 {{toJson config}}
 EOF
 )
 cat <<EOF | provision '{{name}}' store
 {"name":     "{{name}}",
  "plugin":   "{{plugin}}",
- "endpoint" : "${{name}}_store_config",
+ "endpoint" : "$store_config_{{@index}}",
  "agent":    "$my_ip:$my_port"}
 EOF
 {{ /each }}
