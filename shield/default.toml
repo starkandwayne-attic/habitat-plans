@@ -35,9 +35,9 @@ fkJlK83kBN1qiFBAcxdapE3ac1XFEA4jyQDdOIDjy3oV05su7gRN
 [auth]
 basic_user = 'admin'
 basic_password = 'admin'
+provisioning_key='autoprovision'
 
 [auth.api_keys]
-default = 'default'
 
 [db]
 name = 'shielddb'

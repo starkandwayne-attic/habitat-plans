@@ -1,7 +1,5 @@
 log_level = "info"
-
 port = "5444"
-
 ssh_private_key = """
 -----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAxbcPzc+Yt3VrTaF6JPGGOIfEkWPMQ+qihwtxswjt1DxF7qpN
@@ -30,3 +28,31 @@ XrYygQKBgQDeK/j0hOEvGAx4vWw8fwfKmgOcGAW13Lp129rOB1kJFsQxdI0fnfVq
 30q3HbH0WPUi4l5r3OnRZfXYmxIVG61ZllOFEMyRJnS17EzlhA8pF0aNqKMk1BTN
 ZBosXArGz8Tid1YpaRSq3vZwc9iMgEErFHJdaAxyCa1MwLZi9Qk55g==
 -----END RSA PRIVATE KEY-----"""
+
+# [schedules]
+# daily = "daily 4am"
+#
+# [retention-policies]
+# shortterm = '86400'
+# longterm = '864000'
+#
+# [[stores]]
+# name = 'amazon'
+# plugin = 's3'
+# [stores.config]
+# secret_key = 'foo'
+# bucket = 'my-backups'
+#
+# [[targets]]
+# name = 'localdb'
+# plugin = 'postgres'
+# [targets.config]
+# pg_host = '10.0.0.6'
+# pg_port = '5524'
+#
+# [[jobs]]
+# name = 'my-backups'
+# target = 'localdb'
+# store = 'amazon'
+# retention = 'longterm'
+# schedule = 'daily'

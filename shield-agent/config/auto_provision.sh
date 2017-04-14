@@ -1,0 +1,93 @@
+#!shebang
+
+echo 'Auto provisioning'
+
+source {{pkg.svc_config_path}}/environment.sh
+
+export SHIELD_API_TOKEN
+
+SHIELD_CONFIG=$(mktemp --tmpdir auto.XXXXXX)
+trap "rm -rf ${SHIELD_CONFIG}" INT TERM QUIT EXIT
+
+# Create a specific config file for shield-agent stuff, to avoid race
+# conditions in case we are colocated with shield-daemon.
+shield -c ${SHIELD_CONFIG} create-backend hab ${SHIELD_ENDPOINT}
+
+my_ip='{{sys.ip}}'
+my_port='{{cfg.port}}'
+
+provision() {
+  local name=$1; shift
+  uuid=$(shield -c ${SHIELD_CONFIG} --raw $* $name | jq -r '.uuid // empty')
+  if [[ -z ${uuid} ]]; then
+    echo "Creating a new $* named '$name'"
+    tee >(shield -c ${SHIELD_CONFIG} --raw create-$*)
+  else
+    echo "Editing existing $* named '$name'"
+    tee >(shield -c ${SHIELD_CONFIG} --raw edit-$* ${uuid})
+  fi
+}
+
+job() {
+  local name=$1
+  local targ=$(shield -c ${SHIELD_CONFIG} --raw target   $2 | jq -r '.uuid // empty')
+  local stor=$(shield -c ${SHIELD_CONFIG} --raw store    $3 | jq -r '.uuid // empty')
+  local retn=$(shield -c ${SHIELD_CONFIG} --raw policy   $4 | jq -r '.uuid // empty')
+  local sche=$(shield -c ${SHIELD_CONFIG} --raw schedule $5 | jq -r '.uuid // empty')
+
+  cat <<EOF | provision $name job
+  {"name":      "${name}",
+    "target":    "${targ}",
+    "store":     "${stor}",
+    "retention": "${retn}",
+    "schedule":  "${sche}",
+    "paused":    false}
+EOF
+}
+
+{{ #each cfg.schedules }}
+cat <<EOF | provision '{{@key}}' schedule
+{"name":"{{@key}}",
+ "when":"{{this}}"}
+EOF
+{{ /each }}
+{{ #each cfg.retention-policies }}
+cat <<EOF | provision '{{@key}}' policy
+{"name":"{{@key}}",
+ "expires": {{this}} }
+EOF
+{{ /each }}
+{{ #each cfg.targets }}
+target_config_{{@index}}=$(cat <<EOF | tr -d [[:space:]] | sed 's/"/\\"/g'
+{{toJson config}}
+EOF
+)
+cat <<EOF | provision '{{name}}' target
+{"name":     "{{name}}",
+ "plugin":   "{{plugin}}",
+ "endpoint": "$target_config_{{@index}}",
+ "agent":    "$my_ip:$my_port"}
+EOF
+{{ /each }}
+{{ #each cfg.stores }}
+store_config_{{@index}}=$(cat <<EOF | tr -d [[:space:]] | sed 's/"/\\"/g'
+{{toJson config}}
+EOF
+)
+cat <<EOF | provision '{{name}}' store
+{"name":     "{{name}}",
+ "plugin":   "{{plugin}}",
+ "endpoint" : "$store_config_{{@index}}",
+ "agent":    "$my_ip:$my_port"}
+EOF
+{{ /each }}
+{{ #each cfg.jobs }}
+job '{{name}}' \
+   '{{target}}'    \
+   '{{store}}'     \
+   '{{retention}}' \
+   '{{schedule}}'
+{{ /each }}
+
+sleep 5
+echo "all done"

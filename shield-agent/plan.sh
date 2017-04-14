@@ -8,7 +8,7 @@ pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/releases/download/v${pkg_version}/shield-server-linux-amd64.tar.gz"
 pkg_shasum="c70b11d92d18a12bd52a1d8d5907fcb5b386fda6742dff1d184aa63d417b5a5c"
 
-pkg_deps=(starkandwayne/postgresql core/cacerts core/coreutils core/curl core/bash core/bzip2 core/glibc)
+pkg_deps=(starkandwayne/postgresql core/jq-static core/libarchive core/cacerts core/coreutils core/curl core/bash core/bzip2 core/glibc)
 
 pkg_bin_dirs=(bin)
 
@@ -18,30 +18,10 @@ pkg_bin_dirs=(bin)
 # pkg_exposes=(port)
 
 pkg_binds=(
-[daemon]="port"
+[daemon]="port provisioning_key"
 )
 
-# Optional.
-# Same as `pkg_binds` but these represent optional services to connect to.
-# pkg_binds_optional=(
-#   [storage]="port host"
-# )
-
-# Optional.
-# An array of interpreters used in shebang lines for scripts. Specify the
-# subdirectory where the binary is relative to the package, for example,
-# bin/bash or libexec/neverland, since binaries can be located in directories
-# besides bin. This list of interpreters will be written to the metadata
-# INTERPRETERS file, located inside a package, with their fully-qualified path.
-# Then these can be used with the fix_interpreter function.
-# pkg_interpreters=(bin/bash)
-
-# Optional.
-# The user to run the service as. The default is hab.
 pkg_svc_user="root"
-
-# Optional.
-# The group to run the service as. The default is hab.
 pkg_svc_group="$pkg_svc_user"
 
 do_build() {
@@ -59,10 +39,11 @@ do_build() {
 do_install() {
   cd "${HAB_CACHE_SRC_PATH}/shield-server-linux-amd64" || exit
 
+  cp cli/shield           ${pkg_prefix}/bin
   cp agent/shield-agent   ${pkg_prefix}/bin
 
-  mkdir ${pkg_prefix}/plugins
-  cp plugins/* ${pkg_prefix}/plugins
+  mkdir                   ${pkg_prefix}/plugins
+  cp plugins/*            ${pkg_prefix}/plugins
 
   cgo_wrap_binaries
 
