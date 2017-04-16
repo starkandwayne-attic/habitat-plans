@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 service=$(cat /.hab_pkg)
 service=$(echo "${service#*/}" | tr '[:lower:]' '[:upper:]')
