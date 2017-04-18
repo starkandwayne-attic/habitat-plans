@@ -2,4 +2,9 @@
 
 set -e
 
+echo "Curling shield endpoint:"
 curl http://${SHIELD_ENDPOINT}:8080/v1/ping
+echo
+echo "Curling shield-agent endpoint"
+curl http://${AGENT_ENDPOINT}:5444
+echo
