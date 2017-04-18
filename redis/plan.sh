@@ -14,6 +14,9 @@ pkg_exports=(
   [port]=port
 )
 pkg_exposes=(port)
+pkg_binds_optional=(
+[shield]="port provisioning_key"
+)
 
 pkg_svc_user="root"
 pkg_svc_group="$pkg_svc_user"
