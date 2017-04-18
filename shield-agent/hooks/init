@@ -17,7 +17,7 @@ if [[ "${psql_path}" != "" ]]; then
   mkdir -p /var/vcap/packages/postgres-9.4
   ln -s $(dirname ${psql_path}) /var/vcap/packages/postgres-9.4/bin
 else
-  echo "No psql found. Plugin 'postgres' will now work for this agent"
+  echo "No psql found. Plugin 'postgres' will not work for this agent"
 fi
 
 # This is a hack to setup a cert path that golang will find (https://golang.org/src/crypto/x509/root_linux.go)
