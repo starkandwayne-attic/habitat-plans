@@ -6,9 +6,7 @@ source {{pkg.svc_config_path}}/environment.sh
 
 echo "Attempting to set up SSH public keys"
 AUTHKEYS={{pkg.svc_var_path}}/authorized_keys
-{{~#with bind.daemon.first}}
 curl -Lks "${SHIELD_ENDPOINT}/v1/meta/pubkey" -m 20 >> $AUTHKEYS
-{{~/with}}
 
 # work around auto_provision.sh will be moved to hooks/post-run
 bash_path=$(find /hab/pkgs/core/bash -path '*/bin/bash')
