@@ -14,10 +14,14 @@ pkg_shasum="e715069fdab049ec668cd74e57cabcb23583dc4a84c5e330c430cbe8998f6d89"
 
 source_dir=$HAB_CACHE_SRC_PATH/${pkg_name}
 
+#DO NOT USE
+pkg_svc_user=root
+pkg_svc_group=root
+
 # Optional.
 # The resulting filename for the download, typically constructed from the
 # pkg_name and pkg_version values.
-pkg_deps=(core/php5)
+pkg_deps=(core/php core/nginx)
 
 pkg_exports=()
 pkg_exposes=()
@@ -44,6 +48,9 @@ do_build(){
 do_install() {
   # mkdir $pkg_prefix/public_html
   cp -r "$source_dir" $pkg_prefix/public_html/
+
+  #probably needs to be in a hook
+  #cp {{pkg.svc_config_path}}/nginx-site.conf /etc/nginx/sites-available/default
 }
 
 # do_strip() {

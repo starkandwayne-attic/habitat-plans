@@ -1,0 +1,13 @@
+
+#!/bin/bash
+
+exec 2>&1
+
+# check if database exists
+echo "checking if database exits"
+
+# symlink config files
+echo "copying files"
+mkdir -p /hab/svc/nginx/var/
+
+cp "{{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf.default" "{{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf"

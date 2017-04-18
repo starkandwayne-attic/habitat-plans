@@ -1,0 +1,9 @@
+
+#!/bin/bash
+
+exec 2>&1
+
+# start nginx with new config file
+echo "starting nginx wite {{pkg.svc_config_path}}/nginx-site.conf"
+
+exec nginx -c {{pkg.svc_config_path}}/nginx-site.conf
