@@ -9,7 +9,7 @@ services:
   agent:
     image: starkandwayne/shield-agent:edge
     environment:
-      HAB_SHIELD_AGENT: 'install_pg_tools="true"'
+      HAB_SHIELD_AGENT: 'install_pg_tools="true" shield_endpoint="http://shield:8080" provisioning_key="autoprovision"'
     command: "start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
     links:
     - shield

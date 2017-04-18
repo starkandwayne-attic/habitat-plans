@@ -1,5 +1,8 @@
 install_pg_tools = 'false'
 
+shield_endpoint = ''
+provisioning_key = 'autoprovision'
+
 log_level = "info"
 port = "5444"
 ssh_private_key = """

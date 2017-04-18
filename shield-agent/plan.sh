@@ -17,7 +17,7 @@ pkg_bin_dirs=(bin)
 # )
 # pkg_exposes=(port)
 
-pkg_binds=(
+pkg_binds_optional=(
 [daemon]="port provisioning_key"
 )
 
