@@ -1,3 +1,5 @@
+install_pg_tools = 'false'
+
 log_level = "info"
 port = "5444"
 ssh_private_key = """
