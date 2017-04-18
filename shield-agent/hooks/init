@@ -10,6 +10,8 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
+echo
+
 # This is to satisfy the hard coded path in the postgresql plugin
 psql_path=$(find /hab/pkgs -name 'psql' | tail -n1)
 if [[ ${psql_path} != "" ]]; then

@@ -40,8 +40,10 @@ ZBosXArGz8Tid1YpaRSq3vZwc9iMgEErFHJdaAxyCa1MwLZi9Qk55g==
 # name = 'amazon'
 # plugin = 's3'
 # [stores.config]
-# secret_key = 'foo'
+# access_key_id = 'foo'
+# secret_access_key = 'foo'
 # bucket = 'my-backups'
+# prefix = 'my-backups'
 #
 # [[targets]]
 # name = 'localdb'
