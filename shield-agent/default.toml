@@ -1,4 +1,4 @@
-install_pg_tools = 'false'
+install_pg_tools = false
 
 shield_endpoint = ''
 provisioning_key = 'autoprovision'

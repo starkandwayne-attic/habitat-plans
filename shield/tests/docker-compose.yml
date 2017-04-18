@@ -7,10 +7,13 @@ services:
     links:
     - database
   agent:
+    container_name: agent
     image: starkandwayne/shield-agent:edge
+    volumes:
+    - ~/projects/starkandwayne/habitat-plans/shield-agent/default.toml:/hab/pkgs/starkandwayne/shield-agent/0.10.4/20170418095034/default.toml
     environment:
       HAB_SHIELD_AGENT: |
-        install_pg_tools="true"
+        install_pg_tools=true
         shield_endpoint="http://shield:8080"
         provisioning_key="autoprovision"
     command: "start starkandwayne/shield-agent --peer shield"
