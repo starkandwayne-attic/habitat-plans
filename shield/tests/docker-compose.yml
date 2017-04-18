@@ -8,7 +8,10 @@ services:
     - database
   agent:
     image: starkandwayne/shield-agent:edge
-    command: "start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
+    entrypoint:
+    - sh
+    - -c
+    - "hab install starkandwayne/postgresql && exec /init.sh start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
     links:
     - shield
   database:
