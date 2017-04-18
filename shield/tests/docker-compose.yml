@@ -13,7 +13,7 @@ services:
         install_pg_tools="true"
         shield_endpoint="http://shield:8080"
         provisioning_key="autoprovision"
-    command: "start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
+    command: "start starkandwayne/shield-agent --peer shield"
     links:
     - shield
   database:
