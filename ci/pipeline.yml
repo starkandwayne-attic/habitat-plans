@@ -10,6 +10,8 @@ groups:
   - release-shield-agent
   - build-shield
   - release-shield
+  - build-wordpress
+  - release-wordpress
   - test-postgresql
   - test-redis
   - test-shield
@@ -110,6 +112,8 @@ jobs:
   - aggregate:
     - get: core-glibc-pkg
       trigger: true
+    - get: core-libarchive-pkg
+      trigger: true
     - get: starkandwayne-shield-agent-pkg
       trigger: true
     - get: redis-plan
@@ -163,6 +167,10 @@ jobs:
     - get: core-curl-pkg
       trigger: true
     - get: core-glibc-pkg
+      trigger: true
+    - get: core-jq-static-pkg
+      trigger: true
+    - get: core-libarchive-pkg
       trigger: true
     - get: starkandwayne-postgresql-pkg
       trigger: true
@@ -248,6 +256,48 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-shield-artifact
+  public: true
+- name: build-wordpress
+  plan:
+  - aggregate:
+    - get: core-php5-pkg
+      trigger: true
+    - get: wordpress-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: wordpress-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: wordpress-plan/wordpress
+        PLAN_NAME: wordpress
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-wordpress
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-wordpress-docker.tar
+        load_repository: starkandwayne/wordpress
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-wordpress-image
+    - params:
+        load_file: result/starkandwayne-wordpress-docker.tar
+        load_repository: starkandwayne/wordpress
+        load_tag: habitat
+      put: starkandwayne-wordpress-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-wordpress-artifact
   public: true
 - name: build-docker
   plan:
@@ -388,6 +438,26 @@ jobs:
     - params:
         result: starkandwayne-shield-artifact
       put: starkandwayne-shield-pkg
+  public: true
+- name: release-wordpress
+  plan:
+  - aggregate:
+    - get: starkandwayne-wordpress-artifact
+      passed:
+      - build-wordpress
+    - get: starkandwayne-wordpress-image
+      params:
+        save: true
+      passed:
+      - build-wordpress
+  - aggregate:
+    - params:
+        load: starkandwayne-wordpress-image
+        tag_as_latest: true
+      put: starkandwayne-wordpress-image
+    - params:
+        result: starkandwayne-wordpress-artifact
+      put: starkandwayne-wordpress-pkg
   public: true
 - name: test-postgresql
   plan:
@@ -604,6 +674,11 @@ resources:
     name: zlib
     origin: core
   type: hab-pkg
+- name: core-libarchive-pkg
+  source:
+    name: libarchive
+    origin: core
+  type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
   source:
     auth_token: REDACTED
@@ -630,11 +705,21 @@ resources:
     name: curl
     origin: core
   type: hab-pkg
+- name: core-jq-static-pkg
+  source:
+    name: jq-static
+    origin: core
+  type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
+  type: hab-pkg
+- name: core-php5-pkg
+  source:
+    name: php5
+    origin: core
   type: hab-pkg
 - name: starkandwayne-docker-pkg
   source:
@@ -806,6 +891,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-shield/starkandwayne-shield-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-wordpress-pkg
+  source:
+    auth_token: REDACTED
+    name: wordpress
+    origin: starkandwayne
+  type: hab-pkg
+- name: wordpress-plan
+  source:
+    ignore_paths:
+    - wordpress/tests/*
+    paths:
+    - wordpress/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-wordpress-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/wordpress
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-wordpress-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/wordpress
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-wordpress-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-wordpress/starkandwayne-wordpress-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
