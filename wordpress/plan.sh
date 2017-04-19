@@ -49,8 +49,8 @@ do_install() {
   # mkdir $pkg_prefix/public_html
   cp -r "$source_dir" $pkg_prefix/public_html/
 
-  #probably needs to be in a hook
-  #cp {{pkg.svc_config_path}}/nginx-site.conf /etc/nginx/sites-available/default
+  # rename file so we can use fpm default
+  cp "$(pkg_path_for php)/etc/php-fpm.d/www.conf.default" "$(pkg_path_for php)/etc/php-fpm.d/www.conf"
 }
 
 # do_strip() {
