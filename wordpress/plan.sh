@@ -21,10 +21,14 @@ pkg_svc_group=root
 # Optional.
 # The resulting filename for the download, typically constructed from the
 # pkg_name and pkg_version values.
-pkg_deps=(core/php core/nginx core/curl core/mysql-client core/bash)
+pkg_deps=(core/php core/curl starkandwayne/wordpress-proxy)
 
 pkg_exports=()
 pkg_exposes=()
+
+# pkg_binds=(
+#   [database]="port username password"
+# )
 
 
 

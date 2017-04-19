@@ -6,7 +6,6 @@ exec 2>&1
 # check if database exists
 echo "checking if database exits"
 
-# symlink config files
-echo "copying files"
-mkdir -p {{pkg.svc_var_path}}/nginx
-chown hab:hab {{pkg.svc_var_path}}
+cp -a {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
+
+hab service load starkandwayne/wordpress-proxy

@@ -1,9 +1,10 @@
 
-#!{{pkgPathFor "core/bash"}}/bin/bash
+#!/bin/bash
 
 exec 2>&1
 
-# start nginx with new config file
-echo "starting nginx wite {{pkg.svc_config_path}}/nginx.conf"
+exec php-fpm --nodaemonize
 
-exec nginx -c {{pkg.svc_config_path}}/nginx-site.conf
+# trap "kill $(cat {{pkg.svc_var_path}}/FPM_pid)" INT QUIT TERM EXIT
+#
+# exec nginx -c {{pkg.svc_config_path}}/nginx.conf
