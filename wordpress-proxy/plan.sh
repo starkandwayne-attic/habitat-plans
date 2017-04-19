@@ -15,8 +15,8 @@ pkg_source=nosuchfile.tar.xz
 
 pkg_deps=(core/nginx)
 
-pkg_svc_user="root"
-pkg_svc_group="root"
+pkg_svc_user=root
+pkg_svc_group=$pkg_svc_user
 
 do_begin() {
   return 0

@@ -6,6 +6,6 @@ exec 2>&1
 # check if database exists
 echo "checking if database exits"
 
-cp -a {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
+cp -r {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
 
 hab service load starkandwayne/wordpress-proxy

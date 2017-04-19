@@ -16,7 +16,7 @@ source_dir=$HAB_CACHE_SRC_PATH/${pkg_name}
 
 #DO NOT USE
 pkg_svc_user=root
-pkg_svc_group=root
+pkg_svc_group=$pkg_svc_user
 
 # Optional.
 # The resulting filename for the download, typically constructed from the
