@@ -81,6 +81,7 @@ cat <<EOF | provision '{{name}}' store
  "agent":    "$my_ip:$my_port"}
 EOF
 {{ /each }}
+sleep 1
 {{ #each cfg.jobs }}
 job '{{name}}' \
    '{{target}}'    \
