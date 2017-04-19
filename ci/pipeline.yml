@@ -260,6 +260,8 @@ jobs:
 - name: build-wordpress
   plan:
   - aggregate:
+    - get: core-curl-pkg
+      trigger: true
     - get: core-nginx-pkg
       trigger: true
     - get: core-php-pkg
