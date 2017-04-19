@@ -8,6 +8,7 @@ echo "checking if database exits"
 
 # symlink config files
 echo "copying files"
-mkdir -p /hab/svc/nginx/var/
+mkdir -p {{pkg.svc_var_path}}/nginx
+chown hab:hab {{pkg.svc_var_path}}
 
 cp "{{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf.default" "{{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf"

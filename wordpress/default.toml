@@ -1,8 +1,6 @@
 #### General Configuration
 # worker_processes: Number of NGINX processes. Default = 1
-worker_processes = 4
-
-
+worker_processes = "auto"
 
 #### Events Context Configuration
 [events]
