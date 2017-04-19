@@ -112,6 +112,8 @@ jobs:
   - aggregate:
     - get: core-glibc-pkg
       trigger: true
+    - get: core-jq-static-pkg
+      trigger: true
     - get: core-libarchive-pkg
       trigger: true
     - get: starkandwayne-shield-agent-pkg
@@ -674,6 +676,11 @@ resources:
     name: zlib
     origin: core
   type: hab-pkg
+- name: core-jq-static-pkg
+  source:
+    name: jq-static
+    origin: core
+  type: hab-pkg
 - name: core-libarchive-pkg
   source:
     name: libarchive
@@ -703,11 +710,6 @@ resources:
 - name: core-curl-pkg
   source:
     name: curl
-    origin: core
-  type: hab-pkg
-- name: core-jq-static-pkg
-  source:
-    name: jq-static
     origin: core
   type: hab-pkg
 - name: starkandwayne-postgresql-pkg
