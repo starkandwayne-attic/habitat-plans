@@ -185,6 +185,10 @@ jobs:
         MACHINE_EXPORT_AWS_REGION: (( grab meta.aws.region ))
         MACHINE_EXPORT_AWS_BUCKET: (( grab meta.aws.docker-machine-bucket ))
         MACHINE_NAME: (( grab meta.delmo.machine_name ))
+        AWS_ACCESS_KEY: (( grab meta.aws.access_key_id ))
+        AWS_SECRET_KEY: (( grab meta.aws.secret_access_key ))
+        AWS_REGION: (( grab meta.aws.region ))
+        AWS_BUCKET: (( grab meta.aws.shield-test-bucket ))
       inputs:
       - name: ${package_name}-tests
       run:

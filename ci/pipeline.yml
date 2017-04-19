@@ -487,6 +487,10 @@ jobs:
       inputs:
       - name: postgresql-tests
       params:
+        AWS_ACCESS_KEY: REDACTED
+        AWS_BUCKET: shield-habitat-test
+        AWS_REGION: eu-central-1
+        AWS_SECRET_KEY: REDACTED
         MACHINE_EXPORT_AWS_ACCESS_KEY_ID: REDACTED
         MACHINE_EXPORT_AWS_BUCKET: docker-machine-exports
         MACHINE_EXPORT_AWS_REGION: eu-central-1
@@ -531,6 +535,10 @@ jobs:
       inputs:
       - name: redis-tests
       params:
+        AWS_ACCESS_KEY: REDACTED
+        AWS_BUCKET: shield-habitat-test
+        AWS_REGION: eu-central-1
+        AWS_SECRET_KEY: REDACTED
         MACHINE_EXPORT_AWS_ACCESS_KEY_ID: REDACTED
         MACHINE_EXPORT_AWS_BUCKET: docker-machine-exports
         MACHINE_EXPORT_AWS_REGION: eu-central-1
