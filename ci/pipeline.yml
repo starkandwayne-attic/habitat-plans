@@ -112,7 +112,11 @@ jobs:
   - aggregate:
     - get: core-glibc-pkg
       trigger: true
+    - get: core-jq-static-pkg
+      trigger: true
     - get: core-libarchive-pkg
+      trigger: true
+    - get: core-redis-pkg
       trigger: true
     - get: starkandwayne-shield-agent-pkg
       trigger: true
@@ -171,8 +175,6 @@ jobs:
     - get: core-jq-static-pkg
       trigger: true
     - get: core-libarchive-pkg
-      trigger: true
-    - get: starkandwayne-postgresql-pkg
       trigger: true
     - get: shield-agent-plan
       trigger: true
@@ -260,7 +262,9 @@ jobs:
 - name: build-wordpress
   plan:
   - aggregate:
-    - get: core-php5-pkg
+    - get: core-nginx-pkg
+      trigger: true
+    - get: core-php-pkg
       trigger: true
     - get: wordpress-plan
       trigger: true
@@ -674,9 +678,19 @@ resources:
     name: zlib
     origin: core
   type: hab-pkg
+- name: core-jq-static-pkg
+  source:
+    name: jq-static
+    origin: core
+  type: hab-pkg
 - name: core-libarchive-pkg
   source:
     name: libarchive
+    origin: core
+  type: hab-pkg
+- name: core-redis-pkg
+  source:
+    name: redis
     origin: core
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
@@ -705,20 +719,20 @@ resources:
     name: curl
     origin: core
   type: hab-pkg
-- name: core-jq-static-pkg
-  source:
-    name: jq-static
-    origin: core
-  type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
-- name: core-php5-pkg
+- name: core-nginx-pkg
   source:
-    name: php5
+    name: nginx
+    origin: core
+  type: hab-pkg
+- name: core-php-pkg
+  source:
+    name: php
     origin: core
   type: hab-pkg
 - name: starkandwayne-docker-pkg
