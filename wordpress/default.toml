@@ -1,6 +1,7 @@
 #### General Configuration
 # worker_processes: Number of NGINX processes. Default = 1
 worker_processes = "auto"
+worker_rlimit_nofile = 8192
 
 #### Events Context Configuration
 [events]

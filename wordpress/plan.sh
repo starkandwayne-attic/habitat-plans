@@ -21,7 +21,7 @@ pkg_svc_group=root
 # Optional.
 # The resulting filename for the download, typically constructed from the
 # pkg_name and pkg_version values.
-pkg_deps=(core/php core/nginx core/curl)
+pkg_deps=(core/php core/nginx core/curl core/mysql-client core/bash)
 
 pkg_exports=()
 pkg_exposes=()
