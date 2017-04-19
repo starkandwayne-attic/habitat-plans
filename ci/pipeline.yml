@@ -10,6 +10,8 @@ groups:
   - release-shield-agent
   - build-shield
   - release-shield
+  - build-wordpress-proxy
+  - release-wordpress-proxy
   - build-wordpress
   - release-wordpress
   - test-postgresql
@@ -262,9 +264,9 @@ jobs:
   - aggregate:
     - get: core-curl-pkg
       trigger: true
-    - get: core-nginx-pkg
-      trigger: true
     - get: core-php-pkg
+      trigger: true
+    - get: starkandwayne-wordpress-proxy-pkg
       trigger: true
     - get: wordpress-plan
       trigger: true
@@ -302,6 +304,48 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-wordpress-artifact
+  public: true
+- name: build-wordpress-proxy
+  plan:
+  - aggregate:
+    - get: core-nginx-pkg
+      trigger: true
+    - get: wordpress-proxy-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: wordpress-proxy-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: wordpress-proxy-plan/wordpress-proxy
+        PLAN_NAME: wordpress-proxy
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-wordpress-proxy
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-wordpress-proxy-docker.tar
+        load_repository: starkandwayne/wordpress-proxy
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-wordpress-proxy-image
+    - params:
+        load_file: result/starkandwayne-wordpress-proxy-docker.tar
+        load_repository: starkandwayne/wordpress-proxy
+        load_tag: habitat
+      put: starkandwayne-wordpress-proxy-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-wordpress-proxy-artifact
   public: true
 - name: build-docker
   plan:
@@ -442,6 +486,26 @@ jobs:
     - params:
         result: starkandwayne-shield-artifact
       put: starkandwayne-shield-pkg
+  public: true
+- name: release-wordpress-proxy
+  plan:
+  - aggregate:
+    - get: starkandwayne-wordpress-proxy-artifact
+      passed:
+      - build-wordpress-proxy
+    - get: starkandwayne-wordpress-proxy-image
+      params:
+        save: true
+      passed:
+      - build-wordpress-proxy
+  - aggregate:
+    - params:
+        load: starkandwayne-wordpress-proxy-image
+        tag_as_latest: true
+      put: starkandwayne-wordpress-proxy-image
+    - params:
+        result: starkandwayne-wordpress-proxy-artifact
+      put: starkandwayne-wordpress-proxy-pkg
   public: true
 - name: release-wordpress
   plan:
@@ -728,15 +792,21 @@ resources:
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
+- name: core-php-pkg
+  source:
+    name: php
+    origin: core
+  type: hab-pkg
 - name: core-nginx-pkg
   source:
     name: nginx
     origin: core
   type: hab-pkg
-- name: core-php-pkg
+- name: starkandwayne-wordpress-proxy-pkg
   source:
-    name: php
-    origin: core
+    auth_token: REDACTED
+    name: wordpress-proxy
+    origin: starkandwayne
   type: hab-pkg
 - name: starkandwayne-docker-pkg
   source:
@@ -908,6 +978,37 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-shield/starkandwayne-shield-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: wordpress-proxy-plan
+  source:
+    ignore_paths:
+    - wordpress-proxy/tests/*
+    paths:
+    - wordpress-proxy/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-wordpress-proxy-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/wordpress-proxy
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-wordpress-proxy-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/wordpress-proxy
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-wordpress-proxy-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-wordpress-proxy/starkandwayne-wordpress-proxy-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
