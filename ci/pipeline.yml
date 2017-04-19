@@ -509,7 +509,7 @@ jobs:
     task: test-postgresql
   public: true
   serial: true
-  serial_group:
+  serial_groups:
   - delmo
 - name: test-redis
   plan:
@@ -557,7 +557,7 @@ jobs:
     task: test-redis
   public: true
   serial: true
-  serial_group:
+  serial_groups:
   - delmo
 - name: test-shield
   plan:
@@ -619,7 +619,7 @@ jobs:
     task: test-shield
   public: true
   serial: true
-  serial_group:
+  serial_groups:
   - delmo
 resource_types:
 - name: hab-pkg

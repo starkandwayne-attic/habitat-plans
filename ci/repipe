@@ -163,7 +163,7 @@ jobs:
 - name: test-${package_name}
   public: true
   serial: true
-  serial_group: [delmo]
+  serial_groups: [delmo]
   plan:
   - aggregate:
     - get: ${hab_origin}-${package_name}-edge-image
