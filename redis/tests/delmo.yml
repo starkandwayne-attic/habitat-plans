@@ -6,7 +6,9 @@ suite:
 tests:
 - name: persist-value
   spec:
-  - assert: [persist-value]
+  - wait: redis-is-ready
+  - assert:
+    - persist-value
 
 - name: bootstrap-from-backup
   spec:
