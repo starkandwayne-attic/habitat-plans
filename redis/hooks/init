@@ -20,27 +20,32 @@ if [[ ${?} != 0 ]]; then
   exit 1
 fi
 
-shield create-backend {{svc.group}} {{cfg.shield_endpoint}}
+shield create-backend {{svc.group}} {{cfg.shield_endpoint}} >/dev/null
 export SHIELD_API_TOKEN={{cfg.shield_provisioning_key}}
 
-tmp_dir=$(mktemp -d)
-trap "rm -rf ${tmp_dir}" INT QUIT TERM EXIT
-
-echo 1 | shield restore '{{svc.service}}-{{svc.group}}' | tee ${tmp_dir}/restore-out.txt
-if cat ${tmp_dir}/restore-out.txt | grep -o 'shield task .*'; then
-  task_uuid=$(cat ${tmp_dir}/restore-out.txt | grep -o 'shield task .*' | awk '{ print $3}')
-  for i in 0 1 2 3 4 5 6 7 8 9 10; do
-    echo "Checking task ${task_uuid}"
-    task_status=$(shield task ${task_uuid} --raw | jq -r '.status')
-    if [[ ${task_status} != 'running' && ${task_status} != 'pending' ]]; then
-      echo 'Restore task completed'
-      exit 0
-    fi
-    echo 'Waiting for restore to complete'
-    sleep 1
-  done
+if [[ -f {{pkg.svc_var_path}}/RESTORING ]]; then
+  task_uuid=$(cat {{pkg.svc_var_path}}/RESTORING)
+  task_status=$(shield task ${task_uuid} --raw | jq -r '.status')
+  if [[ ${task_status} == 'done' ]]; then
+    rm {{pkg.svc_var_path}}/RESTORING
+    echo 'Restore task completed'
+    exit 0
+  fi
+  echo "Waiting for restore to complete. Current status: '${task_status}'"
+  exit 1
 else
-  echo "Couldn't bootstrap from backup"
+  tmp_dir=$(mktemp -d)
+  trap "rm -rf ${tmp_dir}" INT QUIT TERM EXIT
+  echo 1 | shield restore '{{svc.service}}-{{svc.group}}' | tee ${tmp_dir}/restore-out.txt
+  if cat ${tmp_dir}/restore-out.txt | grep -o 'shield task .*'; then
+    cat ${tmp_dir}/restore-out.txt | \
+      grep -o 'shield task .*' | \
+      awk '{ print $3 }' > {{pkg.svc_var_path}}/RESTORING
+    echo 'Restore task triggered'
+    exit 1
+  else
+    echo "Couldn't bootstrap from backup"
+  fi
 fi
 {{/if}}
 {{/if}}
