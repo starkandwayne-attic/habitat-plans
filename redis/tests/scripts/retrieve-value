@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+key=${1}
+value=${2}
+
+echo "Testing if ${key} is persisted as ${value} in redis"
+retreived=$(redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD} GET ${key})
+if [[ "${retreived}" != "${value}" ]]; then
+  echo "Redis returned '${retreived}' but we expected '${value}'"
+  exit 1
+fi
+echo "Redis returned the correct value"

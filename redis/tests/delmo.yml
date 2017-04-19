@@ -8,7 +8,25 @@ tests:
   spec:
   - assert: [persist-value]
 
+- name: bootstrap-from-backup
+  spec:
+  - wait: redis-is-ready
+  - exec:
+    - persist-value
+    - take-backup
+  - destroy: [redis]
+  - start: [redis]
+  - wait: redis-is-ready
+  - assert:
+    - retrieve-value
+
 tasks:
+- name: redis-is-ready
+  command: /scripts/redis-ready
 - name: persist-value
-  command: /scripts/persist-value
+  command: /scripts/persist-value foo bar
+- name: take-backup
+  command: /scripts/take-backup
+- name: retrieve-value
+  command: /scripts/retrieve-value foo bar
 

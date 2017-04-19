@@ -1,0 +1,46 @@
+#!/bin/bash
+
+exec 2>&1
+
+{{#if cfg.shield_endpoint}}
+mkdir -p /hab/svc/shield-agent
+cp {{pkg.svc_config_path}}/shield-agent.toml /hab/svc/shield-agent/user.toml
+hab service load starkandwayne/shield-agent --group {{svc.group}} && exit 1
+
+{{ #if cfg.bootstrap_from_backup }}
+curl -s {{cfg.shield_endpoint}}/v1/ping >/dev/null
+if [[ ${?} != 0 ]]; then
+  echo "The shield daemon is not running"
+  exit 1
+fi
+
+curl -s http://localhost:5444 >/dev/null
+if [[ ${?} != 0 ]]; then
+  echo "Waiting until the local shield-agent is running"
+  exit 1
+fi
+
+shield create-backend {{svc.group}} {{cfg.shield_endpoint}}
+export SHIELD_API_TOKEN={{cfg.shield_provisioning_key}}
+
+tmp_dir=$(mktemp -d)
+trap "rm -rf ${tmp_dir}" INT QUIT TERM EXIT
+
+echo 1 | shield restore '{{svc.service}}-{{svc.group}}' | tee ${tmp_dir}/restore-out.txt
+if cat ${tmp_dir}/restore-out.txt | grep -o 'shield task .*'; then
+  task_uuid=$(cat ${tmp_dir}/restore-out.txt | grep -o 'shield task .*' | awk '{ print $3}')
+  for i in 0 1 2 3 4 5 6 7 8 9 10; do
+    echo "Checking task ${task_uuid}"
+    task_status=$(shield task ${task_uuid} --raw | jq -r '.status')
+    if [[ ${task_status} != 'running' && ${task_status} != 'pending' ]]; then
+      echo 'Restore task completed'
+      exit 0
+    fi
+    echo 'Waiting for restore to complete'
+    sleep 1
+  done
+else
+  echo "Couldn't bootstrap from backup"
+fi
+{{/if}}
+{{/if}}

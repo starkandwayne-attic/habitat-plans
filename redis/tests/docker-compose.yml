@@ -3,14 +3,36 @@ version: '2'
 services:
   redis:
     image: starkandwayne/redis:edge
-    command: "start starkandwayne/redis"
+    command: "start starkandwayne/redis --peer shield"
     environment:
-      HAB_REDIS: 'password="mypassword"'
+      HAB_REDIS: |
+        bootstrap_from_backup=true
+        shield_endpoint='http://shield:8080'
+        aws_access_key='${AWS_ACCESS_KEY}'
+        aws_secret_key='${AWS_SECRET_KEY}'
+        aws_bucket='${AWS_BUCKET}'
+        backups_schedule='daily'
+        backups_schedule_value='daily 4am'
+        backups_retention='shortterm'
+        backups_retention_value='864000'
+    links:
+    - shield
+  shield:
+    image: starkandwayne/shield:edge
+    command: "start starkandwayne/shield --peer database --bind database:postgresql.shield"
+    links:
+    - database
+  database:
+    image: starkandwayne/postgresql:edge
+    command: "start starkandwayne/postgresql --group shield"
   tests:
     image: starkandwayne-redis-tests
     build: ./
     environment:
-      REDIS_PASSWORD: mypassword
+      REDIS_PASSWORD: password
       REDIS_HOST: redis
+      SHIELD_ENDPOINT: http://shield:8080
+      SHIELD_API_TOKEN: autoprovision
     links:
     - redis
+    - shield

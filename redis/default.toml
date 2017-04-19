@@ -1,5 +1,19 @@
 # Accept connections on the specified port, default is 6379.
 # If port 0 is specified Redis will not listen on a TCP socket.
-port = 6379
+port = '6379'
 password = 'password'
 loglevel = 'notice'
+
+bootstrap_from_backup = false
+shield_endpoint = ''
+shield_provisioning_key = 'autoprovision'
+
+# backups_schedule = 'daily'
+# backups_schedule_value = 'daily 4am'
+#
+# backups_retention = 'shortterm'
+# backups_retention_value = '864000'
+#
+# aws_access_key = ''
+# aws_secret_key = ''
+# aws_bucket = ''

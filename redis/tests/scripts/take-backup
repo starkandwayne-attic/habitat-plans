@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+shield create-backend delmo ${SHIELD_ENDPOINT}
+uuid=$(shield run --raw | jq -r '.task_uuid')
+for i in 0 1 2 3 4 5 6 7 8 9 10; do
+  if [[ $(shield task ${uuid} --raw | jq -r '.status') == 'done' ]]; then
+    echo 'Backup is complete'
+    exit 0
+  fi
+  echo 'Waiting for backup to complete'
+  sleep 1
+done
+
+exit 1

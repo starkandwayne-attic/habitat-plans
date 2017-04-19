@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD} PING hello
