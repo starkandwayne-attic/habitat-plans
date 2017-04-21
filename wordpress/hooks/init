@@ -4,9 +4,21 @@
 exec 2>&1
 
 # check if database exists
-echo "checking if database exits"
+mysql_ready() {
+    mysqladmin ping -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} -p{{bind.database.first.cfg.password}} > /dev/null 2>&1
+}
+
+while !(mysql_ready)
+do
+   sleep 3
+   echo "waiting for mysql ..."
+done
+
+# create database
+mysql -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} -p{{bind.database.first.cfg.password}} -e "create database {{bind.database.first.cfg.username}}"
 
 cp -r {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
+cp -n {{pkg.svc_config_path}}/wp-config.php {{pkg.svc_static_path}}
 chmod +x {{pkg.svc_static_path}}
 
 hab service load starkandwayne/wordpress-proxy
