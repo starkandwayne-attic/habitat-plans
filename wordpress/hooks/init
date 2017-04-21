@@ -8,11 +8,10 @@ mysql_ready() {
     mysqladmin ping -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} -p{{bind.database.first.cfg.password}} > /dev/null 2>&1
 }
 
-while !(mysql_ready)
-do
-   sleep 3
+if !(mysql_ready) then
    echo "waiting for mysql ..."
-done
+   exit 1
+fi
 
 # create database
 mysql -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} -p{{bind.database.first.cfg.password}} -e "create database {{bind.database.first.cfg.username}}"
