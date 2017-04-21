@@ -1,7 +1,5 @@
 groups:
 - jobs:
-  - build-docker
-  - release-docker
   - build-mysql
   - release-mysql
   - build-postgresql
@@ -330,6 +328,8 @@ jobs:
   - aggregate:
     - get: core-curl-pkg
       trigger: true
+    - get: core-mysql-client-pkg
+      trigger: true
     - get: core-php-pkg
       trigger: true
     - get: starkandwayne-wordpress-proxy-pkg
@@ -412,66 +412,6 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-wordpress-proxy-artifact
-  public: true
-- name: build-docker
-  plan:
-  - aggregate:
-    - get: docker-plan
-      trigger: true
-    - get: habitat-plans-ci
-  - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
-      inputs:
-      - name: docker-plan
-      - name: habitat-plans-ci
-      outputs:
-      - name: result
-      params:
-        HAB_ORIGIN: starkandwayne
-        HAB_ORIGIN_KEY: REDACTED
-        OUT: result
-        PACKAGE_CONTEXT: docker-plan/docker
-        PLAN_NAME: docker
-      platform: linux
-      run:
-        path: ./habitat-plans-ci/ci/scripts/build
-    privileged: true
-    task: build-docker
-  - aggregate:
-    - params:
-        load_file: result/starkandwayne-docker-docker.tar
-        load_repository: starkandwayne/docker
-        load_tag: habitat
-        tag: result/docker_tag
-      put: starkandwayne-docker-image
-    - params:
-        load_file: result/starkandwayne-docker-docker.tar
-        load_repository: starkandwayne/docker
-        load_tag: habitat
-      put: starkandwayne-docker-edge-image
-    - params:
-        file: result/*.hart
-      put: starkandwayne-docker-artifact
-  public: true
-- name: release-docker
-  plan:
-  - aggregate:
-    - get: starkandwayne-docker-artifact
-      passed:
-      - build-docker
-    - get: starkandwayne-docker-image
-      params:
-        save: true
-      passed:
-      - build-docker
-  - aggregate:
-    - params:
-        load: starkandwayne-docker-image
-        tag_as_latest: true
-      put: starkandwayne-docker-image
-    - params:
-        result: starkandwayne-docker-artifact
-      put: starkandwayne-docker-pkg
   public: true
 - name: release-mysql
   plan:
@@ -918,6 +858,11 @@ resources:
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
+- name: core-mysql-client-pkg
+  source:
+    name: mysql-client
+    origin: core
+  type: hab-pkg
 - name: core-php-pkg
   source:
     name: php
@@ -934,43 +879,6 @@ resources:
     name: wordpress-proxy
     origin: starkandwayne
   type: hab-pkg
-- name: starkandwayne-docker-pkg
-  source:
-    auth_token: REDACTED
-    name: docker
-    origin: starkandwayne
-  type: hab-pkg
-- name: docker-plan
-  source:
-    ignore_paths:
-    - docker/tests/*
-    paths:
-    - docker/*
-    uri: https://github.com/starkandwayne/habitat-plans.git
-  type: git
-- name: starkandwayne-docker-image
-  source:
-    email: REDACTED
-    password: REDACTED
-    repository: starkandwayne/docker
-    username: REDACTED
-  type: docker-image
-- name: starkandwayne-docker-edge-image
-  source:
-    email: REDACTED
-    password: REDACTED
-    repository: starkandwayne/docker
-    tag: edge
-    username: REDACTED
-  type: docker-image
-- name: starkandwayne-docker-artifact
-  source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-docker/starkandwayne-docker-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
 - name: starkandwayne-mysql-pkg
   source:
     auth_token: REDACTED
