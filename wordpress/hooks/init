@@ -7,5 +7,6 @@ exec 2>&1
 echo "checking if database exits"
 
 cp -r {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
+chmod +x {{pkg.svc_static_path}}
 
 hab service load starkandwayne/wordpress-proxy
