@@ -2,6 +2,8 @@ groups:
 - jobs:
   - build-docker
   - release-docker
+  - build-mysql
+  - release-mysql
   - build-postgresql
   - release-postgresql
   - build-redis
@@ -55,6 +57,70 @@ jobs:
         path: /setup-digitalocean
     task: docker-machine-setup
   serial: true
+- name: build-mysql
+  plan:
+  - aggregate:
+    - get: core-coreutils-pkg
+      trigger: true
+    - get: core-gawk-pkg
+      trigger: true
+    - get: core-gcc-libs-pkg
+      trigger: true
+    - get: core-glibc-pkg
+      trigger: true
+    - get: core-grep-pkg
+      trigger: true
+    - get: core-inetutils-pkg
+      trigger: true
+    - get: core-ncurses-pkg
+      trigger: true
+    - get: core-openssl-pkg
+      trigger: true
+    - get: core-pcre-pkg
+      trigger: true
+    - get: core-perl-pkg
+      trigger: true
+    - get: core-procps-ng-pkg
+      trigger: true
+    - get: core-sed-pkg
+      trigger: true
+    - get: mysql-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: mysql-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: mysql-plan/mysql
+        PLAN_NAME: mysql
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-mysql
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-mysql-docker.tar
+        load_repository: starkandwayne/mysql
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-mysql-image
+    - params:
+        load_file: result/starkandwayne-mysql-docker.tar
+        load_repository: starkandwayne/mysql
+        load_tag: habitat
+      put: starkandwayne-mysql-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-mysql-artifact
+  public: true
 - name: build-postgresql
   plan:
   - aggregate:
@@ -407,6 +473,26 @@ jobs:
         result: starkandwayne-docker-artifact
       put: starkandwayne-docker-pkg
   public: true
+- name: release-mysql
+  plan:
+  - aggregate:
+    - get: starkandwayne-mysql-artifact
+      passed:
+      - build-mysql
+    - get: starkandwayne-mysql-image
+      params:
+        save: true
+      passed:
+      - build-mysql
+  - aggregate:
+    - params:
+        load: starkandwayne-mysql-image
+        tag_as_latest: true
+      put: starkandwayne-mysql-image
+    - params:
+        result: starkandwayne-mysql-artifact
+      put: starkandwayne-mysql-pkg
+  public: true
 - name: release-postgresql
   plan:
   - aggregate:
@@ -715,9 +801,19 @@ resources:
     repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
-- name: core-bash-pkg
+- name: core-coreutils-pkg
   source:
-    name: bash
+    name: coreutils
+    origin: core
+  type: hab-pkg
+- name: core-gawk-pkg
+  source:
+    name: gawk
+    origin: core
+  type: hab-pkg
+- name: core-gcc-libs-pkg
+  source:
+    name: gcc-libs
     origin: core
   type: hab-pkg
 - name: core-glibc-pkg
@@ -725,9 +821,19 @@ resources:
     name: glibc
     origin: core
   type: hab-pkg
-- name: core-libossp-uuid-pkg
+- name: core-grep-pkg
   source:
-    name: libossp-uuid
+    name: grep
+    origin: core
+  type: hab-pkg
+- name: core-inetutils-pkg
+  source:
+    name: inetutils
+    origin: core
+  type: hab-pkg
+- name: core-ncurses-pkg
+  source:
+    name: ncurses
     origin: core
   type: hab-pkg
 - name: core-openssl-pkg
@@ -735,9 +841,34 @@ resources:
     name: openssl
     origin: core
   type: hab-pkg
+- name: core-pcre-pkg
+  source:
+    name: pcre
+    origin: core
+  type: hab-pkg
 - name: core-perl-pkg
   source:
     name: perl
+    origin: core
+  type: hab-pkg
+- name: core-procps-ng-pkg
+  source:
+    name: procps-ng
+    origin: core
+  type: hab-pkg
+- name: core-sed-pkg
+  source:
+    name: sed
+    origin: core
+  type: hab-pkg
+- name: core-bash-pkg
+  source:
+    name: bash
+    origin: core
+  type: hab-pkg
+- name: core-libossp-uuid-pkg
+  source:
+    name: libossp-uuid
     origin: core
   type: hab-pkg
 - name: core-readline-pkg
@@ -774,11 +905,6 @@ resources:
 - name: core-cacerts-pkg
   source:
     name: cacerts
-    origin: core
-  type: hab-pkg
-- name: core-coreutils-pkg
-  source:
-    name: coreutils
     origin: core
   type: hab-pkg
 - name: core-curl-pkg
@@ -842,6 +968,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-docker/starkandwayne-docker-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-mysql-pkg
+  source:
+    auth_token: REDACTED
+    name: mysql
+    origin: starkandwayne
+  type: hab-pkg
+- name: mysql-plan
+  source:
+    ignore_paths:
+    - mysql/tests/*
+    paths:
+    - mysql/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-mysql-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/mysql
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-mysql-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/mysql
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-mysql-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-mysql/starkandwayne-mysql-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
