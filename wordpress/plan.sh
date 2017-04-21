@@ -14,7 +14,7 @@ source_dir=$HAB_CACHE_SRC_PATH/${pkg_name}
 pkg_svc_user=root
 pkg_svc_group=$pkg_svc_user
 
-pkg_deps=(core/php core/curl starkandwayne/wordpress-proxy)
+pkg_deps=(core/php core/curl starkandwayne/wordpress-proxy core/mysql-client)
 
 pkg_exports=()
 pkg_exposes=()
