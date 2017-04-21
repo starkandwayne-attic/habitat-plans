@@ -4,7 +4,3 @@
 exec 2>&1
 
 exec php-fpm --nodaemonize
-
-# trap "kill $(cat {{pkg.svc_var_path}}/FPM_pid)" INT QUIT TERM EXIT
-#
-# exec nginx -c {{pkg.svc_config_path}}/nginx.conf
