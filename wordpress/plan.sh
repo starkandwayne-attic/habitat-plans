@@ -19,9 +19,9 @@ pkg_deps=(core/php core/curl starkandwayne/wordpress-proxy)
 pkg_exports=()
 pkg_exposes=()
 
-# pkg_binds=(
-#   [database]="port username password"
-# )
+pkg_binds=(
+  [database]="port username password"
+)
 
 
 do_build(){
