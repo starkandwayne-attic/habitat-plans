@@ -38,17 +38,19 @@ define('DB_COLLATE', '');
  * You can change these at any point in time to invalidate all existing cookies. This will force all users to have to log in again.
  *
  * @since 2.6.0
+ *
+ * TODO: do we need to auto generate the keys?
  * WPSalts=$(wget https://api.wordpress.org/secret-key/1.1/salt/ -q -O -)
  * $WPSalts
  */
- define('AUTH_KEY',         'alhpp&zxM!A_cLydfwAHt!{bRfK)_[&vBnomtndZ?K}5Sh:r]3-2J9q[QadNQ$;q');
- define('SECURE_AUTH_KEY',  '?]r_TX`PH!<ZU_YKo3i1n}2;YQPKBVCQi@Rc%u|8kdCD#?j%[d/FN-L95@azrLrc');
- define('LOGGED_IN_KEY',    '}-(@G8)ePCG)@1LPh*Y-TA?rDis,mp;Z,MzQDeiuzXT1$[NdBp8s2~G1927+ib-r');
- define('NONCE_KEY',        '.0nUczGJ}q^S{/*1Pm;!U+H)XMw0?.+Rd{PkoXYSpMMrw1TEl]Ci`n)T-+p-<-*d');
- define('AUTH_SALT',        '+n-Z904uLwUf[fS(yJ`v2|LK+{H%-]rRo0i+vgj=ED^NDP4| +nq7c1V2LiqB[[j');
- define('SECURE_AUTH_SALT', 'W)#RiDm7m6Rj-cYTfPO&d?Pa>]&n8:rGzeL5]Zek|h4@)z:aV-.[[>6:y{2m}cw{');
- define('LOGGED_IN_SALT',   '#q-<*G+2|}dcwR.gqti+t}g[[KrfW`ez%?K._b+bd#y0g(w.9PWy>.Y=.@|=j|gP');
- define('NONCE_SALT',       'MZO22r,!91Pd=`K;IN-OO/5J^,KlInJQSYkl 5|J7^@-f1$xk:+]mwLUh%;DwS3D');
+ define('AUTH_KEY',         '{{cfg.AUTH_KEY}}');
+ define('SECURE_AUTH_KEY',  '{{cfg.SECURE_AUTH_KEY}}');
+ define('LOGGED_IN_KEY',    '{{cfg.LOGGED_IN_KEY}}');
+ define('NONCE_KEY',        '{{cfg.NONCE_KEY}}');
+ define('AUTH_SALT',        '{{cfg.NONCE_SALT}}');
+ define('SECURE_AUTH_SALT', '{{cfg.SECURE_AUTH_SALT}}');
+ define('LOGGED_IN_SALT',   '{{cfg.LOGGED_IN_SALT}}');
+ define('NONCE_SALT',       '{{cfg.NONCE_SALTs}}');
 /**#@-*/
 /**
  * WordPress Database Table prefix.
