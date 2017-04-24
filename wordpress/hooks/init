@@ -14,7 +14,7 @@ if !(mysql_ready) then
 fi
 
 # create database
-mysql -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} -p{{bind.database.first.cfg.password}} -e "create database {{bind.database.first.cfg.username}}"
+mysql -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} -p{{bind.database.first.cfg.password}} -e "create database IF NOT EXISTS {{bind.database.first.cfg.username}}"
 
 cp -r {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
 cp -n {{pkg.svc_config_path}}/wp-config.php {{pkg.svc_static_path}}
