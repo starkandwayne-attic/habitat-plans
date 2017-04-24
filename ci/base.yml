@@ -38,7 +38,7 @@ jobs:
     - {get: habitat-release, trigger: true}
   - put: habitat-plans-pipeline-image
     params:
-      build: habitat-plans-pipeline/images/habitat-plans-pipeline
+      build: habitat-plans-pipeline/ci/image
       tag: habitat-release/version
       tag_as_latest: true
 
@@ -66,7 +66,7 @@ resources:
   type: git
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
-    paths: [images/habitat-plans-pipeline/*]
+    paths: [ci/image/*]
 
 - name: habitat-plans-ci
   type: git
