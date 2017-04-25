@@ -8,6 +8,8 @@ groups:
   - release-redis
   - build-shield-agent
   - release-shield-agent
+  - build-shield-proxy
+  - release-shield-proxy
   - build-shield
   - release-shield
   - build-wordpress-proxy
@@ -287,6 +289,8 @@ jobs:
       trigger: true
     - get: starkandwayne-postgresql-pkg
       trigger: true
+    - get: starkandwayne-shield-proxy-pkg
+      trigger: true
     - get: shield-plan
       trigger: true
     - get: habitat-plans-ci
@@ -323,6 +327,52 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-shield-artifact
+  public: true
+- name: build-shield-proxy
+  plan:
+  - aggregate:
+    - get: core-bash-pkg
+      trigger: true
+    - get: core-nginx-pkg
+      trigger: true
+    - get: core-openssl-pkg
+      trigger: true
+    - get: shield-proxy-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: shield-proxy-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: shield-proxy-plan/shield-proxy
+        PLAN_NAME: shield-proxy
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-shield-proxy
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-shield-proxy-docker.tar
+        load_repository: starkandwayne/shield-proxy
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-shield-proxy-image
+    - params:
+        load_file: result/starkandwayne-shield-proxy-docker.tar
+        load_repository: starkandwayne/shield-proxy
+        load_tag: habitat
+      put: starkandwayne-shield-proxy-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-shield-proxy-artifact
   public: true
 - name: build-wordpress
   plan:
@@ -493,6 +543,26 @@ jobs:
     - params:
         result: starkandwayne-shield-agent-artifact
       put: starkandwayne-shield-agent-pkg
+  public: true
+- name: release-shield-proxy
+  plan:
+  - aggregate:
+    - get: starkandwayne-shield-proxy-artifact
+      passed:
+      - build-shield-proxy
+    - get: starkandwayne-shield-proxy-image
+      params:
+        save: true
+      passed:
+      - build-shield-proxy
+  - aggregate:
+    - params:
+        load: starkandwayne-shield-proxy-image
+        tag_as_latest: true
+      put: starkandwayne-shield-proxy-image
+    - params:
+        result: starkandwayne-shield-proxy-artifact
+      put: starkandwayne-shield-proxy-pkg
   public: true
 - name: release-shield
   plan:
@@ -901,10 +971,21 @@ resources:
     name: curl
     origin: core
   type: hab-pkg
+- name: core-nginx-pkg
+  source:
+    name: nginx
+    origin: core
+  type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
     name: postgresql
+    origin: starkandwayne
+  type: hab-pkg
+- name: starkandwayne-shield-proxy-pkg
+  source:
+    auth_token: REDACTED
+    name: shield-proxy
     origin: starkandwayne
   type: hab-pkg
 - name: core-mysql-client-pkg
@@ -915,11 +996,6 @@ resources:
 - name: core-php-pkg
   source:
     name: php
-    origin: core
-  type: hab-pkg
-- name: core-nginx-pkg
-  source:
-    name: nginx
     origin: core
   type: hab-pkg
 - name: starkandwayne-wordpress-proxy-pkg
@@ -1061,6 +1137,37 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-shield-agent/starkandwayne-shield-agent-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: shield-proxy-plan
+  source:
+    ignore_paths:
+    - shield-proxy/tests/*
+    paths:
+    - shield-proxy/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-shield-proxy-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield-proxy
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-proxy-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield-proxy
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-proxy-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-shield-proxy/starkandwayne-shield-proxy-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
