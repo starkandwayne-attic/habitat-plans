@@ -1,0 +1,20 @@
+{
+  "datacenter": "{{cfg.server.datacenter}}",
+  "data_dir": "{{pkg.svc_data_path}}",
+  "log_level": "{{cfg.server.loglevel}}",
+  "bind_addr": "0.0.0.0",
+  "client_addr": "{{cfg.client.bind}}",
+  "bootstrap_expect": {{cfg.cluster.miniumum_nodes}},
+  "server": {{cfg.server.mode}},
+  "start_join": [{{#each svc.members}}"{{sys.ip}}"{{/each}}],
+  "retry_join": [{{#each svc.members}}"{{sys.ip}}"{{/each}}],
+  "ports": {
+    "dns": {{cfg.ports.dns}},
+    "http": {{cfg.ports.http}},
+    "https": {{cfg.ports.https}},
+    "rpc": {{cfg.ports.rpc}},
+    "serf_lan": {{cfg.ports.serf_lan}},
+    "serf_wan": {{cfg.ports.serf_wan}},
+    "server": {{cfg.ports.server}}
+  }
+}
