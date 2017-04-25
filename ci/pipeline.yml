@@ -17,6 +17,7 @@ groups:
   - test-postgresql
   - test-redis
   - test-shield
+  - test-wordpress
   name: packages
 - jobs:
   - build-habitat-plans-pipeline-image
@@ -538,12 +539,12 @@ jobs:
   - aggregate:
     - get: starkandwayne-wordpress-artifact
       passed:
-      - build-wordpress
+      - test-wordpress
     - get: starkandwayne-wordpress-image
       params:
         save: true
       passed:
-      - build-wordpress
+      - test-wordpress
   - aggregate:
     - params:
         load: starkandwayne-wordpress-image
@@ -707,6 +708,54 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-shield
+  public: true
+  serial: true
+  serial_groups:
+  - delmo
+- name: test-wordpress
+  plan:
+  - aggregate:
+    - get: starkandwayne-wordpress-edge-image
+      params:
+        skip_download: true
+      passed:
+      - build-wordpress
+      trigger: true
+    - get: wordpress-tests
+      trigger: true
+    - get: starkandwayne-wordpress-artifact
+      passed:
+      - build-wordpress
+    - get: starkandwayne-wordpress-image
+      params:
+        skip_download: true
+      passed:
+      - build-wordpress
+  - config:
+      image: docker:///bodymindarts/delmo-concourse
+      inputs:
+      - name: wordpress-tests
+      params:
+        AWS_ACCESS_KEY: REDACTED
+        AWS_BUCKET: shield-habitat-test
+        AWS_REGION: eu-central-1
+        AWS_SECRET_KEY: REDACTED
+        MACHINE_EXPORT_AWS_ACCESS_KEY_ID: REDACTED
+        MACHINE_EXPORT_AWS_BUCKET: docker-machine-exports
+        MACHINE_EXPORT_AWS_REGION: eu-central-1
+        MACHINE_EXPORT_AWS_SECRET_ACCESS_KEY: REDACTED
+        MACHINE_NAME: habitat-plans-pipeline-machine
+      platform: linux
+      run:
+        args:
+        - delmo
+        - --only-build-task
+        - -f
+        - wordpress-tests/wordpress/tests/delmo.yml
+        - -m
+        - habitat-plans-pipeline-machine
+        path: /entrypoint.sh
+    task: test-wordpress
   public: true
   serial: true
   serial_groups:
@@ -1136,6 +1185,12 @@ resources:
   source:
     paths:
     - shield/tests/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: wordpress-tests
+  source:
+    paths:
+    - wordpress/tests/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 
