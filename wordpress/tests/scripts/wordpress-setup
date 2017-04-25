@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+# setup wordpress
+wp --allow-root --path=/hab/svc/wordpress/static/ core install  --title="WP-CLI" --admin_user=wpcli --admin_password=wpcli --admin_email=info@wp-cli.org --url=localhost
+
+# generate 100 posts with dummy data
+wp --allow-root --path=/hab/svc/wordpress/static/ post generate
+
+# get the details of the 10th post
+wp --allow-root --path=/hab/svc/wordpress/static/ post get 10
