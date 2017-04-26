@@ -34,4 +34,4 @@ set -e
 shield-schema -t postgres -d "${DATABASE_DSN}"
 
 echo "Starting shield-proxy"
-hab service load starkandwayne/shield-proxy
+hab service load starkandwayne/shield-proxy --group {{svc.group}}
