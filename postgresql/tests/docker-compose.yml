@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  database:
+  standalone:
     image: starkandwayne/postgresql:edge
     command: "start starkandwayne/postgresql"
   tests:
@@ -10,7 +10,6 @@ services:
     environment:
       PGUSER: admin
       PGPASSWORD: admin
-      PGHOST: database
       PGDATABASE: postgres
     links:
-    - database
+    - standalone

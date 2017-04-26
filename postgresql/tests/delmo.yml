@@ -4,14 +4,14 @@ suite:
   task_service: tests
 
 tests:
-- name: persist-value
+- name: persist-value-standalone
   spec:
-  - wait: pg_is_ready
-  - assert: [persist-value]
+  - wait: is-ready-standalone
+  - assert: [persist-value-standalone]
 
 tasks:
-- name: pg_is_ready
-  command: pg_isready
-- name: persist-value
-  command: /scripts/persist-value
+- name: is-ready-standalone
+  command: /scripts/pg-ready standalone
+- name: persist-value-standalone
+  command: /scripts/persist-value standalone
 

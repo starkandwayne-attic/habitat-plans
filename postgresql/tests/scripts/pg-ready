@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PGHOST="${1}"
+pg_isready

@@ -2,6 +2,8 @@
 
 set -e
 
+export PGHOST="${1}"
+
 test_table="tests"
 value="test-value"
 
