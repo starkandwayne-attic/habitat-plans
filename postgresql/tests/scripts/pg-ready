@@ -1,4 +1,15 @@
 #!/bin/bash
 
 export PGHOST="${1}"
+if [[ "${PGHOST}" == 'cluster' ]]; then
+  echo "Finding cluster leader"
+  export PGHOST=$(curl standalone:9631/census \
+    | jq -r '.censuses["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
+  if [[ "${PGHOST}" == "" ]]; then
+    echo "No leader currently elected"
+    exit 1
+  fi
+  echo "Leader is ${PGHOST}"
+fi
+
 pg_isready

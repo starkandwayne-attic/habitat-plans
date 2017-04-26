@@ -6,3 +6,9 @@ log_level = 'ERROR'
 [superuser]
 name = 'admin'
 password = 'admin'
+
+# options for hot standby
+[replication]
+name = 'replication'
+password = 'replication'
+

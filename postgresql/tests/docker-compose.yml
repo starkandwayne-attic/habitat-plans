@@ -4,6 +4,21 @@ services:
   standalone:
     image: starkandwayne/postgresql:edge
     command: "start starkandwayne/postgresql"
+  pg1:
+    image: starkandwayne/postgresql:edge
+    command: "start starkandwayne/postgresql --group cluster --peer standalone --topology leader"
+    links:
+    - standalone
+  pg2:
+    image: starkandwayne/postgresql:edge
+    command: "start starkandwayne/postgresql --group cluster --peer standalone --topology leader"
+    links:
+    - standalone
+  pg3:
+    image: starkandwayne/postgresql:edge
+    command: "start starkandwayne/postgresql --group cluster --peer standalone --topology leader"
+    links:
+    - standalone
   tests:
     image: starkandwayne-postgresql-tests
     build: ./

@@ -9,7 +9,17 @@ tests:
   - wait: is-ready-standalone
   - assert: [persist-value-standalone]
 
+- name: persist-value-cluster
+  spec:
+  - wait: is-ready-cluster
+  - assert: [persist-value-cluster]
+
+
 tasks:
+- name: is-ready-cluster
+  command: /scripts/pg-ready cluster
+- name: persist-value-cluster
+  command: /scripts/persist-value cluster
 - name: is-ready-standalone
   command: /scripts/pg-ready standalone
 - name: persist-value-standalone
