@@ -2,6 +2,8 @@ groups:
 - jobs:
   - build-consul
   - release-consul
+  - build-envdir
+  - release-envdir
   - build-mysql
   - release-mysql
   - build-postgresql
@@ -14,6 +16,8 @@ groups:
   - release-shield-proxy
   - build-shield
   - release-shield
+  - build-wal-e
+  - release-wal-e
   - build-wordpress-proxy
   - release-wordpress-proxy
   - build-wordpress
@@ -60,6 +64,48 @@ jobs:
         path: /setup-digitalocean
     task: docker-machine-setup
   serial: true
+- name: build-envdir
+  plan:
+  - aggregate:
+    - get: core-python-pkg
+      trigger: true
+    - get: envdir-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: envdir-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: envdir-plan/envdir
+        PLAN_NAME: envdir
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-envdir
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-envdir-docker.tar
+        load_repository: starkandwayne/envdir
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-envdir-image
+    - params:
+        load_file: result/starkandwayne-envdir-docker.tar
+        load_repository: starkandwayne/envdir
+        load_tag: habitat
+      put: starkandwayne-envdir-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-envdir-artifact
+  public: true
 - name: build-mysql
   plan:
   - aggregate:
@@ -376,6 +422,48 @@ jobs:
         file: result/*.hart
       put: starkandwayne-shield-proxy-artifact
   public: true
+- name: build-wal-e
+  plan:
+  - aggregate:
+    - get: core-python-pkg
+      trigger: true
+    - get: wal-e-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: wal-e-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: wal-e-plan/wal-e
+        PLAN_NAME: wal-e
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-wal-e
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-wal-e-docker.tar
+        load_repository: starkandwayne/wal-e
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-wal-e-image
+    - params:
+        load_file: result/starkandwayne-wal-e-docker.tar
+        load_repository: starkandwayne/wal-e
+        load_tag: habitat
+      put: starkandwayne-wal-e-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-wal-e-artifact
+  public: true
 - name: build-wordpress
   plan:
   - aggregate:
@@ -526,6 +614,26 @@ jobs:
         result: starkandwayne-consul-artifact
       put: starkandwayne-consul-pkg
   public: true
+- name: release-envdir
+  plan:
+  - aggregate:
+    - get: starkandwayne-envdir-artifact
+      passed:
+      - build-envdir
+    - get: starkandwayne-envdir-image
+      params:
+        save: true
+      passed:
+      - build-envdir
+  - aggregate:
+    - params:
+        load: starkandwayne-envdir-image
+        tag_as_latest: true
+      put: starkandwayne-envdir-image
+    - params:
+        result: starkandwayne-envdir-artifact
+      put: starkandwayne-envdir-pkg
+  public: true
 - name: release-mysql
   plan:
   - aggregate:
@@ -645,6 +753,26 @@ jobs:
     - params:
         result: starkandwayne-shield-artifact
       put: starkandwayne-shield-pkg
+  public: true
+- name: release-wal-e
+  plan:
+  - aggregate:
+    - get: starkandwayne-wal-e-artifact
+      passed:
+      - build-wal-e
+    - get: starkandwayne-wal-e-image
+      params:
+        save: true
+      passed:
+      - build-wal-e
+  - aggregate:
+    - params:
+        load: starkandwayne-wal-e-image
+        tag_as_latest: true
+      put: starkandwayne-wal-e-image
+    - params:
+        result: starkandwayne-wal-e-artifact
+      put: starkandwayne-wal-e-pkg
   public: true
 - name: release-wordpress-proxy
   plan:
@@ -922,6 +1050,11 @@ resources:
     repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
+- name: core-python-pkg
+  source:
+    name: python
+    origin: core
+  type: hab-pkg
 - name: core-coreutils-pkg
   source:
     name: coreutils
@@ -1100,6 +1233,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-consul/starkandwayne-consul-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-envdir-pkg
+  source:
+    auth_token: REDACTED
+    name: envdir
+    origin: starkandwayne
+  type: hab-pkg
+- name: envdir-plan
+  source:
+    ignore_paths:
+    - envdir/tests/*
+    paths:
+    - envdir/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-envdir-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/envdir
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-envdir-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/envdir
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-envdir-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-envdir/starkandwayne-envdir-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
@@ -1304,6 +1474,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-shield/starkandwayne-shield-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-wal-e-pkg
+  source:
+    auth_token: REDACTED
+    name: wal-e
+    origin: starkandwayne
+  type: hab-pkg
+- name: wal-e-plan
+  source:
+    ignore_paths:
+    - wal-e/tests/*
+    paths:
+    - wal-e/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-wal-e-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/wal-e
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-wal-e-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/wal-e
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-wal-e-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-wal-e/starkandwayne-wal-e-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
