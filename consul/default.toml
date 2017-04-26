@@ -1,13 +1,10 @@
-# If you would like the web gui on the agent
-website = true
-
 # The options for consul are available here
 # https://www.consul.io/docs/agent/options.html
 [bootstrap]
 expect = "3"
 
 [server]
-datacenter = "east-aws"
+datacenter = "dc1"
 loglevel = "INFO"
 # switch this to false you want to start in DEVMODE
 # https://www.consul.io/docs/guides/bootstrapping.html
@@ -29,5 +26,6 @@ serf_wan = 8302
 # Server RPC address
 server = 8300
 
-[cluster]
-  miniumum_nodes = 3
+# If you would like the web gui on the agent
+[ui]
+include = true
