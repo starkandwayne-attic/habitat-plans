@@ -1,5 +1,7 @@
 groups:
 - jobs:
+  - build-consul
+  - release-consul
   - build-mysql
   - release-mysql
   - build-postgresql
@@ -464,6 +466,66 @@ jobs:
         file: result/*.hart
       put: starkandwayne-wordpress-proxy-artifact
   public: true
+- name: build-consul
+  plan:
+  - aggregate:
+    - get: consul-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: consul-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: consul-plan/consul
+        PLAN_NAME: consul
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-consul
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-consul-docker.tar
+        load_repository: starkandwayne/consul
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-consul-image
+    - params:
+        load_file: result/starkandwayne-consul-docker.tar
+        load_repository: starkandwayne/consul
+        load_tag: habitat
+      put: starkandwayne-consul-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-consul-artifact
+  public: true
+- name: release-consul
+  plan:
+  - aggregate:
+    - get: starkandwayne-consul-artifact
+      passed:
+      - build-consul
+    - get: starkandwayne-consul-image
+      params:
+        save: true
+      passed:
+      - build-consul
+  - aggregate:
+    - params:
+        load: starkandwayne-consul-image
+        tag_as_latest: true
+      put: starkandwayne-consul-image
+    - params:
+        result: starkandwayne-consul-artifact
+      put: starkandwayne-consul-pkg
+  public: true
 - name: release-mysql
   plan:
   - aggregate:
@@ -668,7 +730,7 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-postgresql
-  public: true
+  public: false
   serial: true
   serial_groups:
   - delmo
@@ -716,7 +778,7 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-redis
-  public: true
+  public: false
   serial: true
   serial_groups:
   - delmo
@@ -778,7 +840,7 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-shield
-  public: true
+  public: false
   serial: true
   serial_groups:
   - delmo
@@ -826,7 +888,7 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-wordpress
-  public: true
+  public: false
   serial: true
   serial_groups:
   - delmo
@@ -1004,6 +1066,43 @@ resources:
     name: wordpress-proxy
     origin: starkandwayne
   type: hab-pkg
+- name: starkandwayne-consul-pkg
+  source:
+    auth_token: REDACTED
+    name: consul
+    origin: starkandwayne
+  type: hab-pkg
+- name: consul-plan
+  source:
+    ignore_paths:
+    - consul/tests/*
+    paths:
+    - consul/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-consul-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/consul
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-consul-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/consul
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-consul-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-consul/starkandwayne-consul-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
 - name: starkandwayne-mysql-pkg
   source:
     auth_token: REDACTED

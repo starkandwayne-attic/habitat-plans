@@ -161,7 +161,7 @@ groups:
   - test-${package_name}
 jobs:
 - name: test-${package_name}
-  public: true
+  public: false
   serial: true
   serial_groups: [delmo]
   plan:
