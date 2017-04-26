@@ -19,4 +19,4 @@ cp -r {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
 cp -n {{pkg.svc_config_path}}/wp-config.php {{pkg.svc_static_path}}
 chmod +x {{pkg.svc_static_path}}
 
-hab service load starkandwayne/wordpress-proxy
+hab service load starkandwayne/wordpress-proxy --group {{svc.group}}
