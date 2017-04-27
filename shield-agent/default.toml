@@ -1,6 +1,7 @@
 install_pg_tools = false
 
 shield_endpoint = ''
+skip_ssl_verify = true
 provisioning_key = 'autoprovision'
 
 log_level = "info"

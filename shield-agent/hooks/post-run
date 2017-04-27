@@ -1,5 +1,7 @@
 #!{{pkgPathFor "core/bash"}}/bin/bash
 
+exec 2>&1
+
 echo 'Auto provisioning'
 
 source {{pkg.svc_config_path}}/environment.sh
@@ -8,6 +10,10 @@ export SHIELD_API_TOKEN
 
 SHIELD_CONFIG=$(mktemp --tmpdir auto.XXXXXX)
 trap "rm -rf ${SHIELD_CONFIG}" INT TERM QUIT EXIT
+
+{{ #if cfg.skip_ssl_verify }}
+export SHIELD_SKIP_SSL_VERIFY=true
+{{ /if }}
 
 # Create a specific config file for shield-agent stuff, to avoid race
 # conditions in case we are colocated with shield-daemon.
