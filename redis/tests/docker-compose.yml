@@ -34,6 +34,7 @@ services:
         access_key_id='${AWS_ACCESS_KEY}'
         secret_access_key='${AWS_SECRET_KEY}'
         bucket='${AWS_BUCKET}'
+        prefix='redis-delmo'
     links:
     - shield
   database:
@@ -45,8 +46,9 @@ services:
     environment:
       REDIS_PASSWORD: password
       REDIS_HOST: redis
-      SHIELD_ENDPOINT: http://shield:8080
+      SHIELD_ENDPOINT: https://shield
       SHIELD_API_TOKEN: autoprovision
+      SHIELD_SKIP_SSL_VERIFY: 'true'
     links:
     - redis
     - shield
