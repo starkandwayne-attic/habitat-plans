@@ -1,27 +1,45 @@
 #!/bin/bash
 
+assert_shield_entity_exists() {
+  if [[ "${3}" == "" ]]; then
+    shield ${1}s | grep ${2}
+    if [[ $? != 0 ]]; then
+      echo "Shield ${1} '${2}' doesn't exist! Not initializing"
+      exit 1
+    fi
+  fi
+}
+
 exec 2>&1
 
 {{#if cfg.shield_endpoint}}
+{{ #if cfg.shield_skip_ssl_verify }}
+export SHIELD_SKIP_SSL_VERIFY=true
+{{ /if }}
+curl -skL {{cfg.shield_endpoint}}/v1/ping >/dev/null
+if [[ ${?} != 0 ]]; then
+  echo "The shield daemon is not running"
+  exit 1
+fi
+
+shield create-backend {{svc.group}} {{cfg.shield_endpoint}} >/dev/null
+export SHIELD_API_TOKEN={{cfg.shield_provisioning_key}}
+
+assert_shield_entity_exists schedule {{cfg.backups_schedule}} {{cfg.backups_schedule_value}}
+assert_shield_entity_exists retention {{cfg.backups_retention}} {{cfg.backups_retention_value}}
+assert_shield_entity_exists store {{cfg.backups_store}} ''
+
 mkdir -p /hab/svc/shield-agent
 cp {{pkg.svc_config_path}}/shield-agent.toml /hab/svc/shield-agent/user.toml
 hab service load starkandwayne/shield-agent --group {{svc.group}} && exit 1
 
 {{ #if cfg.bootstrap_from_backup }}
-curl -s {{cfg.shield_endpoint}}/v1/ping >/dev/null
-if [[ ${?} != 0 ]]; then
-  echo "The shield daemon is not running"
-  exit 1
-fi
 
 curl -s http://localhost:5444 >/dev/null
 if [[ ${?} != 0 ]]; then
   echo "Waiting until the local shield-agent is running"
   exit 1
 fi
-
-shield create-backend {{svc.group}} {{cfg.shield_endpoint}} >/dev/null
-export SHIELD_API_TOKEN={{cfg.shield_provisioning_key}}
 
 if [[ -f {{pkg.svc_var_path}}/RESTORING ]]; then
   task_uuid=$(cat {{pkg.svc_var_path}}/RESTORING)

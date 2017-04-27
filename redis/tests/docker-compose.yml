@@ -7,21 +7,35 @@ services:
     environment:
       HAB_REDIS: |
         bootstrap_from_backup=true
-        shield_endpoint='http://shield:8080'
-        aws_access_key='${AWS_ACCESS_KEY}'
-        aws_secret_key='${AWS_SECRET_KEY}'
-        aws_bucket='${AWS_BUCKET}'
+        shield_endpoint='https://shield'
         backups_schedule='daily'
         backups_schedule_value='daily 4am'
         backups_retention='shortterm'
         backups_retention_value='864000'
+        backups_store='default'
     links:
     - shield
   shield:
     image: starkandwayne/shield:edge
+    ports:
+    - 443:443
     command: "start starkandwayne/shield --peer database --bind database:postgresql.shield"
     links:
     - database
+  agent: # to autoprovision the dependant store
+    image: starkandwayne/shield-agent:edge
+    command: "start starkandwayne/shield-agent --bind daemon:shield.default --peer shield"
+    environment:
+      HAB_SHIELD_AGENT: |
+        [[stores]]
+        name='default'
+        plugin='s3'
+        [stores.config]
+        access_key_id='${AWS_ACCESS_KEY}'
+        secret_access_key='${AWS_SECRET_KEY}'
+        bucket='${AWS_BUCKET}'
+    links:
+    - shield
   database:
     image: starkandwayne/postgresql:edge
     command: "start starkandwayne/postgresql --group shield"

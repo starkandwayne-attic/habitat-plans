@@ -6,6 +6,7 @@ loglevel = 'notice'
 
 bootstrap_from_backup = false
 shield_endpoint = ''
+shield_skip_ssl_verify = true
 shield_provisioning_key = 'autoprovision'
 
 # backups_schedule = 'daily'
@@ -14,6 +15,4 @@ shield_provisioning_key = 'autoprovision'
 # backups_retention = 'shortterm'
 # backups_retention_value = '864000'
 #
-# aws_access_key = ''
-# aws_secret_key = ''
-# aws_bucket = ''
+# backups_store = 'default'
