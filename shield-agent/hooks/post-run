@@ -1,4 +1,4 @@
-#!shebang
+#!{{pkgPathFor "core/bash"}}/bin/bash
 
 echo 'Auto provisioning'
 

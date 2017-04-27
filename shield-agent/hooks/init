@@ -21,11 +21,9 @@ else
 fi
 
 # This is a hack to setup a cert path that golang will find (https://golang.org/src/crypto/x509/root_linux.go)
-# Also currently the pkgPathFor helper invocation will initially fail (https://github.com/habitat-sh/habitat/issues/1904)
-# This can be ignored... eventually the hook will render correctly and things will work!
 rm /etc/ssl/ca-bundle.pem 2>/dev/null
 mkdir -p /etc/ssl
-ln -s $(find /hab/pkgs/core/cacerts -path '*ssl/certs/cacert.pem') /etc/ssl/ca-bundle.pem
+ln -s {{pkgPathFor "core/cacerts"}}/ssl/certs/cacert.pem /etc/ssl/ca-bundle.pem
 
 echo "Checking if shield-daemon is available"
 

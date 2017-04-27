@@ -8,11 +8,4 @@ echo "Attempting to set up SSH public keys"
 AUTHKEYS={{pkg.svc_var_path}}/authorized_keys
 curl -Lks "${SHIELD_ENDPOINT}/v1/meta/pubkey" -m 20 >> $AUTHKEYS
 
-# work around auto_provision.sh will be moved to hooks/post-run
-bash_path=$(find /hab/pkgs/core/bash -path '*/bin/bash')
-ls {{pkg.svc_config_path}}/auto_provision.sh >/dev/null
-chmod +x {{pkg.svc_config_path}}/auto_provision.sh
-sed -i'' "s,#!shebang,#!${bash_path}," {{pkg.svc_config_path}}/auto_provision.sh
-{{pkg.svc_config_path}}/auto_provision.sh
-
 exec shield-agent -c {{pkg.svc_config_path}}/shield-agent.conf --log-level {{cfg.log_level}} 2>&1
