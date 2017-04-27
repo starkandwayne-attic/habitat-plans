@@ -27,7 +27,7 @@ ln -s {{pkgPathFor "core/cacerts"}}/ssl/certs/cacert.pem /etc/ssl/ca-bundle.pem
 
 echo "Checking if shield-daemon is available"
 
-curl "${SHIELD_ENDPOINT}/v1/ping"
+curl -skL "${SHIELD_ENDPOINT}/v1/ping"
 if [[ $? != 0 ]]; then
   echo "Shield is not available"
   exit 1
