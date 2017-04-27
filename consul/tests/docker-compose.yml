@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  standalone:
+    image: starkandwayne/consul:edge
+    command: "start starkandwayne/consul"
+  consul1:
+    image: starkandwayne/consul:edge
+    command: "start starkandwayne/consul --group cluster --peer standalone --topology leader"
+    links:
+    - standalone
+  consul2:
+    image: starkandwayne/consul:edge
+    command: "start starkandwayne/consul --group cluster --peer standalone --topology leader"
+    links:
+    - standalone
+  tests:
+    build: ./
+    links:
+    - standalone

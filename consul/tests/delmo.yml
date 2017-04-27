@@ -1,0 +1,13 @@
+suite:
+  name: starkandwayne-consul
+  system: docker-compose.yml
+  task_service: tests
+
+tests:
+- name: cluster-exists
+  spec:
+  - wait: is-ready-standalone
+
+tasks:
+- name: is-ready-standalone
+  command: /scripts/consul-ready standalone

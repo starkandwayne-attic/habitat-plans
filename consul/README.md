@@ -7,6 +7,11 @@ Consul provides its own leader election and gossip mechanism so the purpose of t
 
 When you run a plan with the `--peer`  flag and the appropriate service group,  all other nodes in the group will be added to the join/retry key in the Consul config. Consul will reach Quorum when `bootstrap_expect` is reached based on the number of consul nodes that have joined the service group.
 
+## Running Tests via Delmo
+Delmo can be found here https://github.com/bodymindarts/delmo and the test suite can be run
+from the root of the plan directory.
+
+`delmo -f delmo.yml`
 
 ## Docker example with Human Scheduler
 #### First node
@@ -16,7 +21,7 @@ docker run -it starkandwayne/consul  --group consul-test
 
 #### nth-node node
 ```bash
-docker run -it starkandwayne/consul  --group consul-test --peer <ip of node 1> 
+docker run -it starkandwayne/consul  --group consul-test --peer <ip of node 1>
 ```
 
 Once bootstrap-expect is satisfied, the cluster will elect a leader.
