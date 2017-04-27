@@ -16,6 +16,15 @@ services:
     command: "start starkandwayne/shield-agent --peer shield"
     links:
     - shield
+  autoagent:
+    image: starkandwayne/shield-agent:edge
+    command: "start starkandwayne/shield-agent --peer shield --bind daemon:shield.default"
+    environment:
+      HAB_SHIELD_AGENT: |
+        [schedules]
+        auto = "daily 4am"
+    links:
+    - shield
   database:
     image: starkandwayne/postgresql:edge
     command: "start starkandwayne/postgresql --group shield"
