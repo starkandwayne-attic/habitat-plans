@@ -2,7 +2,11 @@
 
 assert_shield_entity_exists() {
   if [[ "${3}" == "" ]]; then
-    shield ${1}s | grep ${2}
+    if [[ "{2}" == "" ]]; then
+      echo "Must define a ${1} in order to autoprovision shield"
+      exit 1
+    fi
+    shield ${1} ${2}
     if [[ $? != 0 ]]; then
       echo "Shield ${1} '${2}' doesn't exist! Not initializing"
       exit 1
