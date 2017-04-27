@@ -1,0 +1,8 @@
+# Use this file to templatize your application's native configuration files.
+# See the docs at https://www.habitat.sh/docs/create-packages-configure/.
+# You can safely delete this file if you don't need it.
+
+[proxy_to]
+ip="127.0.0.1"
+port=8080
+management_port=6082

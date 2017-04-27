@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+
+# Start varnish on port 80
+# forwarding traffic to <proxy_to.ip>:<proxy_to.port>
+# Turns on the management interface on port <proxy_to.management_port>.
+varnishd -a :80 -b {{cfg.proxy_to.ip}}:{{cfg.proxy_to.port}}-T l {{cfg.proxy_to.ip}}:{{cfg.proxy_to.management_port}}
