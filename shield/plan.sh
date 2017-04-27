@@ -14,9 +14,10 @@ pkg_bin_dirs=(bin)
 
 pkg_exports=(
   [port]=port
+  [http_port]=http_port
   [provisioning_key]=auth.provisioning_key
 )
-pkg_exposes=(port)
+pkg_exposes=(http_port port)
 
 pkg_svc_user=root
 pkg_svc_group=$pkg_svc_user
