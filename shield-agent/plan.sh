@@ -12,10 +12,10 @@ pkg_deps=(core/jq-static core/libarchive core/cacerts core/coreutils core/curl c
 
 pkg_bin_dirs=(bin)
 
-# pkg_exports=(
-# [port]=port
-# )
-# pkg_exposes=(port)
+pkg_exports=(
+[port]=port
+)
+pkg_exposes=(port)
 
 pkg_binds_optional=(
 [daemon]="port provisioning_key"

@@ -1,0 +1,5 @@
+#!bin/bash
+
+echo "Starting shield-proxy"
+cp {{pkg.svc_config_path}}/shield-proxy.toml /hab/svc/shield-proxy/user.toml
+hab service load starkandwayne/shield-proxy --group {{svc.group}}
