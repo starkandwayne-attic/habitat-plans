@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if /scripts/pg-ready 'cluster'; then
+  exit 1
+fi

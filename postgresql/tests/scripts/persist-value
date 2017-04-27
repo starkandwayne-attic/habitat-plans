@@ -4,13 +4,15 @@ set -e
 
 export PGHOST="${1}"
 if [[ ${PGHOST} == 'cluster' ]]; then
-  export PGHOST=$(curl standalone:9631/census \
+  export PGHOST=$(curl -s standalone:9631/census \
     | jq -r '.censuses["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
   echo "Leader is ${PGHOST}"
 fi
 
-test_table="tests"
-value="test-value"
+test_table="${2}"
+value="${3}"
+
+echo "Persisting value '${value}' in table '${test_table}'"
 
 psql <<EOF
 DROP TABLE IF EXISTS ${test_table};
@@ -22,3 +24,6 @@ psql -c "SELECT value FROM ${test_table};" | grep "${value}" || {
   echo Could not store and retrieve value in cluster!
     exit 1
   }
+
+psql -c "select pg_switch_xlog();"
+

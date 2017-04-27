@@ -7,21 +7,45 @@ tests:
 - name: persist-value-standalone
   spec:
   - wait: is-ready-standalone
-  - assert: [persist-value-standalone]
+  - exec:
+    - persist-value-standalone
+  - assert:
+    - retrieve-value-standalone
 
-- name: persist-value-cluster
+- name: replication
   spec:
   - wait: is-ready-cluster
-  - assert: [persist-value-cluster]
+  - exec:
+    - persist-value-cluster
+  - stop: [pg1, pg2]
+  - wait: leader-is-gone
+  - assert:
+    - retrieve-value-cluster
+  - start: [pg1, pg2]
+  - wait: is-ready-cluster
+  - stop: [pg2, pg3]
+  - wait: leader-is-gone
+  - assert:
+    - retrieve-value-cluster
+  - start: [pg2, pg3]
+  - wait: is-ready-cluster
+  - assert:
+    - persist-value-cluster
+    - retrieve-value-cluster
 
 
 tasks:
 - name: is-ready-cluster
   command: /scripts/pg-ready cluster
 - name: persist-value-cluster
-  command: /scripts/persist-value cluster
+  command: /scripts/persist-value cluster foo bar
+- name: retrieve-value-cluster
+  command: /scripts/retrieve-value cluster foo bar
+- name: leader-is-gone
+  command: /scripts/leader-is-gone
 - name: is-ready-standalone
   command: /scripts/pg-ready standalone
 - name: persist-value-standalone
-  command: /scripts/persist-value standalone
-
+  command: /scripts/persist-value standalone foo bar
+- name: retrieve-value-standalone
+  command: /scripts/retrieve-value standalone foo bar

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+topoplogy="${1}"
+test_table="${2}"
+value="${3}"
+
+retrieve_value() {
+  export PGHOST="${1}"
+  echo "Attempting to retrieve value '${value}' from table '${test_table}' on host '${PGHOST}'"
+
+  psql -c "SELECT value FROM ${test_table};" | grep "${value}" || return 1
+}
+
+if [[ "${topoplogy}" == 'standalone' ]]; then
+  retrieve_value 'standalone'
+  if [[ "$?" != 0 ]]; then
+    echo "Could not retrieve value"
+    exit 1
+  fi
+else
+  for host in pg1 pg2 pg3; do
+    retrieve_value "${host}"
+    if [[ "$?" != 0 ]]; then
+      echo "Could not retrieve value from host '${host}'"
+    else
+      echo "Value found on host '${host}'"
+      exit 0
+    fi
+  done
+  exit 1
+fi
