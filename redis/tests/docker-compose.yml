@@ -9,9 +9,7 @@ services:
         bootstrap_from_backup=true
         shield_endpoint='https://shield'
         backups_schedule='daily'
-        backups_schedule_value='daily 4am'
         backups_retention='shortterm'
-        backups_retention_value='864000'
         backups_store='default'
     links:
     - shield
@@ -35,6 +33,10 @@ services:
         secret_access_key='${AWS_SECRET_KEY}'
         bucket='${AWS_BUCKET}'
         prefix='redis-delmo'
+        [schedules]
+        daily='daily 4am'
+        [retention-policies]
+        shortterm='86400'
     links:
     - shield
   database:
