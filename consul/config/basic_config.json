@@ -6,8 +6,8 @@
   "client_addr": "{{cfg.client.bind}}",
   "bootstrap_expect": {{cfg.bootstrap.expect}},
   "server": {{cfg.server.mode}},
-  "start_join": ["127.0.0.1"{{#each svc.members}},"{{sys.ip}}"{{/each}}],
-  "retry_join": ["127.0.0.1"{{#each svc.members}},"{{sys.ip}}"{{/each}}],
+  "start_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
+  "retry_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
   "ports": {
     "dns": {{cfg.ports.dns}},
     "http": {{cfg.ports.http}},
