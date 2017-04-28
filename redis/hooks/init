@@ -30,7 +30,7 @@ shield create-backend {{svc.group}} {{cfg.shield_endpoint}} >/dev/null
 export SHIELD_API_TOKEN={{cfg.shield_provisioning_key}}
 
 assert_shield_entity_exists schedule {{cfg.backups_schedule}} {{cfg.backups_schedule_value}}
-assert_shield_entity_exists retention {{cfg.backups_retention}} {{cfg.backups_retention_value}}
+assert_shield_entity_exists policy {{cfg.backups_retention}} {{cfg.backups_retention_value}}
 assert_shield_entity_exists store {{cfg.backups_store}} ''
 
 mkdir -p /hab/svc/shield-agent
