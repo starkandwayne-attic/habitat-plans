@@ -18,6 +18,7 @@ Set the app_username and app_password at runtime to have that user created, it w
 EOF
 )
 pkg_deps=(
+  core/bash
   core/coreutils
   core/gawk
   core/gcc-libs
