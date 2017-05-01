@@ -2,4 +2,4 @@
 
 set -e
 
-wp --allow-root --path=/hab/svc/wordpress/static/ post get 200
+wp --allow-root --path=/hab/svc/wordpress/data/ post get 200

@@ -17,11 +17,10 @@ to have the same result.
 
 Try it by running:
 ```
-$ repo_dir=<path/to/repo/root>
 $ docker run --name redis \
   -e HAB_REDIS_PASSWORD=hello \
   -e REDIS_PORT=5555 \
-  --volume ${repo_dir}/scripts:/scripts \
+  --volume $PWD/scripts:/scripts \
   --entrypoint /scripts/hab_entry.sh \
   starkandwayne/redis start starkandwayne/redis
 ```

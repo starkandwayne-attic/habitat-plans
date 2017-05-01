@@ -12,6 +12,7 @@ pkg_build_deps=(core/make core/gcc)
 pkg_deps=(starkandwayne/shield-agent core/jq-static core/libarchive core/glibc)
 pkg_exports=(
   [port]=port
+  [password]=password
 )
 pkg_exposes=(port)
 pkg_binds_optional=(
