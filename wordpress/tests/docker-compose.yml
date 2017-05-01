@@ -3,10 +3,11 @@ version: '3'
 services:
   wordpress:
     image: starkandwayne/wordpress:edge
-    command: "start starkandwayne/wordpress --peer database --bind database:mysql.wordpress"
+    command: "start starkandwayne/wordpress --peer database --bind database:mysql.wordpress --config-from /config"
     links:
       - database
     volumes:
+      - ~/workspace/habitat-plans/wordpress/:/config
       - data-volume:/hab/svc/wordpress/
   database:
     image: starkandwayne/mysql:edge

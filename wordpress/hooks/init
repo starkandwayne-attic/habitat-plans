@@ -18,7 +18,7 @@ mysql -h {{bind.database.first.sys.ip}} -u {{bind.database.first.cfg.username}} 
 cp -r {{pkg.path}}/public_html/* {{pkg.svc_static_path}}
 cp -n {{pkg.svc_config_path}}/wp-config.php {{pkg.svc_static_path}}
 # rename file so we can use fpm default
-cp -n {{pkgPathFor php}}/etc/php-fpm.d/www.conf.default {{pkgPathFor php}}/etc/php-fpm.d/www.conf
+cp -n {{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf.default {{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf
 chmod +x {{pkg.svc_static_path}}
 
 hab service load starkandwayne/wordpress-proxy --group {{svc.group}}
