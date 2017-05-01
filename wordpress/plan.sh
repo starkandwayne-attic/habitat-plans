@@ -31,7 +31,4 @@ do_build(){
 do_install() {
   # mkdir $pkg_prefix/public_html
   cp -r "$source_dir" $pkg_prefix/public_html/
-
-  # rename file so we can use fpm default
-  cp "$(pkg_path_for php)/etc/php-fpm.d/www.conf.default" "$(pkg_path_for php)/etc/php-fpm.d/www.conf"
 }
