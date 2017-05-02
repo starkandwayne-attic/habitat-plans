@@ -14,12 +14,12 @@ services:
     links:
     - shield
   shield:
-    image: starkandwayne/shield:edge
+    image: starkandwayne/shield
     command: "start starkandwayne/shield --peer database --bind database:postgresql.shield"
     links:
     - database
   agent: # to autoprovision the dependant store
-    image: starkandwayne/shield-agent:edge
+    image: starkandwayne/shield-agent
     command: "start starkandwayne/shield-agent --bind daemon:shield.default --peer shield"
     environment:
       HAB_SHIELD_AGENT: |
@@ -38,7 +38,7 @@ services:
     links:
     - shield
   database:
-    image: starkandwayne/postgresql:edge
+    image: starkandwayne/postgresql
     command: "start starkandwayne/postgresql --group shield"
   tests:
     image: starkandwayne-redis-tests
