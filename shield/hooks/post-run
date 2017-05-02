@@ -2,4 +2,6 @@
 
 echo "Starting shield-proxy"
 cp {{pkg.svc_config_path}}/shield-proxy.toml /hab/svc/shield-proxy/user.toml
+
+hab service unload starkandwayne/shield-proxy --group {{svc.group}} || true
 hab service load starkandwayne/shield-proxy --group {{svc.group}}
