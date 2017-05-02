@@ -21,4 +21,5 @@ cp -n {{pkg.svc_config_path}}/wp-config.php {{pkg.svc_data_path}}
 cp -n {{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf.default {{pkgPathFor "core/php"}}/etc/php-fpm.d/www.conf
 chmod +x {{pkg.svc_data_path}}
 
+hab service unload starkandwayne/wordpress-proxy --group {{svc.group}} || true
 hab service load starkandwayne/wordpress-proxy --group {{svc.group}}
