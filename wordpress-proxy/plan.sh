@@ -5,13 +5,13 @@ pkg_name=wordpress-proxy
 pkg_origin=starkandwayne
 pkg_maintainer="Ramon Makkelie <makkelie@starkandwayne.com>"
 pkg_license=('Apache-2.0')
-pkg_version=undefined
+pkg_version=4.7.4
 pkg_source=nosuchfile.tar.xz
 
 pkg_svc_user=root
 pkg_svc_group=$pkg_svc_user
 
-pkg_deps=(core/nginx)
+pkg_deps=(core/nginx/)
 
 
 
