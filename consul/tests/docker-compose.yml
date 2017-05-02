@@ -15,6 +15,7 @@ services:
     links:
     - standalone
   tests:
+    image: starkandwayne-consul-tests
     build: ./
     links:
     - standalone
