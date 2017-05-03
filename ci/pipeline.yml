@@ -16,12 +16,15 @@ groups:
   - release-shield-proxy
   - build-shield
   - release-shield
+  - build-varnish
+  - release-varnish
   - build-wal-e
   - release-wal-e
   - build-wordpress-proxy
   - release-wordpress-proxy
   - build-wordpress
   - release-wordpress
+  - test-consul
   - test-postgresql
   - test-redis
   - test-shield
@@ -109,6 +112,8 @@ jobs:
 - name: build-mysql
   plan:
   - aggregate:
+    - get: core-bash-pkg
+      trigger: true
     - get: core-coreutils-pkg
       trigger: true
     - get: core-gawk-pkg
@@ -422,6 +427,52 @@ jobs:
         file: result/*.hart
       put: starkandwayne-shield-proxy-artifact
   public: true
+- name: build-varnish
+  plan:
+  - aggregate:
+    - get: core-docutils-pkg
+      trigger: true
+    - get: core-glibc-pkg
+      trigger: true
+    - get: core-ncurses-pkg
+      trigger: true
+    - get: varnish-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: varnish-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: varnish-plan/varnish
+        PLAN_NAME: varnish
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-varnish
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-varnish-docker.tar
+        load_repository: starkandwayne/varnish
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-varnish-image
+    - params:
+        load_file: result/starkandwayne-varnish-docker.tar
+        load_repository: starkandwayne/varnish
+        load_tag: habitat
+      put: starkandwayne-varnish-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-varnish-artifact
+  public: true
 - name: build-wal-e
   plan:
   - aggregate:
@@ -473,7 +524,7 @@ jobs:
       trigger: true
     - get: core-php-pkg
       trigger: true
-    - get: starkandwayne-wordpress-proxy-pkg
+    - get: starkandwayne-wordpress-proxy-4.7.4-pkg
       trigger: true
     - get: wordpress-plan
       trigger: true
@@ -599,12 +650,12 @@ jobs:
   - aggregate:
     - get: starkandwayne-consul-artifact
       passed:
-      - build-consul
+      - test-consul
     - get: starkandwayne-consul-image
       params:
         save: true
       passed:
-      - build-consul
+      - test-consul
   - aggregate:
     - params:
         load: starkandwayne-consul-image
@@ -754,6 +805,26 @@ jobs:
         result: starkandwayne-shield-artifact
       put: starkandwayne-shield-pkg
   public: true
+- name: release-varnish
+  plan:
+  - aggregate:
+    - get: starkandwayne-varnish-artifact
+      passed:
+      - build-varnish
+    - get: starkandwayne-varnish-image
+      params:
+        save: true
+      passed:
+      - build-varnish
+  - aggregate:
+    - params:
+        load: starkandwayne-varnish-image
+        tag_as_latest: true
+      put: starkandwayne-varnish-image
+    - params:
+        result: starkandwayne-varnish-artifact
+      put: starkandwayne-varnish-pkg
+  public: true
 - name: release-wal-e
   plan:
   - aggregate:
@@ -814,6 +885,54 @@ jobs:
         result: starkandwayne-wordpress-artifact
       put: starkandwayne-wordpress-pkg
   public: true
+- name: test-consul
+  plan:
+  - aggregate:
+    - get: starkandwayne-consul-edge-image
+      params:
+        skip_download: true
+      passed:
+      - build-consul
+      trigger: true
+    - get: consul-tests
+      trigger: true
+    - get: starkandwayne-consul-artifact
+      passed:
+      - build-consul
+    - get: starkandwayne-consul-image
+      params:
+        skip_download: true
+      passed:
+      - build-consul
+  - config:
+      image: docker:///bodymindarts/delmo-concourse
+      inputs:
+      - name: consul-tests
+      params:
+        AWS_ACCESS_KEY: REDACTED
+        AWS_BUCKET: shield-habitat-test
+        AWS_REGION: eu-central-1
+        AWS_SECRET_KEY: REDACTED
+        MACHINE_EXPORT_AWS_ACCESS_KEY_ID: REDACTED
+        MACHINE_EXPORT_AWS_BUCKET: docker-machine-exports
+        MACHINE_EXPORT_AWS_REGION: eu-central-1
+        MACHINE_EXPORT_AWS_SECRET_ACCESS_KEY: REDACTED
+        MACHINE_NAME: habitat-plans-pipeline-machine
+      platform: linux
+      run:
+        args:
+        - delmo
+        - --only-build-task
+        - -f
+        - consul-tests/consul/tests/delmo.yml
+        - -m
+        - habitat-plans-pipeline-machine
+        path: /entrypoint.sh
+    task: test-consul
+  public: false
+  serial: true
+  serial_groups:
+  - delmo
 - name: test-postgresql
   plan:
   - aggregate:
@@ -1055,6 +1174,11 @@ resources:
     name: python
     origin: core
   type: hab-pkg
+- name: core-bash-pkg
+  source:
+    name: bash
+    origin: core
+  type: hab-pkg
 - name: core-coreutils-pkg
   source:
     name: coreutils
@@ -1115,11 +1239,6 @@ resources:
     name: sed
     origin: core
   type: hab-pkg
-- name: core-bash-pkg
-  source:
-    name: bash
-    origin: core
-  type: hab-pkg
 - name: core-libossp-uuid-pkg
   source:
     name: libossp-uuid
@@ -1170,6 +1289,7 @@ resources:
   source:
     name: nginx
     origin: core
+    version: 4.7.4
   type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
@@ -1183,21 +1303,27 @@ resources:
     name: shield-proxy
     origin: starkandwayne
   type: hab-pkg
+- name: core-docutils-pkg
+  source:
+    name: docutils
+    origin: core
+  type: hab-pkg
 - name: core-mysql-client-pkg
   source:
     name: mysql-client
     origin: core
+    version: 4.7.4
   type: hab-pkg
 - name: core-php-pkg
   source:
     name: php
     origin: core
   type: hab-pkg
-- name: starkandwayne-wordpress-proxy-pkg
+- name: starkandwayne-wordpress-proxy-4.7.4-pkg
   source:
-    auth_token: REDACTED
     name: wordpress-proxy
     origin: starkandwayne
+    version: 4.7.4
   type: hab-pkg
 - name: starkandwayne-consul-pkg
   source:
@@ -1477,6 +1603,43 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: starkandwayne-varnish-pkg
+  source:
+    auth_token: REDACTED
+    name: varnish
+    origin: starkandwayne
+  type: hab-pkg
+- name: varnish-plan
+  source:
+    ignore_paths:
+    - varnish/tests/*
+    paths:
+    - varnish/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-varnish-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/varnish
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-varnish-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/varnish
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-varnish-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-varnish/starkandwayne-varnish-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
 - name: starkandwayne-wal-e-pkg
   source:
     auth_token: REDACTED
@@ -1514,6 +1677,12 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: starkandwayne-wordpress-proxy-pkg
+  source:
+    auth_token: REDACTED
+    name: wordpress-proxy
+    origin: starkandwayne
+  type: hab-pkg
 - name: wordpress-proxy-plan
   source:
     ignore_paths:
@@ -1582,6 +1751,12 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: consul-tests
+  source:
+    paths:
+    - consul/tests/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
 - name: postgresql-tests
   source:
     paths:
