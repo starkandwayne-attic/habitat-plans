@@ -4,31 +4,64 @@ suite:
   task_service: tests
 
 tests:
-- name: persist-value
-  spec:
-  - wait: redis-is-ready
-  - assert:
-    - persist-value
-
 - name: bootstrap-from-backup
   spec:
-  - wait: redis-is-ready
+  - wait: is-ready-standalone
   - exec:
     - persist-value
     - take-backup
-  - destroy: [redis]
-  - start: [redis]
-  - wait: redis-is-ready
+  - destroy: [standalone]
+  - start: [standalone]
+  - wait: is-ready-standalone
   - assert:
     - retrieve-value
 
+- name: replication
+  spec:
+  - wait: is-ready-cluster
+  - exec:
+    - persist-value-cluster
+  - stop: [redis1, redis2]
+  - destroy: [redis1, redis2]
+  - wait: leader-is-gone
+  - assert:
+    - retrieve-value-cluster
+  - start: [redis1, redis2]
+  - wait: is-ready-cluster
+  - assert:
+    - retrieve-value-redis1
+    - persist-other-value-cluster
+    - retrieve-other-value-cluster
+  - stop: [redis3]
+  - wait: leader-is-gone
+  - assert:
+    - retrieve-other-value-cluster
+  - start: [redis3]
+  - wait: is-ready-cluster
+  - assert:
+    - persist-value-cluster
+
 tasks:
-- name: redis-is-ready
-  command: /scripts/redis-ready
+- name: is-ready-standalone
+  command: /scripts/redis-ready standalone
 - name: persist-value
-  command: /scripts/persist-value foo bar
+  command: /scripts/persist-value standalone foo bar
 - name: take-backup
   command: /scripts/take-backup
 - name: retrieve-value
-  command: /scripts/retrieve-value foo bar
+  command: /scripts/retrieve-value standalone foo bar
 
+- name: is-ready-cluster
+  command: /scripts/redis-ready cluster
+- name: persist-value-cluster
+  command: /scripts/persist-value cluster foo bar
+- name: retrieve-value-cluster
+  command: /scripts/retrieve-value cluster foo bar
+- name: retrieve-value-redis1
+  command: /scripts/retrieve-value redis1 foo bar
+- name: persist-other-value-cluster
+  command: /scripts/persist-value cluster foo other
+- name: retrieve-other-value-cluster
+  command: /scripts/retrieve-value cluster foo other
+- name: leader-is-gone
+  command: /scripts/leader-is-gone

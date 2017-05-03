@@ -2,4 +2,16 @@
 
 set -e
 
+export REDIS_HOST="${1}"
+if [[ "${REDIS_HOST}" == 'cluster' ]]; then
+  echo "Finding cluster leader"
+  export REDIS_HOST=$(curl -s standalone:9631/census \
+    | jq -r '.censuses["redis.cluster"].population [] | select(.leader == true) | .sys.ip')
+  if [[ "${REDIS_HOST}" == "" ]]; then
+    echo "No leader currently elected"
+    exit 1
+  fi
+  echo "Leader is ${REDIS_HOST}"
+fi
+
 redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD} PING hello

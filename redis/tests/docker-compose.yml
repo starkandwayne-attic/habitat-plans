@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  redis:
+  standalone:
     image: starkandwayne/redis:edge
     command: "start starkandwayne/redis --peer shield"
     environment:
@@ -11,6 +11,21 @@ services:
         backups_schedule='daily'
         backups_retention='shortterm'
         backups_store='default'
+    links:
+    - shield
+  redis1:
+    image: starkandwayne/redis:edge
+    command: "start starkandwayne/redis --peer shield --group cluster --topology leader"
+    links:
+    - shield
+  redis2:
+    image: starkandwayne/redis:edge
+    command: "start starkandwayne/redis --peer shield --group cluster --topology leader"
+    links:
+    - shield
+  redis3:
+    image: starkandwayne/redis:edge
+    command: "start starkandwayne/redis --peer shield --group cluster --topology leader"
     links:
     - shield
   shield:

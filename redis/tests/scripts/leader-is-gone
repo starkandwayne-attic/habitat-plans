@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if /scripts/redis-ready 'cluster'; then
+  exit 1
+fi

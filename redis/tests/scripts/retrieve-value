@@ -1,14 +1,36 @@
 #!/bin/bash
 
-set -e
+topoplogy="${1}"
+key=${2}
+value=${3}
 
-key=${1}
-value=${2}
+retrieve_value() {
+  export REDIS_HOST="${1}"
+  echo "Testing if ${key} is persisted as ${value} in ${REDIS_HOST}"
+  redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD} GET ${key} | grep "${value}" || return 1
+}
 
-echo "Testing if ${key} is persisted as ${value} in redis"
-retreived=$(redis-cli -h ${REDIS_HOST} -a ${REDIS_PASSWORD} GET ${key})
-if [[ "${retreived}" != "${value}" ]]; then
-  echo "Redis returned '${retreived}' but we expected '${value}'"
+if [[ "${topoplogy}" == 'standalone' ]]; then
+  retrieve_value 'standalone'
+  if [[ "$?" != 0 ]]; then
+    echo "Could not retrieve value"
+    exit 1
+  fi
+elif [[ "${topoplogy}" == 'cluster' ]]; then
+  for host in redis1 redis2 redis3; do
+    retrieve_value "${host}"
+    if [[ "$?" != 0 ]]; then
+      echo "Could not retrieve value from host '${host}'"
+    else
+      echo "Value found on host '${host}'"
+      exit 0
+    fi
+  done
   exit 1
+else
+  retrieve_value "${topoplogy}"
+  if [[ "$?" != 0 ]]; then
+    echo "Could not retrieve value"
+    exit 1
+  fi
 fi
-echo "Redis returned the correct value"
