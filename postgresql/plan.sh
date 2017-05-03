@@ -32,7 +32,8 @@ pkg_exports=(
 pkg_exposes=(port)
 
 do_prepare() {
-	localedef -i en_US -f UTF-8 en_US.UTF-8
+  localedef -i en_US -f UTF-8 en_US.UTF-8
+  export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 }
 
 do_build() {
