@@ -17,7 +17,7 @@ if [[ "${topoplogy}" == 'standalone' ]]; then
     echo "Could not retrieve value"
     exit 1
   fi
-else
+elif [[ "${topoplogy}" == 'cluster' ]]; then
   for host in pg1 pg2 pg3; do
     retrieve_value "${host}"
     if [[ "$?" != 0 ]]; then
@@ -28,4 +28,10 @@ else
     fi
   done
   exit 1
+else
+  retrieve_value "${topoplogy}"
+  if [[ "$?" != 0 ]]; then
+    echo "Could not retrieve value"
+    exit 1
+  fi
 fi
