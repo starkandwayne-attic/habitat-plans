@@ -22,7 +22,7 @@ meta:
     region: fra1
 
 groups:
-- name: packages
+- name: all-packages
   jobs: []
 - name: images
   jobs: [build-habitat-plans-pipeline-image]

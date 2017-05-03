@@ -45,7 +45,12 @@ EOF
       cat > packages/${package_name}.yml <<EOF
 ---
 groups:
-- name: packages
+- name: ${package_name%-*}
+  jobs:
+  - (( append ))
+  - build-${package_name}
+  - release-${package_name}
+- name: all-packages
   jobs:
   - (( append ))
   - build-${package_name}
@@ -155,7 +160,11 @@ EOF
         cat > tests/${package_name}-tests.yml <<EOF
 ---
 groups:
-- name: packages
+- name: ${package_name%-*}
+  jobs:
+  - (( append ))
+  - test-${package_name}
+- name: all-packages
   jobs:
   - (( append ))
   - test-${package_name}
