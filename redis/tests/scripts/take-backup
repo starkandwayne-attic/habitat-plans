@@ -2,8 +2,9 @@
 
 set -e
 
+topology=${1}
 shield create-backend delmo ${SHIELD_ENDPOINT}
-uuid=$(shield run --raw | jq -r '.task_uuid')
+uuid=$(shield run "redis-${topology}"  --raw | jq -r '.task_uuid')
 for i in 0 1 2 3 4 5 6 7 8 9 10; do
   if [[ $(shield task ${uuid} --raw | jq -r '.status') == 'done' ]]; then
     echo 'Backup is complete'

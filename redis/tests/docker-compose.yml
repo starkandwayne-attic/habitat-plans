@@ -3,7 +3,7 @@ version: '2'
 services:
   standalone:
     image: starkandwayne/redis:edge
-    command: "start starkandwayne/redis --peer shield"
+    command: "start starkandwayne/redis --peer shield --group standalone"
     environment:
       HAB_REDIS: |
         bootstrap_from_backup=true

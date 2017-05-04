@@ -9,7 +9,7 @@ tests:
   - wait: is-ready-standalone
   - exec:
     - persist-value
-    - take-backup
+    - take-backup-standalone
   - destroy: [standalone]
   - start: [standalone]
   - wait: is-ready-standalone
@@ -46,8 +46,8 @@ tasks:
   command: /scripts/redis-ready standalone
 - name: persist-value
   command: /scripts/persist-value standalone foo bar
-- name: take-backup
-  command: /scripts/take-backup
+- name: take-backup-standalone
+  command: /scripts/take-backup standalone
 - name: retrieve-value
   command: /scripts/retrieve-value standalone foo bar
 
