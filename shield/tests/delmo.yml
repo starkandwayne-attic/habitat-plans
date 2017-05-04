@@ -6,13 +6,13 @@ suite:
 tests:
 - name: create-backend
   spec:
-  - wait: shield-is-ready
+  - {wait: shield-is-ready, timeout: 90}
   - assert:
     - run
 
 - name: auto-configure
   spec:
-  - wait: shield-is-ready
+  - {wait: shield-is-ready, timeout: 90}
   - assert:
     - auto-schedule-is-present
 
