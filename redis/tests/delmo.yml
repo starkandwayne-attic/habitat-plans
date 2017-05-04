@@ -41,6 +41,20 @@ tests:
   - assert:
     - persist-value-cluster
 
+- name: bootstrap-from-backup-cluster
+  spec:
+  - wait: is-ready-cluster
+  - exec:
+    - persist-value-cluster
+    - take-backup-cluster
+    # this test cannot be run due to
+    # https://github.com/habitat-sh/habitat/issues/1994
+#   - destroy: [redis1,redis2,redis3]
+#   - start: [redis1,redis2,redis3]
+  - wait: is-ready-cluster
+  - assert:
+    - retrieve-value-cluster
+
 tasks:
 - name: is-ready-standalone
   command: /scripts/redis-ready standalone
@@ -53,6 +67,8 @@ tasks:
 
 - name: is-ready-cluster
   command: /scripts/redis-ready cluster
+- name: take-backup-cluster
+  command: /scripts/take-backup cluster
 - name: persist-value-cluster
   command: /scripts/persist-value cluster foo bar
 - name: retrieve-value-cluster

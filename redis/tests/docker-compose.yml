@@ -15,17 +15,35 @@ services:
     - shield
   redis1:
     image: starkandwayne/redis:edge
-    command: "start starkandwayne/redis --peer shield --group cluster --topology leader"
+    command: "start starkandwayne/redis --peer shield --group cluster --topology leader --bind shield:shield.default"
+    environment:
+      HAB_REDIS: |
+        bootstrap_from_backup=true
+        backups_schedule='daily'
+        backups_retention='shortterm'
+        backups_store='default'
     links:
     - shield
   redis2:
     image: starkandwayne/redis:edge
-    command: "start starkandwayne/redis --peer shield --group cluster --topology leader"
+    command: "start starkandwayne/redis --peer shield --group cluster --topology leader --bind shield:shield.default"
+    environment:
+      HAB_REDIS: |
+        bootstrap_from_backup=true
+        backups_schedule='daily'
+        backups_retention='shortterm'
+        backups_store='default'
     links:
     - shield
   redis3:
     image: starkandwayne/redis:edge
-    command: "start starkandwayne/redis --peer shield --group cluster --topology leader"
+    command: "start starkandwayne/redis --peer shield --group cluster --topology leader --bind shield:shield.default"
+    environment:
+      HAB_REDIS: |
+        bootstrap_from_backup=true
+        backups_schedule='daily'
+        backups_retention='shortterm'
+        backups_store='default'
     links:
     - shield
   shield:

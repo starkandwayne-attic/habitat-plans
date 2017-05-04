@@ -1,8 +1,14 @@
-{{ #if cfg.shield_endpoint }}
+{{ #if bind.has_shield }}
+{{ #with bind.shield.first }}
+shield_endpoint = 'https://{{sys.ip}}:{{cfg.port}}'
+provisioning_key = '{{cfg.provisioning_key}}'
+{{~/with}}
+{{else}}
 shield_endpoint = '{{cfg.shield_endpoint}}'
-skip_ssl_verify = '{{cfg.shield_skip_ssl_verify}}'
 provisioning_key = '{{cfg.shield_provisioning_key}}'
 {{ /if }}
+skip_ssl_verify = '{{cfg.shield_skip_ssl_verify}}'
+
 [[targets]]
 name = '{{svc.service}}-{{svc.group}}'
 plugin = 'fs'
