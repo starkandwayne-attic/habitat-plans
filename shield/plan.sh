@@ -8,7 +8,7 @@ pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/releases/download/v${pkg_version}/shield-server-linux-amd64.tar.gz"
 pkg_shasum="c70b11d92d18a12bd52a1d8d5907fcb5b386fda6742dff1d184aa63d417b5a5c"
 
-pkg_deps=(core/bash core/glibc starkandwayne/postgresql starkandwayne/shield-proxy)
+pkg_deps=(core/bash core/glibc starkandwayne/postgresql starkandwayne/shield-proxy/0.10.4)
 
 pkg_bin_dirs=(bin)
 
