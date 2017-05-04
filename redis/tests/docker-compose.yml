@@ -65,5 +65,5 @@ services:
       SHIELD_API_TOKEN: autoprovision
       SHIELD_SKIP_SSL_VERIFY: 'true'
     links:
-    - redis
+    - standalone
     - shield
