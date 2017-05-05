@@ -6,44 +6,44 @@ suite:
 tests:
 - name: bootstrap-from-backup
   spec:
-  - wait: is-ready-standalone
+  - {wait: is-ready-standalone, timeout: 90}
   - exec:
     - persist-value
     - take-backup-standalone
   - destroy: [standalone]
   - start: [standalone]
-  - wait: is-ready-standalone
+  - {wait: is-ready-standalone, timeout: 90}
   - assert:
     - retrieve-value
 
 - name: replication
   spec:
-  - wait: is-ready-cluster
+  - {wait: is-ready-cluster, timeout: 90}
   - exec:
     - persist-value-cluster
   - stop: [redis1, redis2]
   - destroy: [redis1, redis2]
-  - wait: leader-is-gone
+  - {wait: leader-is-gone, timeout: 90}
   - assert:
     - retrieve-value-cluster
   - start: [redis1, redis2]
-  - wait: is-ready-cluster
+  - {wait: is-ready-cluster, timeout: 90}
   - assert:
     - retrieve-value-redis1
     - persist-other-value-cluster
     - retrieve-other-value-cluster
   - stop: [redis3]
-  - wait: leader-is-gone
+  - {wait: leader-is-gone, timeout: 90}
   - assert:
     - retrieve-other-value-cluster
   - start: [redis3]
-  - wait: is-ready-cluster
+  - {wait: is-ready-cluster, timeout: 90}
   - assert:
     - persist-value-cluster
 
 - name: bootstrap-from-backup-cluster
   spec:
-  - wait: is-ready-cluster
+  - {wait: is-ready-cluster, timeout: 90}
   - exec:
     - persist-value-cluster
     - take-backup-cluster
@@ -51,7 +51,7 @@ tests:
     # https://github.com/habitat-sh/habitat/issues/1994
 #   - destroy: [redis1,redis2,redis3]
 #   - start: [redis1,redis2,redis3]
-  - wait: is-ready-cluster
+  - {wait: is-ready-cluster, timeout: 90}
   - assert:
     - retrieve-value-cluster
 
