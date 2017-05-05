@@ -33,7 +33,6 @@ do_begin() {
 }
 
 do_prepare() {
-  attach
   rm -rf $HAB_CACHE_SRC_PATH/shield
   mkdir -p ${HAB_CACHE_SRC_PATH}/shield
   mv $HAB_CACHE_SRC_PATH/$pkg_dirname/* $HAB_CACHE_SRC_PATH/shield/
