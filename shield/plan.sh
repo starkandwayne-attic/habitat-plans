@@ -88,7 +88,6 @@ do_install() {
   tar -xvzf shield-server-linux-amd64.tar.gz
   cd shield-server-linux-amd64
 
-  mkdir -p ${pkg_prefix}
   cp cli/shield           ${pkg_prefix}/bin
   cp daemon/shieldd       ${pkg_prefix}/bin
   cp daemon/shield-schema ${pkg_prefix}/bin
