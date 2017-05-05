@@ -6,8 +6,8 @@ suite:
 tests:
 - name: cluster-exists
   spec:
-  - wait: is-ready-standalone
+  - wait: standalone-ready
 
 tasks:
-- name: is-ready-standalone
+- name: standalone-ready
   command: /scripts/consul-ready standalone

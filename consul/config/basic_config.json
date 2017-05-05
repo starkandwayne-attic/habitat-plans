@@ -3,7 +3,7 @@
   "data_dir": "{{pkg.svc_data_path}}",
   "log_level": "{{cfg.server.loglevel}}",
   "bind_addr": "0.0.0.0",
-  "client_addr": "{{cfg.client.bind}}",
+  "client_addr": "{{cfg.client.interface}}",
   "bootstrap_expect": {{cfg.bootstrap.expect}},
   "server": {{cfg.server.mode}},
   "start_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],

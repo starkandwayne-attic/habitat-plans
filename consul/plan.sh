@@ -16,6 +16,7 @@ pkg_bin_dirs=(bin)
 pkg_exports=(
   [port-dns]=ports.dns
   [port-http]=ports.http
+  [port-https]=ports.https
   [port-rpc]=ports.rpc
 )
 

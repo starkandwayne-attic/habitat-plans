@@ -19,3 +19,5 @@ services:
     build: ./
     links:
     - standalone
+    environment:
+      STANDALONE_HOST: "standalone:8500"
