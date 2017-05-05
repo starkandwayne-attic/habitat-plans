@@ -4,10 +4,13 @@ suite:
   task_service: tests
 
 tests:
-- name: cluster-exists
+- name: standalone-exists
   spec:
   - wait: standalone-ready
+  - wait: no-leader
 
 tasks:
 - name: standalone-ready
-  command: /scripts/consul-ready standalone
+  command: /scripts/consul-ready
+- name: no-leader
+  command: /scripts/no-leader

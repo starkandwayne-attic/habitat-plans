@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+# export CLUSTERHOST="${1}"
+# if [[ ${CLUSTERHOST} == 'cluster' ]]; then
+#   export CLUSTERHOST=$(curl -s standalone:9631/census \
+#     | jq -r '.censuses["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
+#   echo "Leader is ${CLUSTERHOST}"
+# fi
+
+# test_table="${2}"
+# value="${3}"
+
+# echo "Persisting value '${value}' in table '${test_table}'"
+
+# psql <<EOF
+# DROP TABLE IF EXISTS ${test_table};
+# CREATE TABLE ${test_table}(value text);
+# INSERT INTO ${test_table} VALUES ('${value}');
+# EOF
+
+# psql -c "SELECT value FROM ${test_table};" | grep "${value}" || {
+#   echo Could not store and retrieve value in cluster!
+#     exit 1
+#   }
+
+# psql -c "select pg_switch_xlog();"
+
+curl standalone:8500
