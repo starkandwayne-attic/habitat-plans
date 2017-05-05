@@ -1,30 +1,17 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -e
+if [[ "${1}" == 'cluster' ]]; then
+  consul_host=${CLUSTER_HOST}
+  echo "Consul address set to ${consul_host}"
+else
+  consul_host=${STANDALONE_HOST}
+  echo "Consul address set to ${consul_host}"
+fi
 
-# export CLUSTERHOST="${1}"
-# if [[ ${CLUSTERHOST} == 'cluster' ]]; then
-#   export CLUSTERHOST=$(curl -s standalone:9631/census \
-#     | jq -r '.censuses["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
-#   echo "Leader is ${CLUSTERHOST}"
-# fi
+curl -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'
 
-# test_table="${2}"
-# value="${3}"
+echo `curl $consul_host:${CONSUL_PORT}/v1/kv/moo`
+moovalue=`curl $consul_host/v1/kv/moo | jq -r '.Value' | base64 -d`
+if [ $moovalue == 'rar' ]; then exit 0; fi
 
-# echo "Persisting value '${value}' in table '${test_table}'"
-
-# psql <<EOF
-# DROP TABLE IF EXISTS ${test_table};
-# CREATE TABLE ${test_table}(value text);
-# INSERT INTO ${test_table} VALUES ('${value}');
-# EOF
-
-# psql -c "SELECT value FROM ${test_table};" | grep "${value}" || {
-#   echo Could not store and retrieve value in cluster!
-#     exit 1
-#   }
-
-# psql -c "select pg_switch_xlog();"
-
-curl standalone:8500
+exit 1

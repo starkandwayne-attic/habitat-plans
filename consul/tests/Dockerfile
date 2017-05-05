@@ -1,7 +1,12 @@
-FROM alpine:3.4
+FROM starkandwayne/consul:edge
 
-RUN set -x && apk add --update bash jq curl
+RUN set -x && hab pkg install core/bash && hab pkg binlink core/bash bash && \
+  hab pkg install core/jq-static && hab pkg binlink core/jq-static jq && \
+  hab pkg install core/curl && hab pkg binlink core/curl curl
 
-COPY ./scripts/  /scripts
+ENV PATH $PATH:/bin
 
-CMD ["/bin/true"]
+COPY ./scripts/ /scripts
+
+ENTRYPOINT []
+CMD ["echo"]
