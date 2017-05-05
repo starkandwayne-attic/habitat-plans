@@ -6,7 +6,7 @@ pkg_license=('MIT')
 pkg_description="A standalone system that can perform backup and restore functions for a wide variety of pluggable data systems."
 pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.gz"
-pkg_shasum="20fafa930d6af51fddcb496f51fc08e7f8d8db3089f940547e95cc0619aca06b"
+pkg_shasum="34cbdeffa171cd7e2fc49e150ab92f6cd2bde311b1d1e81bbf846328793e1831"
 
 pkg_deps=(core/bash core/glibc starkandwayne/postgresql starkandwayne/shield-proxy/${pkg_version})
 pkg_build_deps=(core/go core/git core/gcc core/make core/gox)
