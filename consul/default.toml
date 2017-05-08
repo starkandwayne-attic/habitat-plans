@@ -1,14 +1,13 @@
 # The options for consul are available here
 # https://www.consul.io/docs/agent/options.html
-[bootstrap]
-expect = "3"
 
 [server]
 datacenter = "dc1"
 loglevel = "INFO"
+bootstrap_expect = 3
 # switch this to false you want to start in DEVMODE
 # https://www.consul.io/docs/guides/bootstrapping.html
-mode = true
+mode = false
 
 [ports]
 # The DNS server, -1 to disable

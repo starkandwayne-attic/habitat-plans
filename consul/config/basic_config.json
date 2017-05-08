@@ -4,7 +4,9 @@
   "log_level": "{{cfg.server.loglevel}}",
   "bind_addr": "0.0.0.0",
   "client_addr": "{{cfg.client.interface}}",
-  "bootstrap_expect": {{svc.members.count}},
+  {{#if cfg.server.mode}}
+  "bootstrap_expect": {{cfg.server.bootstrap_expect}},
+  {{/if}}
   "server": {{cfg.server.mode}},
   "start_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
   "retry_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],

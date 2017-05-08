@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Maybe use consul info
-
 if [[ "${1}" == 'cluster' ]]; then
   echo "Finding cluster leader"
   echo curl -s "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader"

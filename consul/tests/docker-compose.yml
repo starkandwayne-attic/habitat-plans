@@ -17,6 +17,6 @@ services:
     image: starkandwayne-consul-tests
     build: ./
     environment:
-      STANDALONE_HOST: standalone
-      CLUSTER_HOST: consul1
+      STANDALONE_HOST: "standalone"
+      CLUSTER_HOST: "consul1"
       CONSUL_PORT: "8500"
