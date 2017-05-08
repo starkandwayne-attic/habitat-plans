@@ -44,8 +44,8 @@
     "server": {{cfg.ports.server}}
   },
   {{~#if cfg.encrypt_key}}
-  "encrypt", "{{cfg.encrypt_key}}",
-  {{/if}},
+  "encrypt": "{{cfg.encrypt_key}}",
+  {{/if}}
   "recursor": "{{cfg.blah.recursor}}",
   "ui": {{cfg.ui.include}}
 }
