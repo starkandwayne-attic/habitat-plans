@@ -25,3 +25,14 @@ docker run -it starkandwayne/consul  --group consul-test --peer <ip of node 1>
 ```
 
 Once bootstrap-expect is satisfied, the cluster will elect a leader.
+
+#### Enabling UI and/or REST API
+inorder to allow outside connections you will need to set
+```
+client.bind = "<nodes public interface>"
+```
+
+**UI**
+set ui.include to true
+
+
