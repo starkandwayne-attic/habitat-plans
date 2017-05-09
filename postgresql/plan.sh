@@ -8,8 +8,6 @@ pkg_license=('PostgreSQL')
 pkg_source=https://ftp.postgresql.org/pub/source/v${pkg_version}/${pkg_name}-${pkg_version}.tar.bz2
 pkg_shasum=e5101e0a49141fc12a7018c6dad594694d3a3325f5ab71e93e0e51bd94e51fcd
 pkg_deps=(
-  starkandwayne/envdir
-  starkandwayne/wal-e
   core/bash
   core/glibc
   core/openssl
@@ -33,28 +31,6 @@ pkg_exports=(
 )
 pkg_exposes=(port)
 
-pg_cron_version="1.0.0"
-plsh_version="1.20130823"
-
-download_extension() {
-  wget $2 -O "${HAB_CACHE_SRC_PATH}/$1"
-}
-unpack_extension() {
-  tar -xvzf "${HAB_CACHE_SRC_PATH}/$1"
-}
-
-do_download() {
-  download_extension 'pg_cron.tar.gz' "https://github.com/citusdata/pg_cron/archive/v${pg_cron_version}.tar.gz"
-  download_extension 'plsh.tar.gz' "https://github.com/petere/plsh/archive/${plsh_version}.tar.gz"
-  do_default_download
-}
-
-do_unpack(){
-  unpack_extension 'pg_cron.tar.gz'
-  unpack_extension 'plsh.tar.gz'
-  do_default_unpack
-}
-
 do_build() {
 	# ld manpage: "If -rpath is not used when linking an ELF
 	# executable, the contents of the environment variable LD_RUN_PATH
@@ -72,14 +48,4 @@ do_build() {
 
 do_install() {
   make install-world
-}
-
-do_end() {
-  cd "${HAB_CACHE_SRC_PATH}/pg_cron-${pg_cron_version}"
-  make
-  make install
-
-  cd "${HAB_CACHE_SRC_PATH}/plsh-${plsh_version}"
-  make
-  make install
 }
