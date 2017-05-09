@@ -4,10 +4,14 @@ groups:
   - release-consul
   - build-envdir
   - release-envdir
+  - build-lzop
+  - release-lzop
   - build-mysql
   - release-mysql
   - build-postgresql
   - release-postgresql
+  - build-pv
+  - release-pv
   - build-redis
   - release-redis
   - build-shield-agent
@@ -47,6 +51,10 @@ groups:
   - release-envdir
   name: envdir
 - jobs:
+  - build-lzop
+  - release-lzop
+  name: lzop
+- jobs:
   - build-mysql
   - release-mysql
   name: mysql
@@ -55,6 +63,10 @@ groups:
   - release-postgresql
   - test-postgresql
   name: postgresql
+- jobs:
+  - build-pv
+  - release-pv
+  name: pv
 - jobs:
   - build-redis
   - release-redis
@@ -119,7 +131,7 @@ jobs:
 - name: build-envdir
   plan:
   - aggregate:
-    - get: core-python-pkg
+    - get: core-python-3.5.2-pkg
       trigger: true
     - get: envdir-plan
       trigger: true
@@ -157,6 +169,50 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-envdir-artifact
+  public: true
+- name: build-lzop
+  plan:
+  - aggregate:
+    - get: core-glibc-pkg
+      trigger: true
+    - get: core-lzo-pkg
+      trigger: true
+    - get: lzop-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: lzop-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: lzop-plan/lzop
+        PLAN_NAME: lzop
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-lzop
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-lzop-docker.tar
+        load_repository: starkandwayne/lzop
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-lzop-image
+    - params:
+        load_file: result/starkandwayne-lzop-docker.tar
+        load_repository: starkandwayne/lzop
+        load_tag: habitat
+      put: starkandwayne-lzop-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-lzop-artifact
   public: true
 - name: build-mysql
   plan:
@@ -227,19 +283,7 @@ jobs:
 - name: build-postgresql
   plan:
   - aggregate:
-    - get: core-bash-pkg
-      trigger: true
-    - get: core-glibc-pkg
-      trigger: true
-    - get: core-libossp-uuid-pkg
-      trigger: true
-    - get: core-openssl-pkg
-      trigger: true
-    - get: core-perl-pkg
-      trigger: true
-    - get: core-readline-pkg
-      trigger: true
-    - get: core-zlib-pkg
+    - get: core-postgresql-9.6.1-pkg
       trigger: true
     - get: starkandwayne-envdir-pkg
       trigger: true
@@ -281,6 +325,48 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-postgresql-artifact
+  public: true
+- name: build-pv
+  plan:
+  - aggregate:
+    - get: core-glibc-pkg
+      trigger: true
+    - get: pv-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: pv-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: pv-plan/pv
+        PLAN_NAME: pv
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build
+    privileged: true
+    task: build-pv
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-pv-docker.tar
+        load_repository: starkandwayne/pv
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-pv-image
+    - params:
+        load_file: result/starkandwayne-pv-docker.tar
+        load_repository: starkandwayne/pv
+        load_tag: habitat
+      put: starkandwayne-pv-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-pv-artifact
   public: true
 - name: build-redis
   plan:
@@ -529,7 +615,15 @@ jobs:
 - name: build-wal-e
   plan:
   - aggregate:
-    - get: core-python-pkg
+    - get: core-postgresql-pkg
+      trigger: true
+    - get: core-python-3.5.2-pkg
+      trigger: true
+    - get: starkandwayne-envdir-pkg
+      trigger: true
+    - get: starkandwayne-lzop-pkg
+      trigger: true
+    - get: starkandwayne-pv-pkg
       trigger: true
     - get: wal-e-plan
       trigger: true
@@ -738,6 +832,26 @@ jobs:
         result: starkandwayne-envdir-artifact
       put: starkandwayne-envdir-pkg
   public: true
+- name: release-lzop
+  plan:
+  - aggregate:
+    - get: starkandwayne-lzop-artifact
+      passed:
+      - build-lzop
+    - get: starkandwayne-lzop-image
+      params:
+        save: true
+      passed:
+      - build-lzop
+  - aggregate:
+    - params:
+        load: starkandwayne-lzop-image
+        tag_as_latest: true
+      put: starkandwayne-lzop-image
+    - params:
+        result: starkandwayne-lzop-artifact
+      put: starkandwayne-lzop-pkg
+  public: true
 - name: release-mysql
   plan:
   - aggregate:
@@ -777,6 +891,26 @@ jobs:
     - params:
         result: starkandwayne-postgresql-artifact
       put: starkandwayne-postgresql-pkg
+  public: true
+- name: release-pv
+  plan:
+  - aggregate:
+    - get: starkandwayne-pv-artifact
+      passed:
+      - build-pv
+    - get: starkandwayne-pv-image
+      params:
+        save: true
+      passed:
+      - build-pv
+  - aggregate:
+    - params:
+        load: starkandwayne-pv-image
+        tag_as_latest: true
+      put: starkandwayne-pv-image
+    - params:
+        result: starkandwayne-pv-artifact
+      put: starkandwayne-pv-pkg
   public: true
 - name: release-redis
   plan:
@@ -1270,133 +1404,152 @@ resources:
     repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
-- name: core-python-pkg
+- name: core-python-3.5.2-pkg
   source:
     name: python
     origin: core
-  type: hab-pkg
-- name: core-bash-pkg
-  source:
-    name: bash
-    origin: core
-  type: hab-pkg
-- name: core-coreutils-pkg
-  source:
-    name: coreutils
-    origin: core
-  type: hab-pkg
-- name: core-gawk-pkg
-  source:
-    name: gawk
-    origin: core
-  type: hab-pkg
-- name: core-gcc-libs-pkg
-  source:
-    name: gcc-libs
-    origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-glibc-pkg
   source:
     name: glibc
     origin: core
+    version: 9.6.1
+  type: hab-pkg
+- name: core-lzo-pkg
+  source:
+    name: lzo
+    origin: core
+    version: 3.5.2
+  type: hab-pkg
+- name: core-bash-pkg
+  source:
+    name: bash
+    origin: core
+    version: 9.6.1
+  type: hab-pkg
+- name: core-coreutils-pkg
+  source:
+    name: coreutils
+    origin: core
+    version: 9.6.1
+  type: hab-pkg
+- name: core-gawk-pkg
+  source:
+    name: gawk
+    origin: core
+    version: 3.5.2
+  type: hab-pkg
+- name: core-gcc-libs-pkg
+  source:
+    name: gcc-libs
+    origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-grep-pkg
   source:
     name: grep
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-inetutils-pkg
   source:
     name: inetutils
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-ncurses-pkg
   source:
     name: ncurses
     origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: core-openssl-pkg
   source:
     name: openssl
     origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: core-pcre-pkg
   source:
     name: pcre
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-perl-pkg
   source:
     name: perl
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-procps-ng-pkg
   source:
     name: procps-ng
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-sed-pkg
   source:
     name: sed
     origin: core
+    version: 3.5.2
   type: hab-pkg
-- name: core-libossp-uuid-pkg
+- name: core-postgresql-9.6.1-pkg
   source:
-    name: libossp-uuid
+    name: postgresql
     origin: core
-  type: hab-pkg
-- name: core-readline-pkg
-  source:
-    name: readline
-    origin: core
-  type: hab-pkg
-- name: core-zlib-pkg
-  source:
-    name: zlib
-    origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-envdir-pkg
   source:
     auth_token: REDACTED
     name: envdir
     origin: starkandwayne
+    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-wal-e-pkg
   source:
     auth_token: REDACTED
     name: wal-e
     origin: starkandwayne
+    version: 3.5.2
   type: hab-pkg
 - name: core-jq-static-pkg
   source:
     name: jq-static
     origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: core-libarchive-pkg
   source:
     name: libarchive
     origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
   source:
     auth_token: REDACTED
     name: shield-agent
     origin: starkandwayne
+    version: 9.6.1
   type: hab-pkg
 - name: core-bzip2-pkg
   source:
     name: bzip2
     origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: core-cacerts-pkg
   source:
     name: cacerts
     origin: core
+    version: 9.6.1
   type: hab-pkg
 - name: core-curl-pkg
   source:
     name: curl
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-nginx-pkg
   source:
@@ -1409,17 +1562,40 @@ resources:
     auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
+    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-shield-proxy-pkg
   source:
     auth_token: REDACTED
     name: shield-proxy
     origin: starkandwayne
+    version: 9.6.1
   type: hab-pkg
 - name: core-docutils-pkg
   source:
     name: docutils
     origin: core
+    version: 9.6.1
+  type: hab-pkg
+- name: core-postgresql-pkg
+  source:
+    name: postgresql
+    origin: core
+    version: 9.6.1
+  type: hab-pkg
+- name: starkandwayne-lzop-pkg
+  source:
+    auth_token: REDACTED
+    name: lzop
+    origin: starkandwayne
+    version: 9.6.1
+  type: hab-pkg
+- name: starkandwayne-pv-pkg
+  source:
+    auth_token: REDACTED
+    name: pv
+    origin: starkandwayne
+    version: 9.6.1
   type: hab-pkg
 - name: core-mysql-client-pkg
   source:
@@ -1431,6 +1607,7 @@ resources:
   source:
     name: php
     origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: starkandwayne-wordpress-proxy-4.7.4-pkg
   source:
@@ -1506,6 +1683,37 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: lzop-plan
+  source:
+    ignore_paths:
+    - lzop/tests/*
+    paths:
+    - lzop/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-lzop-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/lzop
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-lzop-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/lzop
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-lzop-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-lzop/starkandwayne-lzop-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
 - name: starkandwayne-mysql-pkg
   source:
     auth_token: REDACTED
@@ -1571,6 +1779,37 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-postgresql/starkandwayne-postgresql-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: pv-plan
+  source:
+    ignore_paths:
+    - pv/tests/*
+    paths:
+    - pv/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-pv-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/pv
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-pv-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/pv
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-pv-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-pv/starkandwayne-pv-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
