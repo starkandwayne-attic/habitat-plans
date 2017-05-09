@@ -31,11 +31,6 @@ pkg_exports=(
 )
 pkg_exposes=(port)
 
-do_prepare() {
-  localedef -i en_US -f UTF-8 en_US.UTF-8
-  export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-}
-
 do_build() {
 	# ld manpage: "If -rpath is not used when linking an ELF
 	# executable, the contents of the environment variable LD_RUN_PATH
