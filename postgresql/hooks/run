@@ -11,5 +11,5 @@ cp {{pkg.svc_config_path}}/recovery.conf {{pkg.svc_data_path}}/
 {{~/if}}
 
 exec 2>&1
-exec postmaster \
+exec {{pkg.path}}/bin/postmaster \
      -c config_file={{pkg.svc_config_path}}/postgresql.conf
