@@ -2,11 +2,6 @@ version: '2'
 
 services:
   standalone:
-    volumes:
-    - ../:/conf
-    - ../../wal-e/hooks:/hab/pkgs/starkandwayne/wal-e/1.0.2/20170509140800/hooks
-    - ../../wal-e/config:/hab/pkgs/starkandwayne/wal-e/1.0.2/20170509140800/config
-    - ../../wal-e/default.toml:/hab/pkgs/starkandwayne/wal-e/1.0.2/20170509140800/default.toml
     image: starkandwayne/postgresql:edge
     command: "start starkandwayne/postgresql"
     environment:
