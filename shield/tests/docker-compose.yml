@@ -26,7 +26,7 @@ services:
     links:
     - shield
   database:
-    image: starkandwayne/postgresql:edge
+    image: starkandwayne/postgresql:latest
     command: "start starkandwayne/postgresql --group shield"
   target:
     image: starkandwayne/postgresql:edge
