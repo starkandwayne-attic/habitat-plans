@@ -30,6 +30,8 @@ pkg_exports=(
   [superuser_password]=superuser.password
 )
 pkg_exposes=(port)
+pkg_svc_user=root
+pkg_svc_group=$pkg_svc_user
 
 do_build() {
 	# ld manpage: "If -rpath is not used when linking an ELF
