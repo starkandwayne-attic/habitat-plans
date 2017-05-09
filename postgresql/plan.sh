@@ -8,6 +8,8 @@ pkg_license=('PostgreSQL')
 pkg_source=https://ftp.postgresql.org/pub/source/v${pkg_version}/${pkg_name}-${pkg_version}.tar.bz2
 pkg_shasum=e5101e0a49141fc12a7018c6dad594694d3a3325f5ab71e93e0e51bd94e51fcd
 pkg_deps=(
+  starkandwayne/envdir
+  starkandwayne/wal-e
   core/bash
   core/glibc
   core/openssl
