@@ -4,5 +4,5 @@ echo "Starting shield-proxy"
 mkdir -p /hab/svc/shield-proxy/
 cp {{pkg.svc_config_path}}/shield-proxy.toml /hab/svc/shield-proxy/user.toml
 group={{svc.group}}
-group=${sg#*.}
+group=${group#*.}
 hab service load starkandwayne/shield-proxy --group ${group} --force
