@@ -151,7 +151,7 @@ jobs:
         PLAN_NAME: envdir
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-envdir
   - aggregate:
@@ -195,7 +195,7 @@ jobs:
         PLAN_NAME: lzop
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-lzop
   - aggregate:
@@ -261,7 +261,7 @@ jobs:
         PLAN_NAME: mysql
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-mysql
   - aggregate:
@@ -307,7 +307,7 @@ jobs:
         PLAN_NAME: postgresql
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-postgresql
   - aggregate:
@@ -349,7 +349,7 @@ jobs:
         PLAN_NAME: pv
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-pv
   - aggregate:
@@ -397,7 +397,7 @@ jobs:
         PLAN_NAME: redis
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-redis
   - aggregate:
@@ -453,7 +453,7 @@ jobs:
         PLAN_NAME: shield-agent
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-shield-agent
   - aggregate:
@@ -501,7 +501,7 @@ jobs:
         PLAN_NAME: shield
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-shield
   - aggregate:
@@ -547,7 +547,7 @@ jobs:
         PLAN_NAME: shield-proxy
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-shield-proxy
   - aggregate:
@@ -593,7 +593,7 @@ jobs:
         PLAN_NAME: varnish
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-varnish
   - aggregate:
@@ -643,7 +643,7 @@ jobs:
         PLAN_NAME: wal-e
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-wal-e
   - aggregate:
@@ -691,7 +691,7 @@ jobs:
         PLAN_NAME: wordpress
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-wordpress
   - aggregate:
@@ -733,7 +733,7 @@ jobs:
         PLAN_NAME: wordpress-proxy
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-wordpress-proxy
   - aggregate:
@@ -773,7 +773,7 @@ jobs:
         PLAN_NAME: consul
       platform: linux
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
     task: build-consul
   - aggregate:
