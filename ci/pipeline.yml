@@ -395,7 +395,7 @@ jobs:
       trigger: true
     - get: starkandwayne-postgresql-pkg
       trigger: true
-    - get: starkandwayne-shield-proxy-0.10.7-pkg
+    - get: starkandwayne-shield-proxy-pkg
       trigger: true
     - get: shield-plan
       trigger: true
@@ -1274,19 +1274,16 @@ resources:
   source:
     name: python
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-bash-pkg
   source:
     name: bash
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-coreutils-pkg
   source:
     name: coreutils
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-gawk-pkg
   source:
@@ -1302,7 +1299,6 @@ resources:
   source:
     name: glibc
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-grep-pkg
   source:
@@ -1318,13 +1314,11 @@ resources:
   source:
     name: ncurses
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-openssl-pkg
   source:
     name: openssl
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-pcre-pkg
   source:
@@ -1377,13 +1371,11 @@ resources:
   source:
     name: jq-static
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-libarchive-pkg
   source:
     name: libarchive
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
   source:
@@ -1395,19 +1387,16 @@ resources:
   source:
     name: bzip2
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-cacerts-pkg
   source:
     name: cacerts
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-curl-pkg
   source:
     name: curl
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-nginx-pkg
   source:
@@ -1421,17 +1410,16 @@ resources:
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
-- name: starkandwayne-shield-proxy-0.10.7-pkg
+- name: starkandwayne-shield-proxy-pkg
   source:
+    auth_token: REDACTED
     name: shield-proxy
     origin: starkandwayne
-    version: 0.10.7
   type: hab-pkg
 - name: core-docutils-pkg
   source:
     name: docutils
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: core-mysql-client-pkg
   source:
@@ -1443,7 +1431,6 @@ resources:
   source:
     name: php
     origin: core
-    version: 0.10.7
   type: hab-pkg
 - name: starkandwayne-wordpress-proxy-4.7.4-pkg
   source:
@@ -1655,12 +1642,6 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
-- name: starkandwayne-shield-proxy-pkg
-  source:
-    auth_token: REDACTED
-    name: shield-proxy
-    origin: starkandwayne
-  type: hab-pkg
 - name: shield-proxy-plan
   source:
     ignore_paths:
