@@ -11,5 +11,13 @@ cp {{pkg.svc_config_path}}/recovery.conf {{pkg.svc_data_path}}/
 {{~/if}}
 
 exec 2>&1
-exec chpst -U hab:hab {{pkg.path}}/bin/postmaster \
-     -c config_file={{pkg.svc_config_path}}/postgresql.conf
+if [ "$(whoami)" = "root" ]; then
+  exec chpst \
+    -U hab:hab \
+    -u hab:hab \
+    {{pkg.path}}/bin/postmaster \
+    -c config_file={{pkg.svc_config_path}}/postgresql.conf
+else
+  exec {{pkg.path}}/bin/postmaster \
+    -c config_file={{pkg.svc_config_path}}/postgresql.conf
+fi
