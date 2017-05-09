@@ -1,13 +1,14 @@
 # The options for consul are available here
 # https://www.consul.io/docs/agent/options.html
+[bootstrap]
+expect = "3"
 
 [server]
 datacenter = "dc1"
 loglevel = "INFO"
-bootstrap_expect = 3
 # switch this to false you want to start in DEVMODE
 # https://www.consul.io/docs/guides/bootstrapping.html
-mode = false
+mode = true
 
 [ports]
 # The DNS server, -1 to disable
@@ -28,7 +29,23 @@ server = 8300
 [client]
 # What interface to bind to (defaults to all)
 interface = "0.0.0.0"
+bind = "0.0.0.0"
 
 # If you would like the web gui on the agent
 [ui]
 include = true
+
+[tls]
+ssl_key = ""
+ssl_cert = ""
+ssl_ca = ""
+verify_incoming = true
+verify_outgoing = true
+verify_incoming_rpc = true
+
+[blah]
+rejoin_after_leave = true
+domain = "consul"
+recursor = "8.8.8.8"
+advertise_addr = ""
+leave_on_terminate = false
