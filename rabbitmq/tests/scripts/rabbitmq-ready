@@ -2,4 +2,4 @@
 
 set -e
 
-rabbitmqctl status
+rabbitmqctl status -n rabbit@standalone

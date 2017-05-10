@@ -1,10 +1,13 @@
 FROM starkandwayne/rabbitmq:edge
 
-# psql
-RUN set -x \
-      && apk add --update bash jq curl rabbitmq alpine-sdk linux-headers \
-      && rm -rf /var/cache/apk/*
+ENV PATH $PATH:/bin
+ENV HOME /rabbitmq
 
 COPY ./scripts/  /scripts
+RUN mkdir -p /rabbitmq
+RUN echo Gm0+QGpGcsEcxjJPEBY/Tg== > /rabbitmq/.erlang.cookie
+RUN chmod 600 /rabbitmq/.erlang.cookie
 
-CMD ["/bin/true"]
+ENTRYPOINT [""]
+
+CMD ["echo"]
