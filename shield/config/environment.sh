@@ -1,10 +1,8 @@
 #!/bin/bash
-{{ #each bind.database.members as |db_node| }}
-{{ #unless db_node.follower }}
-PGPORT="{{db_node.cfg.port}}"
-PGHOST="{{db_node.sys.ip}}"
-PG_SUPERUSER="{{db_node.cfg.superuser_name}}"
-PG_SUPERUSER_PASSWORD="{{db_node.cfg.superuser_password}}"
-PG_SUPERUSER_URI="postgres://{{db_node.cfg.superuser_name}}:{{db_node.cfg.superuser_password}}@{{db_node.sys.ip}}:{{db_node.cfg.port}}/postgres"
-{{ /unless }}
-{{ /each }}
+{{ #with bind.database.first }}
+PGPORT="{{cfg.port}}"
+PGHOST="{{sys.ip}}"
+PG_SUPERUSER="{{cfg.superuser_name}}"
+PG_SUPERUSER_PASSWORD="{{cfg.superuser_password}}"
+PG_SUPERUSER_URI="postgres://{{cfg.superuser_name}}:{{cfg.superuser_password}}@{{sys.ip}}:{{cfg.port}}/postgres"
+{{ /with }}
