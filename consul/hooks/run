@@ -5,4 +5,4 @@ exec 2>&1
 ##Helps identify config
 cat {{pkg.svc_config_path}}/basic_config.json
 
-exec consul agent -server -config-file={{pkg.svc_config_path}}/basic_config.json
+exec consul agent -server -config-file={{pkg.svc_config_path}}/basic_config.json -node-id=$(cat /proc/sys/kernel/random/uuid)
