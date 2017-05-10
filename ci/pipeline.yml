@@ -1536,85 +1536,71 @@ resources:
   source:
     name: glibc
     origin: core
-    version: 9.6.1
   type: hab-pkg
 - name: core-lzo-pkg
   source:
     name: lzo
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-bash-pkg
   source:
     name: bash
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-coreutils-pkg
   source:
     name: coreutils
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-gawk-pkg
   source:
     name: gawk
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-gcc-libs-pkg
   source:
     name: gcc-libs
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-grep-pkg
   source:
     name: grep
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-inetutils-pkg
   source:
     name: inetutils
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-ncurses-pkg
   source:
     name: ncurses
     origin: core
-    version: 9.6.1
   type: hab-pkg
 - name: core-openssl-pkg
   source:
     name: openssl
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-pcre-pkg
   source:
     name: pcre
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-perl-pkg
   source:
     name: perl
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-procps-ng-pkg
   source:
     name: procps-ng
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-sed-pkg
   source:
     name: sed
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-postgresql-9.6.1-pkg
   source:
@@ -1627,115 +1613,97 @@ resources:
     auth_token: REDACTED
     name: envdir
     origin: starkandwayne
-    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-wal-e-pkg
   source:
     auth_token: REDACTED
     name: wal-e
     origin: starkandwayne
-    version: 3.5.2
   type: hab-pkg
 - name: core-erlang-pkg
   source:
     name: erlang
     origin: core
-    version: 9.6.1
   type: hab-pkg
 - name: core-jq-static-pkg
   source:
     name: jq-static
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-libarchive-pkg
   source:
     name: libarchive
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
   source:
     auth_token: REDACTED
     name: shield-agent
     origin: starkandwayne
-    version: 3.5.2
   type: hab-pkg
 - name: core-bzip2-pkg
   source:
     name: bzip2
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-cacerts-pkg
   source:
     name: cacerts
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-curl-pkg
   source:
     name: curl
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: core-nginx-pkg
   source:
     name: nginx
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
     name: postgresql
     origin: starkandwayne
-    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-shield-proxy-pkg
   source:
     auth_token: REDACTED
     name: shield-proxy
     origin: starkandwayne
-    version: 9.6.1
   type: hab-pkg
 - name: core-docutils-pkg
   source:
     name: docutils
     origin: core
-    version: 9.6.1
   type: hab-pkg
 - name: core-postgresql-pkg
   source:
     name: postgresql
     origin: core
-    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-lzop-pkg
   source:
     auth_token: REDACTED
     name: lzop
     origin: starkandwayne
-    version: 9.6.1
   type: hab-pkg
 - name: starkandwayne-pv-pkg
   source:
     auth_token: REDACTED
     name: pv
     origin: starkandwayne
-    version: 9.6.1
   type: hab-pkg
 - name: core-mysql-client-pkg
   source:
     name: mysql-client
     origin: core
-    version: 4.7.4
   type: hab-pkg
 - name: core-php-pkg
   source:
     name: php
     origin: core
-    version: 3.5.2
   type: hab-pkg
 - name: starkandwayne-wordpress-proxy-4.7.4-pkg
   source:

@@ -13,7 +13,7 @@ pushd $PIPELINE >/dev/null
 
       for dep in "${pkg_deps[@]}"; do
         version=""
-        version_key=""
+        version_entry=""
         dep_origin=$(dirname ${dep})
         dep_name=$(basename ${dep})
 
