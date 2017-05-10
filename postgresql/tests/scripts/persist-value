@@ -5,7 +5,7 @@ set -e
 export PGHOST="${1}"
 if [[ ${PGHOST} == 'cluster' ]]; then
   export PGHOST=$(curl -s standalone:9631/census \
-    | jq -r '.censuses["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
+    | jq -r '.census_groups["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
   echo "Leader is ${PGHOST}"
 fi
 
