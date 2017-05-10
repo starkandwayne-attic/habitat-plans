@@ -3,8 +3,9 @@
 export PGHOST="${1}"
 if [[ "${PGHOST}" == 'cluster' ]]; then
   echo "Finding cluster leader"
+  leader_id=$(curl -s standalone:9631/census | jq -r '.census_groups["postgresql.cluster"].leader_id')
   export PGHOST=$(curl -s standalone:9631/census \
-    | jq -r '.census_groups["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
+    | jq --arg leader_id ${leader_id} -r '.census_groups["postgresql.cluster"].population[$leader_id].sys.ip')
   if [[ "${PGHOST}" == "" ]]; then
     echo "No leader currently elected"
     exit 1
