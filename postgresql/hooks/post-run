@@ -9,8 +9,6 @@ fi
 echo "Starting wal-e to perform regular backups"
 mkdir -p /hab/svc/wal-e/
 cp {{pkg.svc_config_path}}/wal-e.toml /hab/svc/wal-e/user.toml
-group={{svc.group}}
-group=${group#*.}
-hab service load starkandwayne/wal-e --group ${group}
+hab service load starkandwayne/wal-e --group {{svc.group}}
 {{ /if }}
 {{ /unless }}
