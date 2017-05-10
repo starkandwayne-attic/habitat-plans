@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source "{{pkg.svc_config_path}}/env"
+
+# https://www.youtube.com/watch?v=wGhQ2BDt4VE
+kill_rabbit() {
+  rabbitmqctl stop
+  exit
+}
+
+trap "kill_rabbit" INT TERM HUP ABRT QUIT
+
+# We do NOT call exec here, as we trap signals and kill rabbit in this script
+rabbitmq-server 2>&1

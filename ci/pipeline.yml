@@ -12,6 +12,8 @@ groups:
   - release-postgresql
   - build-pv
   - release-pv
+  - build-rabbitmq
+  - release-rabbitmq
   - build-redis
   - release-redis
   - build-shield-agent
@@ -30,6 +32,7 @@ groups:
   - release-wordpress
   - test-consul
   - test-postgresql
+  - test-rabbitmq
   - test-redis
   - test-shield
   - test-varnish
@@ -67,6 +70,11 @@ groups:
   - build-pv
   - release-pv
   name: pv
+- jobs:
+  - build-rabbitmq
+  - release-rabbitmq
+  - test-rabbitmq
+  name: rabbitmq
 - jobs:
   - build-redis
   - release-redis
@@ -367,6 +375,52 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-pv-artifact
+  public: true
+- name: build-rabbitmq
+  plan:
+  - aggregate:
+    - get: core-coreutils-pkg
+      trigger: true
+    - get: core-erlang-pkg
+      trigger: true
+    - get: core-glibc-pkg
+      trigger: true
+    - get: rabbitmq-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image: docker:///starkandwayne/habitat-plans-pipeline
+      inputs:
+      - name: rabbitmq-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: rabbitmq-plan/rabbitmq
+        PLAN_NAME: rabbitmq
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build-service
+    privileged: true
+    task: build-rabbitmq
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-rabbitmq-docker.tar
+        load_repository: starkandwayne/rabbitmq
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-rabbitmq-image
+    - params:
+        load_file: result/starkandwayne-rabbitmq-docker.tar
+        load_repository: starkandwayne/rabbitmq
+        load_tag: habitat
+      put: starkandwayne-rabbitmq-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-rabbitmq-artifact
   public: true
 - name: build-redis
   plan:
@@ -912,6 +966,26 @@ jobs:
         result: starkandwayne-pv-artifact
       put: starkandwayne-pv-pkg
   public: true
+- name: release-rabbitmq
+  plan:
+  - aggregate:
+    - get: starkandwayne-rabbitmq-artifact
+      passed:
+      - test-rabbitmq
+    - get: starkandwayne-rabbitmq-image
+      params:
+        save: true
+      passed:
+      - test-rabbitmq
+  - aggregate:
+    - params:
+        load: starkandwayne-rabbitmq-image
+        tag_as_latest: true
+      put: starkandwayne-rabbitmq-image
+    - params:
+        result: starkandwayne-rabbitmq-artifact
+      put: starkandwayne-rabbitmq-pkg
+  public: true
 - name: release-redis
   plan:
   - aggregate:
@@ -1164,6 +1238,54 @@ jobs:
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
     task: test-postgresql
+  public: false
+  serial: true
+  serial_groups:
+  - delmo
+- name: test-rabbitmq
+  plan:
+  - aggregate:
+    - get: starkandwayne-rabbitmq-edge-image
+      params:
+        skip_download: true
+      passed:
+      - build-rabbitmq
+      trigger: true
+    - get: rabbitmq-tests
+      trigger: true
+    - get: starkandwayne-rabbitmq-artifact
+      passed:
+      - build-rabbitmq
+    - get: starkandwayne-rabbitmq-image
+      params:
+        skip_download: true
+      passed:
+      - build-rabbitmq
+  - config:
+      image: docker:///bodymindarts/delmo-concourse
+      inputs:
+      - name: rabbitmq-tests
+      params:
+        AWS_ACCESS_KEY: REDACTED
+        AWS_BUCKET: shield-habitat-test
+        AWS_REGION: eu-central-1
+        AWS_SECRET_KEY: REDACTED
+        MACHINE_EXPORT_AWS_ACCESS_KEY_ID: REDACTED
+        MACHINE_EXPORT_AWS_BUCKET: docker-machine-exports
+        MACHINE_EXPORT_AWS_REGION: eu-central-1
+        MACHINE_EXPORT_AWS_SECRET_ACCESS_KEY: REDACTED
+        MACHINE_NAME: habitat-plans-pipeline-machine
+      platform: linux
+      run:
+        args:
+        - delmo
+        - --only-build-task
+        - -f
+        - rabbitmq-tests/rabbitmq/tests/delmo.yml
+        - -m
+        - habitat-plans-pipeline-machine
+        path: /entrypoint.sh
+    task: test-rabbitmq
   public: false
   serial: true
   serial_groups:
@@ -1426,13 +1548,13 @@ resources:
   source:
     name: bash
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-coreutils-pkg
   source:
     name: coreutils
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-gawk-pkg
   source:
@@ -1468,7 +1590,7 @@ resources:
   source:
     name: openssl
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-pcre-pkg
   source:
@@ -1514,36 +1636,42 @@ resources:
     origin: starkandwayne
     version: 3.5.2
   type: hab-pkg
+- name: core-erlang-pkg
+  source:
+    name: erlang
+    origin: core
+    version: 9.6.1
+  type: hab-pkg
 - name: core-jq-static-pkg
   source:
     name: jq-static
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-libarchive-pkg
   source:
     name: libarchive
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
   source:
     auth_token: REDACTED
     name: shield-agent
     origin: starkandwayne
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-bzip2-pkg
   source:
     name: bzip2
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-cacerts-pkg
   source:
     name: cacerts
     origin: core
-    version: 9.6.1
+    version: 3.5.2
   type: hab-pkg
 - name: core-curl-pkg
   source:
@@ -1555,7 +1683,7 @@ resources:
   source:
     name: nginx
     origin: core
-    version: 4.7.4
+    version: 3.5.2
   type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
@@ -1810,6 +1938,43 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-pv/starkandwayne-pv-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-rabbitmq-pkg
+  source:
+    auth_token: REDACTED
+    name: rabbitmq
+    origin: starkandwayne
+  type: hab-pkg
+- name: rabbitmq-plan
+  source:
+    ignore_paths:
+    - rabbitmq/tests/*
+    paths:
+    - rabbitmq/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-rabbitmq-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/rabbitmq
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-rabbitmq-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/rabbitmq
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-rabbitmq-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-rabbitmq/starkandwayne-rabbitmq-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
@@ -2101,6 +2266,12 @@ resources:
   source:
     paths:
     - postgresql/tests/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: rabbitmq-tests
+  source:
+    paths:
+    - rabbitmq/tests/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: redis-tests

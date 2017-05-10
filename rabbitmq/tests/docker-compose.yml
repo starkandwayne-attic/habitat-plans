@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  standalone:
+    image: starkandwayne/rabbitmq:edge
+    command: "start starkandwayne/rabbitmq --config-from /config"
+    volumes:
+      - ../:/config
+  tests:
+    image: starkandwayne-wordpress-tests
+    build: ./
+    links:
+      - rabbitmq
