@@ -1,22 +1,51 @@
 {
+  "domain": "{{cfg.blah.domain}}",
   "datacenter": "{{cfg.server.datacenter}}",
+  {{~#if cfg.node_name}}
+  "node_name": "{{cfg.node_name}}",
+  {{~/if}}
   "data_dir": "{{pkg.svc_data_path}}",
   "log_level": "{{cfg.server.loglevel}}",
-  "bind_addr": "0.0.0.0",
+  "bind_addr": "{{cfg.client.bind}}",
   "client_addr": "{{cfg.client.interface}}",
-  {{#if cfg.server.mode}}
-  "bootstrap_expect": {{cfg.server.bootstrap_expect}},
-  {{/if}}
+  "bootstrap_expect": {{cfg.bootstrap.expect}},
+  "rejoin_after_leave": {{cfg.blah.rejoin_after_leave}},
+  "leave_on_terminate": {{cfg.blah.leave_on_terminate}},
+  {{~#if cfg.advertise-addr}}
+  "advertise_addr": "{{cfg.blah.advertise_addr}}",
+  {{~/if}}
   "server": {{cfg.server.mode}},
   "start_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
   "retry_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
+  "addresses": {
+    "dns": "0.0.0.0",
+    "http": "0.0.0.0",
+    "https": "0.0.0.0"
+  },
+  {{~#if cfg.tls.ssl_key cfg.ssl_cert cfg.ssl_ca }}
+  "verify_incoming": {{cfg.tls.verify_incoming}},
+  "verify_outgoing": {{cfg.tls.verify_outgoing}},
+  "verify_incoming_rpc": "{{cfg.tls.verify_incoming_rpg}}",
+  "ca_file": "{{pkg.svc_config_path}}/ca.cert",
+  "key_file": "{{pkg.svc_config_path}}/consul.key",
+  "cert_file": "{{pkg.svc_config_path}}/consul.cert",
+  {{~/if}}
   "ports": {
     "dns": {{cfg.ports.dns}},
-    "http": {{cfg.ports.http}},
+    {{~#if cfg.tls.ssl_key cfg.tls.ssl_cert cfg.tls.ssl_ca}}
     "https": {{cfg.ports.https}},
+    "http": -1,
+    {{~else}}
+    "http": {{cfg.ports.http}},
+    {{~/if}}
     "rpc": {{cfg.ports.rpc}},
     "serf_lan": {{cfg.ports.serf_lan}},
     "serf_wan": {{cfg.ports.serf_wan}},
     "server": {{cfg.ports.server}}
-  }
+  },
+  {{~#if cfg.encrypt_key}}
+  "encrypt", "{{cfg.encrypt_key}}",
+  {{/if}}
+  "recursor": "{{cfg.blah.recursor}}",
+  "ui": {{cfg.ui.include}}
 }
