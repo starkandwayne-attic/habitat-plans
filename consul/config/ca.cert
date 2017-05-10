@@ -1,0 +1,3 @@
+{{#if cfg.tlsssl_ca}}
+{{cfg.tls.ssl_cert}}
+{{/if}}
