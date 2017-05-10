@@ -13,4 +13,7 @@ wp --allow-root $path post generate
 wp --allow-root $path post get 10
 
 # import images so we can test permissions
-wp --allow-root $path media import ../images/test.png
+# wp --allow-root $path media import ../images/test.png
+
+# upload plugin
+wp --allow-root $path plugin install bbpress --activate
