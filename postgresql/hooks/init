@@ -2,10 +2,6 @@
 
 exec 2>&1
 
-source {{pkg.svc_config_path}}/functions.sh
-
-write_wale_env
-
 chown -R hab:hab {{pkg.svc_var_path}}
 chown -R hab:hab {{pkg.svc_config_path}}
 chown -R hab:hab {{pkg.svc_data_path}}
