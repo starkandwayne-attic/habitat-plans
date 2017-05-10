@@ -1,0 +1,10 @@
+#!/bin/bash
+
+leader=`curl -s ${STANDALONE_HOST}:${CONSUL_PORT}/v1/status/leader`
+if [ $leader == '""' ]; then
+  echo "leader is unset";
+  exit 0
+else
+  echo "leader is set to '$leader'";
+  exit 1
+fi

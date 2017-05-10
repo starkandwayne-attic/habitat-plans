@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [[ "${1}" == 'cluster' ]]; then
+  consul_host=${CLUSTER_HOST}
+  echo "Consul address set to ${consul_host}"
+else
+  consul_host=${STANDALONE_HOST}
+  echo "Consul address set to ${consul_host}"
+fi
+
+curl -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'
+
+echo `curl $consul_host:${CONSUL_PORT}/v1/kv/moo`
+moovalue=`curl $consul_host/v1/kv/moo | jq -r '.Value' | base64 -d`
+if [ $moovalue == 'rar' ]; then exit 0; fi
+
+exit 1

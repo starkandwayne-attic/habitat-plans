@@ -1,1 +1,17 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# Maybe use consul info
+
+if [[ "${1}" == 'cluster' ]]; then
+  echo "Finding cluster leader"
+  echo curl -s "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader"
+  export LEADER=$(curl -s "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader")
+  if [[ "${LEADER}" == '""' ]]; then
+    echo "No leader currently elected"
+    exit 1
+  fi
+  echo "Leader is ${LEADER}"
+  exit 0
+fi
+
+curl -s -o /dev/null -w '%{http_code}\n' ${STANDALONE_HOST}:${CONSUL_PORT}

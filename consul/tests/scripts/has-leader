@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "checking for leader"
+leader=`curl -s ${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader`
+
+if [ $leader == '""' ]; then
+  echo "leader is unset";
+  exit 1
+else
+  echo "leader is set to '$leader'";
+  exit 0
+fi

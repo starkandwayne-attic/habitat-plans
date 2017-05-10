@@ -12,3 +12,10 @@ password = 'admin'
 name = 'replication'
 password = 'replication'
 
+[wal-e]
+enable = false
+[wal-e.aws]
+prefix = ''
+access_key_id = ''
+secret_access_key = ''
+region = ''

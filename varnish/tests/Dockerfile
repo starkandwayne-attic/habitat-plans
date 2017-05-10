@@ -1,4 +1,4 @@
-FROM starkandwayne/consul:edge
+FROM starkandwayne/varnish:edge
 
 RUN set -x && hab pkg install core/bash && hab pkg binlink core/bash bash && \
   hab pkg install core/jq-static && hab pkg binlink core/jq-static jq && \

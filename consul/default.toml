@@ -26,6 +26,10 @@ serf_wan = 8302
 # Server RPC address
 server = 8300
 
+[client]
+# What interface to bind to (defaults to all)
+interface = "0.0.0.0"
+
 # If you would like the web gui on the agent
 [ui]
 include = true

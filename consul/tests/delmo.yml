@@ -4,10 +4,29 @@ suite:
   task_service: tests
 
 tests:
-- name: cluster-exists
+- name: standalone
   spec:
-  - wait: is-ready-standalone
+  - wait: standalone-ready
+  - assert:
+    - no-leader
+    - standalone-persist-value
+- name: cluster
+  spec:
+  - wait: cluster-ready
+  - assert:
+    - has-leader
+    - cluster-persist-value
 
 tasks:
-- name: is-ready-standalone
+- name: standalone-ready
   command: /scripts/consul-ready standalone
+- name: no-leader
+  command: /scripts/no-leader
+- name: cluster-ready
+  command: /scripts/consul-ready cluster
+- name: has-leader
+  command: /scripts/has-leader
+- name: standalone-persist-value
+  command: /scripts/persist-value
+- name: cluster-persist-value
+  command: /scripts/persist-value cluster
