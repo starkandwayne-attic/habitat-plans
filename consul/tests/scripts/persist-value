@@ -8,11 +8,15 @@ else
   echo "Consul standalone address set to ${consul_host}:${CONSUL_PORT}"
 fi
 
-echo "Running: curl -s -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'"
-curl -s -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'
+# Put a value into Consul
+echo "Running: curl -sL -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'"
+echo `curl -s -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'`
 
-echo "Running: curl $consul_host:${CONSUL_PORT}/v1/kv/moo"
-moovalue=`curl -s $consul_host:${CONSUL_PORT}/v1/kv/moo | jq -r '.Value' | base64 -d`
+# Grab the value from Consul
+# echo "Running: curl $consul_host:${CONSUL_PORT}/v1/kv/moo"
+echo `curl -sL $consul_host:${CONSUL_PORT}/v1/kv/moo`
+
+moovalue=`curl -sL $consul_host:${CONSUL_PORT}/v1/kv/moo | jq '.[0].Value' | base64 -d`
 if [ $moovalue == 'rar' ]; then exit 0; fi
 
 exit 1

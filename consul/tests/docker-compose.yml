@@ -4,6 +4,13 @@ services:
   standalone:
     image: starkandwayne/consul:latest
     command: "start starkandwayne/consul"
+    # command: "start starkandwayne/rabbitmq --config-from /config"
+    # volumes:
+    #   - ../:/config
+    environment:
+      HAB_CONSUL: |
+        [bootstrap]
+        expect = 1
   consul1:
     image: starkandwayne/consul:latest
     command: "start starkandwayne/consul --group cluster --peer consul1"

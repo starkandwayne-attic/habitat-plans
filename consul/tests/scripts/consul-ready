@@ -13,4 +13,4 @@ if [[ "${1}" == 'cluster' ]]; then
   exit 0
 fi
 
-curl -s -o /dev/null -w '%{http_code}\n' ${STANDALONE_HOST}:${CONSUL_PORT}
+curl -sL -o /dev/null -w '%{http_code}\n' ${STANDALONE_HOST}:${CONSUL_PORT}
