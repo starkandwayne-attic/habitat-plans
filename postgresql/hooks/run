@@ -4,6 +4,8 @@ set -e
 
 exec 2>&1
 
+export PGPASSFILE="{{pkg.svc_config_path}}/.pgpass"
+
 echo "Starting PostgreSQL"
 
 export PGDATA={{pkg.svc_data_path}}
