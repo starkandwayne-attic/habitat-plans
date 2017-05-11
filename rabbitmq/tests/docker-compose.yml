@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  standalone:
+    image: starkandwayne/rabbitmq:edge
+    hostname: standalone
+    command: "start starkandwayne/rabbitmq --config-from /config"
+    volumes:
+      - ../:/config
+
+  cluster1:
+    image: starkandwayne/rabbitmq:edge
+    hostname: cluster1
+    command: "start starkandwayne/rabbitmq --config-from /config"
+    volumes:
+      - ../:/config
+
+  tests:
+    image: starkandwayne-rabbitmq-tests
+    build: ./
+    links:
+      - standalone

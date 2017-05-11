@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo 2>&1
+
+source "{{pkg.svc_config_path}}/env"
+
+{{#if cfg.rabbitmq.management.enabled}}
+echo "Enabling management console"
+rabbitmq-plugins --offline enable rabbitmq_management
+{{else}}
+echo "Disabling management console"
+rabbitmq-plugins --offline disable rabbitmq_management
+{{/if}}

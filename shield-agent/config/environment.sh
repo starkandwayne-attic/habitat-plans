@@ -1,6 +1,6 @@
 #!/bin/bash
 
-{{ #if bind.has_daemon }}
+{{ #if bind.daemon.first }}
 {{ #with bind.daemon.first }}
 SHIELD_ENDPOINT='https://{{sys.ip}}:{{cfg.port}}'
 SHIELD_API_TOKEN='{{cfg.provisioning_key}}'

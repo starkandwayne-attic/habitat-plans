@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  standalone:
+    image: starkandwayne/varnish:edge
+    command: "start starkandwayne/varnish"
+  varnish1:
+    image: starkandwayne/varnish:edge
+    command: "start starkandwayne/varnish --group cluster --peer varnish1"
+  varnish2:
+    image: starkandwayne/varnish:edge
+    command: "start starkandwayne/consul --group cluster --peer varnish1"
+  tests:
+    image: starkandwayne-varnish-tests
+    build: ./
+    environment:
+      STANDALONE_HOST: standalone
+      CLUSTER_HOST: varnish1
+      CONSUL_PORT: "8080"

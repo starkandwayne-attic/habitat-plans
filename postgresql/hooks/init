@@ -3,11 +3,14 @@
 exec 2>&1
 
 chown -R hab:hab {{pkg.svc_var_path}}
+chown -R hab:hab {{pkg.svc_config_path}}
+chown -R hab:hab {{pkg.svc_data_path}}
 
 {{#unless svc.me.follower ~}}
 if [[ ! -f "{{pkg.svc_data_path}}/PG_VERSION" ]]; then
   echo " Database does not exist, creating with 'initdb'"
-  initdb -U {{cfg.superuser.name}} \
+  chpst -U hab:hab -u hab:hab \
+    initdb -U {{cfg.superuser.name}} \
     -E utf8 \
     -D {{pkg.svc_data_path}} \
     --pwfile {{pkg.svc_config_path}}/pwfile \

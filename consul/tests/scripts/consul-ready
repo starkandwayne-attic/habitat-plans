@@ -1,14 +1,16 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
+# Maybe use consul info
 if [[ "${1}" == 'cluster' ]]; then
   echo "Finding cluster leader"
-  export STANDALONE_HOST=$(curl -s standalone:9631/census \
-    | jq -r '.censuses["postgresql.cluster"].population [] | select(.leader == true) | .sys.ip')
-  if [[ "${STANDALONE_HOST}" == "" ]]; then
+  echo curl -s "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader"
+  export LEADER=$(curl -s "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader")
+  if [[ "${LEADER}" == '""' ]]; then
     echo "No leader currently elected"
     exit 1
   fi
-  echo "Leader is ${STANDALONE_HOST}"
+  echo "Leader is ${LEADER}"
+  exit 0
 fi
 
-curl -s -o /dev/null -w '%{http_code}\n' "${STANDALONE_HOST}"
+curl -sL -o /dev/null -w '%{http_code}\n' ${STANDALONE_HOST}:${CONSUL_PORT}

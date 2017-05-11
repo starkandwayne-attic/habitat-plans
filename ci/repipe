@@ -13,7 +13,7 @@ pushd $PIPELINE >/dev/null
 
       for dep in "${pkg_deps[@]}"; do
         version=""
-        version_key=""
+        version_entry=""
         dep_origin=$(dirname ${dep})
         dep_name=$(basename ${dep})
 
@@ -76,7 +76,7 @@ jobs:
       outputs:
       - name: result
       run:
-        path: ./habitat-plans-ci/ci/scripts/build
+        path: ./habitat-plans-ci/ci/scripts/build-service
       params:
         PACKAGE_CONTEXT: ${package_name}-plan/${package_name}
         OUT: result

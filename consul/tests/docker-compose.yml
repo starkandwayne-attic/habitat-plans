@@ -2,22 +2,28 @@ version: '2'
 
 services:
   standalone:
-    image: starkandwayne/consul:edge
+    image: starkandwayne/consul:latest
     command: "start starkandwayne/consul"
+    # command: "start starkandwayne/rabbitmq --config-from /config"
+    # volumes:
+    #   - ../:/config
+    environment:
+      HAB_CONSUL: |
+        [bootstrap]
+        expect = 1
   consul1:
-    image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer standalone --topology leader"
-    links:
-    - standalone
+    image: starkandwayne/consul:latest
+    command: "start starkandwayne/consul --group cluster --peer consul1"
   consul2:
-    image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer standalone --topology leader"
-    links:
-    - standalone
+    image: starkandwayne/consul:latest
+    command: "start starkandwayne/consul --group cluster --peer consul1"
+  consul3:
+    image: starkandwayne/consul:latest
+    command: "start starkandwayne/consul --group cluster --peer consul1"
   tests:
     image: starkandwayne-consul-tests
     build: ./
-    links:
-    - standalone
     environment:
-      STANDALONE_HOST: "standalone:8500"
+      STANDALONE_HOST: "standalone"
+      CLUSTER_HOST: "consul1"
+      CONSUL_PORT: "8500"
