@@ -2,6 +2,10 @@
 
 echo 2>&1
 
+echo COPY "ERLANG COOKIE!"
+cp {{pkg.svc_config_path}}/.erlang.cookie  {{pkg.svc_var_path}}
+chmod 600 {{pkg.svc_var_path}}/.erlang.cookie
+
 source "{{pkg.svc_config_path}}/env"
 
 {{#if cfg.rabbitmq.management.enabled}}

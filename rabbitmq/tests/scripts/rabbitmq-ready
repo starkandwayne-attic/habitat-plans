@@ -2,4 +2,5 @@
 
 set -e
 
+export HOME=/rabbitmq
 rabbitmqctl status -n rabbit@standalone
