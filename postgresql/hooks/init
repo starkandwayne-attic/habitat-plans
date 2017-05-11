@@ -2,6 +2,25 @@
 
 exec 2>&1
 
+mkdir -p "{{pkg.svc_config_path}}/env"
+
+write_env_var() {
+  echo "$1" > "{{pkg.svc_config_path}}/env/$2"
+}
+
+{{ #if cfg.wal-e.enable }}
+{{ #with cfg.wal-e.aws }}
+write_env_var 's3://{{bucket}}/{{../../../svc.service}}-{{../../../svc.group}}' 'WALE_S3_PREFIX'
+write_env_var '{{access_key_id}}' 'AWS_ACCESS_KEY_ID'
+write_env_var '{{secret_access_key}}' 'AWS_SECRET_ACCESS_KEY'
+write_env_var '{{region}}' 'AWS_REGION'
+{{/with}}
+
+write_env_var '{{cfg.superuser.name}}' 'PGUSER'
+write_env_var '{{cfg.superuser.password}}' 'PGPASSWORD'
+write_env_var 'postgres' 'PGDATABASE'
+{{ /if }}
+
 chown -R hab:hab {{pkg.svc_var_path}}
 chown -R hab:hab {{pkg.svc_config_path}}
 chown -R hab:hab {{pkg.svc_data_path}}
