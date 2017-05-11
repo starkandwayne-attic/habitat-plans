@@ -1,5 +1,4 @@
 [rabbitmq]
-
 # Host on which to listen. An empty string means "listen on all interfaces."
 listen_host=""
 
@@ -15,6 +14,9 @@ default_user="guest"
 
 # Password for the default user.
 default_pass="guest"
+
+cluster_with=""
+name="rabbit"
 
 [rabbitmq.management]
 

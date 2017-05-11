@@ -7,7 +7,6 @@ echo 2>&1
 # chmod 600 {{pkg.svc_var_path}}/.erlang.cookie
 
 if [ "{{cfg.erlang.cookie}}" ]; then
-    echo "IF STATEMENT"
     cookieFile="{{pkg.svc_var_path}}/.erlang.cookie"
     if [ -e "$cookieFile" ]; then
         if [ "$(cat "$cookieFile" 2>/dev/null)" != "{{cfg.erlang.cookie}}" ]; then

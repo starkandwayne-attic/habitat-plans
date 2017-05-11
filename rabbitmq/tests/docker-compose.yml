@@ -4,16 +4,20 @@ services:
   standalone:
     image: starkandwayne/rabbitmq:edge
     hostname: standalone
-    command: "start starkandwayne/rabbitmq --config-from /config"
-    volumes:
-      - ../:/config
+    command: "start starkandwayne/rabbitmq"
+    environment:
+      HAB_RABBITMQ: |
+        [rabbitmq]
+        cluster_with="standalone"
 
   cluster1:
     image: starkandwayne/rabbitmq:edge
     hostname: cluster1
-    command: "start starkandwayne/rabbitmq --config-from /config"
-    volumes:
-      - ../:/config
+    command: "start starkandwayne/rabbitmq"
+    environment:
+      HAB_RABBITMQ: |
+        [rabbitmq]
+        cluster_with="standalone"
 
   tests:
     image: starkandwayne-rabbitmq-tests
