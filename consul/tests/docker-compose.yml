@@ -17,17 +17,11 @@ services:
     environment:
       HAB_CONSUL: |
 	[bootstrap]
-	expect = 5
+	expect = 3
   consul2:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul --group cluster --peer consul1"
   consul3:
-    image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer consul1"
-  consul4:
-    image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer consul1"
-  consul5:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul --group cluster --peer consul1"
   tests:

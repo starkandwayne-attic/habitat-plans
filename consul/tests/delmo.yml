@@ -16,14 +16,14 @@ tests:
     - {wait: has-leader, timeout: 120}
     - assert:
       - cluster-persist-value
-# - name: cluster-failover
-#   spec:
-#     - wait: cluster-ready
-#     - wait: has-leader
-#     - stop: [consul3]
-#     - destroy: [consul3]
-#     - assert:
-#       - cluster-persist-value
+- name: cluster-failover
+  spec:
+    - wait: cluster-ready
+    - wait: has-leader
+    - stop: [consul3]
+    - destroy: [consul3]
+    - assert:
+      - cluster-persist-value
 
 tasks:
 - name: standalone-ready
