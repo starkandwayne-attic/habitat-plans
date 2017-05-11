@@ -20,3 +20,6 @@ default_pass="guest"
 
 # Whether to enable the rabbitmq management plugin.
 enabled=false
+
+[erlang]
+cookie="Gm0+QGpGcsEcxjJPEBY/Tg=="
