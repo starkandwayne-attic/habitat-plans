@@ -7,13 +7,13 @@ tests:
 - name: standalone
   spec:
     - wait: standalone-ready
-    - wait: has-leader
+    - {wait: has-leader, timeout: 120}
     - assert:
       - standalone-persist-value
 - name: cluster
   spec:
     - wait: cluster-ready
-    - wait: has-leader
+    - {wait: has-leader, timeout: 120}
     - assert:
       - cluster-persist-value
 # - name: cluster-failover
