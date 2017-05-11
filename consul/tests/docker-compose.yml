@@ -16,8 +16,8 @@ services:
     command: "start starkandwayne/consul --group cluster --peer consul1"
     environment:
       HAB_CONSUL: |
-	[bootstrap]
-	expect = 3
+        [bootstrap]
+        expect = 3
   consul2:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul --group cluster --peer consul1"
