@@ -6,9 +6,9 @@ exec 2>&1
 
 echo "Starting PostgreSQL"
 
-export PGDATA=/hab/svc/postgresql/data
+export PGDATA={{pkg.svc_data_path}}
 
-cat > /hab/svc/postgresql/config/postgresql.local.conf <<-LOCAL
+cat > {{pkg.svc_config_path}}/postgresql.local.conf <<-LOCAL
 # Auto-generated memory defaults created at service start by Habitat
 effective_cache_size=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 )}' /proc/meminfo)MB
 shared_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 4 )}' /proc/meminfo)MB
@@ -17,8 +17,9 @@ work_mem=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 / (100*3) )}' /
 temp_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 / (100*3) )}' /proc/meminfo)MB
 LOCAL
 
-chown -R hab:hab /hab/svc/postgresql/data
+chown -R hab:hab {{pkg.svc_data_path}}
 
 exec chpst -U hab:hab -u hab:hab postmaster \
-  -c config_file=/hab/svc/postgresql/config/postgresql.conf
+  -c config_file={{pkg.svc_config_path}}/postgresql.conf
+
 ~
