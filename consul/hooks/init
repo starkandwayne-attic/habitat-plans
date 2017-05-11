@@ -1,0 +1,6 @@
+#!/bin/bash -xe
+
+exec 2>&1
+
+# copy ca to a ca_path directory
+cp {{pkg.svc_config_path}}/ca.cert {{pkg.path}}/cacerts/consul-ca.cert

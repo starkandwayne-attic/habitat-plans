@@ -1,5 +1,5 @@
 {
-  "domain": "{{cfg.blah.domain}}",
+  "domain": "{{cfg.domain}}",
   "datacenter": "{{cfg.server.datacenter}}",
   {{~#if cfg.node_name}}
   "node_name": "{{cfg.node_name}}",
@@ -9,10 +9,14 @@
   "bind_addr": "{{cfg.client.bind}}",
   "client_addr": "{{cfg.client.interface}}",
   "bootstrap_expect": {{cfg.bootstrap.expect}},
-  "rejoin_after_leave": {{cfg.blah.rejoin_after_leave}},
-  "leave_on_terminate": {{cfg.blah.leave_on_terminate}},
+  "rejoin_after_leave": {{cfg.rejoin_after_leave}},
+  "leave_on_terminate": {{cfg.leave_on_terminate}},
+  "disable_anonymous_signature": {{cfg.disable_anonymous_signature}},
+  "disable_update_check": {{cfg.disable_update_check}},
   {{~#if cfg.advertise-addr}}
-  "advertise_addr": "{{cfg.blah.advertise_addr}}",
+  "advertise_addr": {
+    "rpc": ":{{cfg.ports.rpc}}",
+  },
   {{~/if}}
   "server": {{cfg.server.mode}},
   "start_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
@@ -22,13 +26,14 @@
     "http": "0.0.0.0",
     "https": "0.0.0.0"
   },
-  {{~#if cfg.tls.ssl_key cfg.ssl_cert cfg.ssl_ca }}
-  "verify_incoming": {{cfg.tls.verify_incoming}},
-  "verify_outgoing": {{cfg.tls.verify_outgoing}},
-  "verify_incoming_rpc": "{{cfg.tls.verify_incoming_rpg}}",
-  "ca_file": "{{pkg.svc_config_path}}/ca.cert",
+  {{~#if cfg.tls.ssl_key cfg.tls.ssl_cert cfg.tls.ssl_ca }}
+  "ca_path": "{{pkg.path}}/cacerts",
   "key_file": "{{pkg.svc_config_path}}/consul.key",
   "cert_file": "{{pkg.svc_config_path}}/consul.cert",
+  "verify_incoming": {{cfg.tls.verify_incoming}},
+  "verify_outgoing": {{cfg.tls.verify_outgoing}},
+  "verify_incoming_rpc": {{cfg.tls.verify_incoming_rpc}},
+  "verify_server_hostname": {{cfg.tls.verify_server_hostname}},
   {{~/if}}
   "ports": {
     "dns": {{cfg.ports.dns}},
@@ -38,7 +43,6 @@
     {{~else}}
     "http": {{cfg.ports.http}},
     {{~/if}}
-    "rpc": {{cfg.ports.rpc}},
     "serf_lan": {{cfg.ports.serf_lan}},
     "serf_wan": {{cfg.ports.serf_wan}},
     "server": {{cfg.ports.server}}
@@ -46,6 +50,6 @@
   {{~#if cfg.encrypt_key}}
   "encrypt": "{{cfg.encrypt_key}}",
   {{/if}}
-  "recursor": "{{cfg.blah.recursor}}",
+  "recursor": "{{cfg.recursor}}",
   "ui": {{cfg.ui.include}}
 }
