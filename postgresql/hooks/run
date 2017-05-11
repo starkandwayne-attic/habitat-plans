@@ -2,14 +2,23 @@
 
 set -e
 
+exec 2>&1
+
 echo "Starting PostgreSQL"
 
-export PGDATA={{pkg.svc_data_path}}
+export PGDATA=/hab/svc/postgresql/data
 
-{{#if svc.me.follower ~}}
-cp {{pkg.svc_config_path}}/recovery.conf {{pkg.svc_data_path}}/
-{{~/if}}
+cat > /hab/svc/postgresql/config/postgresql.local.conf <<-LOCAL
+# Auto-generated memory defaults created at service start by Habitat
+effective_cache_size=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 )}' /proc/meminfo)MB
+shared_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 4 )}' /proc/meminfo)MB
+maintenance_work_mem=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 16 )}' /proc/meminfo)MB
+work_mem=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 / (100*3) )}' /proc/meminfo)MB
+temp_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 / (100*3) )}' /proc/meminfo)MB
+LOCAL
 
-exec 2>&1
-exec {{pkg.path}}/bin/postmaster \
-     -c config_file={{pkg.svc_config_path}}/postgresql.conf
+chown -R hab:hab /hab/svc/postgresql/data
+
+exec chpst -U hab:hab -u hab:hab postmaster \
+  -c config_file=/hab/svc/postgresql/config/postgresql.conf
+~
