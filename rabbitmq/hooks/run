@@ -16,11 +16,14 @@ if [ -z "{{cfg.rabbitmq.cluster_with}}" -o "{{cfg.rabbitmq.cluster_with}}" = "{{
   rabbitmq-server 2>&1
 else
   echo "Running as clustered server"
+  export RABBITMQ_LOGS={{pkg.svc_var_path}}/logs
   rabbitmq-server -detached
   rabbitmqctl stop_app
 
   echo "Joining cluster {{svc.rabbitmq.cluster_with}}"
-  rabbitmqctl join_cluster ${ENABLE_RAM:+--ram} {{cfg.rabbitmq.name}}@{{cfg.rabbitmq.cluster_with}}
+  rabbitmqctl join_cluster {{cfg.rabbitmq.name}}@{{cfg.rabbitmq.cluster_with}}
 
-  rabbitmqctl start_app 2>&1
+  rabbitmqctl start_app
+
+  tail -f $RABBITMQ_LOGS
 fi
