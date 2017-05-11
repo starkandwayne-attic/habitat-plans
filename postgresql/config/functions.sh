@@ -52,3 +52,10 @@ bootstrap_repica_via_pg_basebackup() {
   rm -rf {{pkg.svc_data_path}}/*
   pg_basebackup --pgdata={{pkg.svc_data_path}} --xlog-method=stream --dbname='postgres://{{cfg.replication.name}}@{{svc.leader.sys.ip}}:{{cfg.port}}/postgres'
 }
+
+bootstrap_replica_via_wale() {
+  echo 'Bootstrapping replica via wal-e'
+
+  rm -rf {{pkg.svc_data_path}}/*
+  envdir {{pkg.svc_config_path}}/env wal-e backup-fetch {{pkg.svc_data_path}} LATEST
+}

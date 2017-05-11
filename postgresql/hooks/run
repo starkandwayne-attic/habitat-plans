@@ -11,7 +11,11 @@ source {{pkg.svc_config_path}}/functions.sh
 init_pgpass
 {{#if svc.me.follower }}
 if [[ ! -f "{{pkg.svc_data_path}}/PG_VERSION" ]]; then
+{{#if cfg.wal-e.enable }}
+  bootstrap_replica_via_wale
+{{else}}
   bootstrap_repica_via_pg_basebackup
+{{/if}}
   cp {{pkg.svc_config_path}}/recovery.conf {{pkg.svc_data_path}}/
 fi
 {{/if}}
