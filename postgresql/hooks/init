@@ -2,6 +2,7 @@
 
 exec 2>&1
 
+echo 'Executing init hook'
 source {{pkg.svc_config_path}}/functions.sh
 
 {{ #if cfg.wal-e.enable }}
@@ -9,7 +10,7 @@ write_wale_env
 {{ /if }}
 
 init_pgpass
-fix_dir_ownership
+ensure_dir_ownership
 
 {{#unless svc.me.follower ~}}
 if [[ ! -f "{{pkg.svc_data_path}}/PG_VERSION" ]]; then
@@ -28,9 +29,4 @@ if [ $? != 0 ]; then
   echo 'Waiting for leader to become available before initializing'
   exit 1
 fi
-
-echo 'Bootstrapping from leader'
-
-rm -rf {{pkg.svc_data_path}}/*
-pg_basebackup --pgdata={{pkg.svc_data_path}} --xlog-method=stream --dbname='postgres://{{cfg.replication.name}}@{{svc.leader.sys.ip}}:{{cfg.port}}/postgres'
 {{~/if}}

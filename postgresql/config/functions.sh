@@ -4,7 +4,7 @@ init_pgpass() {
   chmod 0600 {{pkg.svc_config_path}}/.pgpass
 }
 
-fix_dir_ownership() {
+ensure_dir_ownership() {
   echo 'Making sure hab user owns var, config and data paths'
   chown -R hab:hab {{pkg.svc_var_path}}
   chown -R hab:hab {{pkg.svc_config_path}}
@@ -44,4 +44,11 @@ DO \$$
 END;
 \$$
 EOF
+}
+
+bootstrap_repica_via_pg_basebackup() {
+  echo 'Bootstrapping replica via pg_basebackup from leader '
+
+  rm -rf {{pkg.svc_data_path}}/*
+  pg_basebackup --pgdata={{pkg.svc_data_path}} --xlog-method=stream --dbname='postgres://{{cfg.replication.name}}@{{svc.leader.sys.ip}}:{{cfg.port}}/postgres'
 }
