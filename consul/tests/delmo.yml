@@ -6,20 +6,20 @@ suite:
 tests:
 - name: standalone
   spec:
-    - wait: standalone-ready
+    - {wait: standalone-ready, timeout: 120}
     - {wait: has-leader, timeout: 120}
     - assert:
       - standalone-persist-value
 - name: cluster
   spec:
-    - wait: cluster-ready
+    - {wait: cluster-ready, timeout: 120}
     - {wait: has-leader, timeout: 120}
     - assert:
       - cluster-persist-value
 - name: cluster-failover
   spec:
-    - wait: cluster-ready
-    - wait: has-leader
+    - {wait: cluster-ready, timeout: 120}
+    - {wait: has-leader, timeout: 120}
     - stop: [consul3]
     - destroy: [consul3]
     - assert:

@@ -3,8 +3,8 @@
 # Maybe use consul info
 if [[ "${1}" == 'cluster' ]]; then
   echo "Finding cluster leader"
-  echo curl -s "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader"
-  export LEADER=$(curl -sL "${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader")
+  echo curl -k -sL "https://${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader"
+  export LEADER=$(curl -k -sL "https://${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader")
   if [[ "${LEADER}" == '""' ]]; then
     echo "No leader currently elected"
     exit 1
@@ -13,4 +13,4 @@ if [[ "${1}" == 'cluster' ]]; then
   exit 0
 fi
 
-curl -sL -o /dev/null -w '%{http_code}\n' ${STANDALONE_HOST}:${CONSUL_PORT}
+curl -k -sL -o /dev/null -w '%{http_code}\n' https://${STANDALONE_HOST}:${CONSUL_PORT}
