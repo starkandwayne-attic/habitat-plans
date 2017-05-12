@@ -1,5 +1,5 @@
 port = '5432'
-max_connections = 500
+max_connections = 100
 log_line_prefix = "%m: "
 log_level = 'ERROR'
 
