@@ -11,6 +11,18 @@ ensure_dir_ownership() {
   chown -R hab:hab {{pkg.svc_data_path}}
 }
 
+write_local_conf() {
+  echo 'Writing postgresql.local.conf file based on memory settings'
+  cat > {{pkg.svc_config_path}}/postgresql.local.conf<<LOCAL
+# Auto-generated memory defaults created at service start by Habitat
+effective_cache_size=$(awk '/MemTotal/ {printf( "%.0f\n", ($2 / 1024 / 4) *3 )}' /proc/meminfo)MB
+shared_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 4 )}' /proc/meminfo)MB
+maintenance_work_mem=$(awk '/MemTotal/ {printf( "%.0f\n", $2 / 1024 / 16 )}' /proc/meminfo)MB
+work_mem=$(awk '/MemTotal/ {printf( "%.0f\n", (($2 / 1024 / 4) *3) / ({{cfg.max_connections}} *3) )}' /proc/meminfo)MB
+temp_buffers=$(awk '/MemTotal/ {printf( "%.0f\n", (($2 / 1024 / 4) *3) / ({{cfg.max_connections}}*3) )}' /proc/meminfo)MB
+LOCAL
+}
+
 write_env_var() {
   echo "$1" > "{{pkg.svc_config_path}}/env/$2"
 }
