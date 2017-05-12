@@ -20,7 +20,7 @@ if [[ ! -f "{{pkg.svc_data_path}}/PG_VERSION" ]]; then
     -E utf8 \
     -D {{pkg.svc_data_path}} \
     --pwfile {{pkg.svc_config_path}}/pwfile \
-    --locale POSIX
+    --locale POSIX {{ #if cfg.data_checksums }}--data-checksums{{ /if }}
 fi
 {{~/unless}}
 {{#if svc.me.follower ~}}

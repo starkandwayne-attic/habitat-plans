@@ -1,7 +1,8 @@
 port = '5432'
 max_connections = 500
-log_line_prefix = "%m: "
+log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,client=%h %r (%x:%e)'
 log_level = 'ERROR'
+data_checksums = true
 
 [superuser]
 name = 'admin'
@@ -11,6 +12,8 @@ password = 'admin'
 [replication]
 name = 'replication'
 password = 'replication'
+synchronous = true
+synchronous_standby_names = '*'
 
 [wal-e]
 enable = false
