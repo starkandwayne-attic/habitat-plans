@@ -71,3 +71,16 @@ bootstrap_replica_via_wale() {
   rm -rf {{pkg.svc_data_path}}/*
   envdir {{pkg.svc_config_path}}/env wal-e backup-fetch {{pkg.svc_data_path}} LATEST
 }
+
+stop_wale_service() {
+  if hab sup status | grep wal-e; then
+    hab service unload starkandwayne/wal-e
+  fi
+}
+
+start_wale_service() {
+  echo "Starting wal-e to perform regular backups"
+  mkdir -p /hab/svc/wal-e/
+  cp {{pkg.svc_config_path}}/wal-e.toml /hab/svc/wal-e/user.toml
+  hab service load starkandwayne/wal-e --group {{svc.group}}
+}

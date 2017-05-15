@@ -1,14 +1,11 @@
 #!/bin/bash
 
-if hab sup status | grep wal-e; then
-  hab service unload starkandwayne/wal-e
-fi
+source {{pkg.svc_config_path}}/functions.sh
+
+stop_wale_service
 
 {{ #unless svc.me.follower }}
 {{ #if cfg.wal-e.enable }}
-echo "Starting wal-e to perform regular backups"
-mkdir -p /hab/svc/wal-e/
-cp {{pkg.svc_config_path}}/wal-e.toml /hab/svc/wal-e/user.toml
-hab service load starkandwayne/wal-e --group {{svc.group}}
+start_wale_service
 {{ /if }}
 {{ /unless }}
