@@ -1,6 +1,28 @@
 #!/bin/bash
 
-set -e
+set -ex
 
-export HOME=/rabbitmq
-rabbitmqctl status -n rabbit@standalone
+echo sleeping
+sleep 2
+echo waking up
+#curl
+# curl -u admin:admin http://standalone:15672/api/healthchecks/node/rabbit@standalone
+
+RET=1
+curl -s -u admin:admin http://standalone:15672/api/nodes | sed 's/^.\(.*\).$/\1/' | sed 's/,{"cluster_links/{"cluster_links/g' | jq -r '.name' | while read OUTPUT
+# for OUTPUT in rabbit@standalone rabbit@cluster1
+  do
+      curl --fail -u admin:admin http://standalone:15672/api/healthchecks/node/$OUTPUT
+      echo $OUTPUT
+      RET=$?
+  done || exit $RET
+
+# curl -s -u admin:admin http://standalone:15672/api/nodes | sed 's/^.\(.*\).$/\1/' | sed 's/,{"cluster_links/{"cluster_links/g' | jq -r '.name' |  while read output
+#   do
+#     curl --fail -s -u admin:admin http://standalone:15672/api/healthchecks/node/$OUTPUT > /dev/null
+#     if [ $? -eq 0 ]; then
+#       echo "node $OUTPUT is up"
+#     else
+#       echo "node $OUTPUT is down"
+#     fi
+#   done
