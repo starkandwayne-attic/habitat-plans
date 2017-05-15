@@ -5,7 +5,7 @@ pkg_name=shield-proxy
 pkg_origin=starkandwayne
 pkg_maintainer="Ramon Makkelie <makkelie@starkandwayne.com>"
 pkg_license=('Apache-2.0')
-pkg_version=0.10.7
+pkg_version=0.10.8
 pkg_source=nosuchfile.tar.xz
 
 pkg_svc_user=root

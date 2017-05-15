@@ -1,12 +1,12 @@
 pkg_name=shield
 pkg_origin=starkandwayne
-pkg_version="0.10.7"
+pkg_version="0.10.8"
 pkg_maintainer="Justin Carter <justin@starkandwayne.com>"
 pkg_license=('MIT')
 pkg_description="A standalone system that can perform backup and restore functions for a wide variety of pluggable data systems."
 pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.gz"
-pkg_shasum="34cbdeffa171cd7e2fc49e150ab92f6cd2bde311b1d1e81bbf846328793e1831"
+pkg_shasum="919324a9fbf307d99c205bf252cf6df72fe6ad43db7cef96c78c299e1b62b36a"
 
 pkg_deps=(core/bash core/glibc starkandwayne/postgresql starkandwayne/shield-proxy)
 pkg_build_deps=(core/go core/git core/gcc core/make core/gox)
