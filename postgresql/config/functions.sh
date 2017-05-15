@@ -58,7 +58,7 @@ END;
 EOF
 }
 
-bootstrap_repica_via_pg_basebackup() {
+bootstrap_replica_via_pg_basebackup() {
   echo 'Bootstrapping replica via pg_basebackup from leader '
 
   rm -rf {{pkg.svc_data_path}}/*
