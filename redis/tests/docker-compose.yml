@@ -51,9 +51,10 @@ services:
     command: "start starkandwayne/shield --peer database --bind database:postgresql.shield"
     links:
     - database
+    - agent
   agent: # to autoprovision the dependant store
     image: starkandwayne/shield-agent
-    command: "start starkandwayne/shield-agent --bind daemon:shield.default --peer shield"
+    command: "start starkandwayne/shield-agent --bind daemon:shield.default --peer database"
     environment:
       HAB_SHIELD_AGENT: |
         [[stores]]
@@ -69,7 +70,7 @@ services:
         [retention-policies]
         shortterm='86400'
     links:
-    - shield
+    - database
   database:
     image: starkandwayne/postgresql
     command: "start starkandwayne/postgresql --group shield"
