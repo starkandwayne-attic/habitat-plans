@@ -44,7 +44,7 @@ write_wale_env() {
 
 setup_replication_user_in_master() {
   echo 'Making sure replication role exists on Master'
-  psql -U {{cfg.superuser.password}}  -h {{svc.leader.sys.ip}} -p {{cfg.port}} postgres >/dev/null 2>&1 << EOF
+  psql -U {{cfg.superuser.name}}  -h {{svc.leader.sys.ip}} -p {{cfg.port}} postgres >/dev/null 2>&1 << EOF
 DO \$$
   BEGIN
   PERFORM * FROM pg_authid WHERE rolname = '{{cfg.replication.name}}';
