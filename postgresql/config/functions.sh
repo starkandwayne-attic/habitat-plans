@@ -1,5 +1,4 @@
 init_pgpass() {
-  echo 'Exporting PGPASSFILE and setting permissions to 0600'
   export PGPASSFILE="{{pkg.svc_config_path}}/.pgpass"
   chmod 0600 {{pkg.svc_config_path}}/.pgpass
 }
@@ -64,8 +63,18 @@ SELECT CASE WHEN pg_is_in_recovery()
   THEN GREATEST(pg_xlog_location_diff(COALESCE(pg_last_xlog_receive_location(), '0/0'), '0/0')::bigint,
                 pg_xlog_location_diff(pg_last_xlog_replay_location(), '0/0')::bigint)
   ELSE pg_xlog_location_diff(pg_current_xlog_location(), '0/0')::bigint
-END
+END;
 EOF
+}
+
+master_xlog_position() {
+  psql -U {{cfg.superuser.name}} -h {{svc.leader.sys.ip}} -p {{cfg.port}} postgres -t <<EOF | tr -d '[:space:]'
+SELECT pg_xlog_location_diff(pg_current_xlog_location(), '0/0')::bigint;
+EOF
+}
+
+master_ready() {
+  pg_isready -U {{cfg.superuser.name}} -h {{svc.leader.sys.ip}} -p {{cfg.port}}
 }
 
 bootstrap_replica_via_pg_basebackup() {
