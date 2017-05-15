@@ -17,26 +17,10 @@ tests:
   - wait: is-ready-cluster
   - exec:
     - persist-value-cluster
-  - stop: [pg1, pg2]
-  - destroy: [pg1, pg2]
-  - wait: leader-is-gone
-  - assert:
-    - retrieve-value-cluster
-  - start: [pg1, pg2]
-  - wait: is-ready-cluster
   - assert:
     - retrieve-value-pg1
-    - persist-other-value-cluster
-    - retrieve-other-value-cluster
-  - stop: [pg3]
-  - wait: leader-is-gone
-  - assert:
-    - retrieve-other-value-cluster
-  - start: [pg3]
-  - wait: is-ready-cluster
-  - assert:
-    - persist-value-cluster
-
+    - retrieve-value-pg2
+    - retrieve-value-pg3
 
 tasks:
 - name: is-ready-standalone
@@ -46,13 +30,18 @@ tasks:
 - name: retrieve-value-standalone
   command: /scripts/retrieve-value standalone foo bar
 
+- name: retrieve-value-pg1
+  command: /scripts/retrieve-value pg1 foo bar
+- name: retrieve-value-pg2
+  command: /scripts/retrieve-value pg2 foo bar
+- name: retrieve-value-pg3
+  command: /scripts/retrieve-value pg3 foo bar
+
 - name: is-ready-cluster
   command: /scripts/pg-ready cluster
 - name: persist-value-cluster
   command: /scripts/persist-value cluster foo bar
 - name: retrieve-value-cluster
-  command: /scripts/retrieve-value cluster foo bar
-- name: retrieve-value-pg1
   command: /scripts/retrieve-value cluster foo bar
 - name: persist-other-value-cluster
   command: /scripts/persist-value cluster foo other
