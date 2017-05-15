@@ -9,7 +9,7 @@ stop_wale_service
 {{ #unless svc.me.follower }}
 if [ -f {{pkg.svc_data_path}}/recovery.conf ]; then
   echo "Promoting database"
-  until pg_isready -U {{cfg.superuser.name}} -h localhost; do
+  until pg_isready -U {{cfg.superuser.name}} -h localhost -p {{cfg.port}}; do
     echo "Waiting for database to start"
     sleep 1
   done
