@@ -58,6 +58,16 @@ END;
 EOF
 }
 
+local_xlog_position() {
+  psql -U {{cfg.superuser.name}} -h localhost -p {{cfg.port}} postgres -t <<EOF | tr -d '[:space:]'
+SELECT CASE WHEN pg_is_in_recovery()
+  THEN GREATEST(pg_xlog_location_diff(COALESCE(pg_last_xlog_receive_location(), '0/0'), '0/0')::bigint,
+                pg_xlog_location_diff(pg_last_xlog_replay_location(), '0/0')::bigint)
+  ELSE pg_xlog_location_diff(pg_current_xlog_location(), '0/0')::bigint
+END
+EOF
+}
+
 bootstrap_replica_via_pg_basebackup() {
   echo 'Bootstrapping replica via pg_basebackup from leader '
 
