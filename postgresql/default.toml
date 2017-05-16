@@ -11,7 +11,7 @@ password = 'admin'
 [replication]
 name = 'replication'
 password = 'replication'
-maximum_lag_on_failover = 1048576
+lag_health_threshold = 1048576
 
 [wal-e]
 enable = false
