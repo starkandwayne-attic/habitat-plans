@@ -42,7 +42,7 @@ Due to issues in habitat core such as https://github.com/habitat-sh/habitat/issu
 
 ## Shield integration
 
-If you have a shield daemon instance running (supervised via habitat or not) you can add configuration that will run regular backups and bootstrap an instance from a pre-existing backup. A `store` entity must be pre-configured in shield for this to work. In the example below a shield-agent is started just for this purpose.
+If you have a shield daemon running (supervised via habitat or not) you can add configuration that will run regular backups and bootstrap an instance from a pre-existing backup. A `store` entity must be pre-configured in shield for this to work. In the example below a shield-agent is started just for this purpose.
 
 Demo:
 
@@ -103,7 +103,7 @@ docker-compose up
 
 Once everything has come up we can write a value to redis and take a backup from another terminal:
 ```
-$ redis-cli -a passwor SET hello world
+$ redis-cli -a password SET hello world
 
 OK
 $ shield create-backend hab https://localhost
