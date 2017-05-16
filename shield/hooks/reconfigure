@@ -1,10 +1,11 @@
 #!/bin/bash
 
+echo "Restarting shield-proxy"
+
 if hab sup status | grep shield-proxy; then
   hab service unload starkandwayne/wal-e
 fi
 
-echo "Starting shield-proxy"
 mkdir -p /hab/svc/shield-proxy/
 cp {{pkg.svc_config_path}}/shield-proxy.toml /hab/svc/shield-proxy/user.toml
 hab service load starkandwayne/shield-proxy --group {{svc.group}} --force
