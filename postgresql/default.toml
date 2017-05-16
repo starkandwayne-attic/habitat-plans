@@ -12,7 +12,6 @@ password = 'admin'
 [replication]
 name = 'replication'
 password = 'replication'
-synchronous = false
 lag_health_threshold = 1048576
 
 [wal-e]
