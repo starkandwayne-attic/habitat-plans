@@ -63,7 +63,7 @@ services:
         bootstrap_from_backup=true
         backups_schedule='daily'
         backups_retention='shortterm'
-        backups_store='default'
+        backups_store='local'
     links:
     - shield
   shield:
@@ -80,7 +80,7 @@ services:
     environment:
       HAB_SHIELD_AGENT: |
         [[stores]]
-        name='default'
+        name='local'
         plugin='fs'
         [stores.config]
         base_dir='/backups'
