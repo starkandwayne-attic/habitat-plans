@@ -46,6 +46,7 @@ setup_replication_user_in_master() {
   psql -U {{cfg.superuser.name}}  -h {{svc.leader.sys.ip}} -p {{cfg.port}} postgres >/dev/null 2>&1 << EOF
 DO \$$
   BEGIN
+  SET synchronous_commit = off;
   PERFORM * FROM pg_authid WHERE rolname = '{{cfg.replication.name}}';
   IF FOUND THEN
     ALTER ROLE "{{cfg.replication.name}}" WITH REPLICATION LOGIN PASSWORD '{{cfg.replication.password}}';
