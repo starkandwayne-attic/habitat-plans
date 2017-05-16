@@ -12,12 +12,12 @@ You will need to provide 3 variables
 - bind='0.0.0.0'
 
 ```
-start starkandwayne/mysql --group wordpress
+hab start starkandwayne/mysql --group wordpress
 ```
 
 ### wordpress
 ```
-start starkandwayne/wordpress --peer database --bind database:mysql.wordpress
+hab start starkandwayne/wordpress --peer database --bind database:mysql.wordpress
 ```
 
 ### docker-compose example
