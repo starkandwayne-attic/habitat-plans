@@ -14,7 +14,6 @@ name = '{{svc.service}}-{{svc.group}}'
 plugin = 'fs'
 [targets.config]
 base_dir = '{{pkg.svc_data_path}}'
-bsdtar = '{{pkgPathFor "core/libarchive"}}/bin/bsdtar'
 
 {{ #if cfg.backups_schedule_value }}
 [schedules]
