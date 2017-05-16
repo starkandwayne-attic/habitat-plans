@@ -9,18 +9,33 @@ pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.
 pkg_shasum="919324a9fbf307d99c205bf252cf6df72fe6ad43db7cef96c78c299e1b62b36a"
 pkg_dirname="shield-${pkg_version}"
 
-pkg_deps=(core/jq-static core/libarchive core/cacerts core/coreutils core/curl core/bash core/bzip2 core/glibc)
-pkg_build_deps=(core/go core/git core/gcc core/make core/gox)
+pkg_deps=(
+  core/bash
+  core/bzip2
+  core/cacerts
+  core/coreutils
+  core/curl
+  core/glibc
+  core/jq-static
+  core/libarchive
+)
+pkg_build_deps=(
+  core/gcc
+  core/git
+  core/go
+  core/gox
+  core/make
+)
 
 pkg_bin_dirs=(bin)
 
 pkg_exports=(
-[port]=port
+  [port]=port
 )
 pkg_exposes=(port)
 
 pkg_binds_optional=(
-[daemon]="port provisioning_key"
+  [daemon]="port provisioning_key"
 )
 
 pkg_svc_user="root"
