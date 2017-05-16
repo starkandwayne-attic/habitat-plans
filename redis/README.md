@@ -20,7 +20,6 @@ This plan supports running clustered Redis by utilizing habitats native leader e
 
 You can run an example cluster via docker-compose:
 ```
-mkdir redis-hab-demo && cd redis-hab-demo
 cat <<EOF > docker-compose.yml
 version: '3'
 
@@ -48,6 +47,7 @@ If you have a shield daemon running (supervised via habitat or not) you can add 
 Demo:
 
 ```
+mkdir redis-hab-demo && cd redis-hab-demo
 cat <<EOF > docker-compose.yml
 version: '3'
 
