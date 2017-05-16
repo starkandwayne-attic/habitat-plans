@@ -1,6 +1,6 @@
 #!/bin/bash
 
-leader=`curl -sL ${STANDALONE_HOST}:${CONSUL_PORT}/v1/status/leader`
+leader=`curl -sL https://${STANDALONE_HOST}:${CONSUL_PORT}/v1/status/leader`
 if [ ${leader} == '""' ]; then
   echo "leader is unset: ${leader}";
   exit 0

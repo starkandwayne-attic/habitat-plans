@@ -30,4 +30,4 @@ services:
     environment:
       STANDALONE_HOST: "standalone"
       CLUSTER_HOST: "consul1"
-      CONSUL_PORT: "8500"
+      CONSUL_PORT: "4443"

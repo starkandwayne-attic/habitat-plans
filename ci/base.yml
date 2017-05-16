@@ -48,7 +48,9 @@ jobs:
   - task: docker-machine-setup
     config:
       platform: linux
-      image: docker:///bodymindarts/docker-machine-setup
+      image_resource:
+        type: docker-image
+        source: { repository: bodymindarts/docker-machine-setup }
       params:
         MACHINE_NAME: (( grab meta.delmo.machine_name ))
         DIGITALOCEAN_ACCESS_TOKEN: (( grab meta.digitalocean.access_token ))

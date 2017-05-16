@@ -69,7 +69,9 @@ jobs:
     privileged: true
     config:
       platform: linux
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        type: docker-image
+        source: { repository: starkandwayne/habitat-plans-pipeline }
       inputs:
       - name: ${package_name}-plan
       - name: habitat-plans-ci
@@ -187,7 +189,9 @@ jobs:
   - task: test-${package_name}
     config:
       platform: linux
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        type: docker-image
+        source: { repository: bodymindarts/delmo-concourse }
       params:
         MACHINE_EXPORT_AWS_ACCESS_KEY_ID: (( grab meta.aws.access_key_id ))
         MACHINE_EXPORT_AWS_SECRET_ACCESS_KEY: (( grab meta.aws.secret_access_key ))

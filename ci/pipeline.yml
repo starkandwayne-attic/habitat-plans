@@ -110,7 +110,10 @@ jobs:
 - name: docker-machine-setup
   plan:
   - config:
-      image: docker:///bodymindarts/docker-machine-setup
+      image_resource:
+        source:
+          repository: bodymindarts/docker-machine-setup
+        type: docker-image
       params:
         AWS_ACCESS_KEY_ID: REDACTED
         AWS_BUCKET: docker-machine-exports
@@ -133,7 +136,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: envdir-plan
       - name: habitat-plans-ci
@@ -199,7 +205,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: mysql-plan
       - name: habitat-plans-ci
@@ -245,7 +254,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: postgresql-plan
       - name: habitat-plans-ci
@@ -291,7 +303,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: rabbitmq-plan
       - name: habitat-plans-ci
@@ -339,7 +354,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: redis-plan
       - name: habitat-plans-ci
@@ -395,7 +413,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: shield-agent-plan
       - name: habitat-plans-ci
@@ -443,7 +464,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: shield-plan
       - name: habitat-plans-ci
@@ -489,7 +513,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: shield-proxy-plan
       - name: habitat-plans-ci
@@ -535,7 +562,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: varnish-plan
       - name: habitat-plans-ci
@@ -585,7 +615,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: wal-e-plan
       - name: habitat-plans-ci
@@ -633,7 +666,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: wordpress-plan
       - name: habitat-plans-ci
@@ -675,7 +711,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: wordpress-proxy-plan
       - name: habitat-plans-ci
@@ -715,7 +754,10 @@ jobs:
       trigger: true
     - get: habitat-plans-ci
   - config:
-      image: docker:///starkandwayne/habitat-plans-pipeline
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
       inputs:
       - name: consul-plan
       - name: habitat-plans-ci
@@ -1028,7 +1070,10 @@ jobs:
       passed:
       - build-consul
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: consul-tests
       params:
@@ -1076,7 +1121,10 @@ jobs:
       passed:
       - build-postgresql
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: postgresql-tests
       params:
@@ -1124,7 +1172,10 @@ jobs:
       passed:
       - build-rabbitmq
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: rabbitmq-tests
       params:
@@ -1172,7 +1223,10 @@ jobs:
       passed:
       - build-redis
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: redis-tests
       params:
@@ -1234,7 +1288,10 @@ jobs:
       passed:
       - build-shield-agent
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: shield-tests
       params:
@@ -1282,7 +1339,10 @@ jobs:
       passed:
       - build-varnish
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: varnish-tests
       params:
@@ -1330,7 +1390,10 @@ jobs:
       passed:
       - build-wordpress
   - config:
-      image: docker:///bodymindarts/delmo-concourse
+      image_resource:
+        source:
+          repository: bodymindarts/delmo-concourse
+        type: docker-image
       inputs:
       - name: wordpress-tests
       params:

@@ -9,14 +9,14 @@ else
 fi
 
 # Put a value into Consul
-echo "Running: curl -sL -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'"
-echo `curl -s -X PUT ${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'`
+echo "Running: curl -k -sL -X PUT https://${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'"
+echo `curl -k -s -X PUT https://${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'`
 
 # Grab the value from Consul
 # echo "Running: curl $consul_host:${CONSUL_PORT}/v1/kv/moo"
-echo `curl -sL $consul_host:${CONSUL_PORT}/v1/kv/moo`
+echo `curl -k -sL https://$consul_host:${CONSUL_PORT}/v1/kv/moo`
 
-moovalue=`curl -sL $consul_host:${CONSUL_PORT}/v1/kv/moo | jq '.[0].Value' | base64 -d`
+moovalue=`curl -k -sL https://$consul_host:${CONSUL_PORT}/v1/kv/moo | jq '.[0].Value' | base64 -d`
 if [ $moovalue == 'rar' ]; then exit 0; fi
 
 exit 1

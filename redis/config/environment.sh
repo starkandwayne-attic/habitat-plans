@@ -1,6 +1,6 @@
 #!/bin/bash
 
-{{ #if bind.has_shield }}
+{{ #if bind.shield.first }}
 {{ #with bind.shield.first }}
 SHIELD_ENDPOINT='https://{{sys.ip}}:{{cfg.port}}'
 SHIELD_API_TOKEN='{{cfg.provisioning_key}}'
