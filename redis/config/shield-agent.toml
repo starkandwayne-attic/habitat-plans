@@ -1,4 +1,4 @@
-{{ #if bind.has_shield }}
+{{ #if bind.shield.first }}
 {{ #with bind.shield.first }}
 shield_endpoint = 'https://{{sys.ip}}:{{cfg.port}}'
 provisioning_key = '{{cfg.provisioning_key}}'
