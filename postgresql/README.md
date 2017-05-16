@@ -6,11 +6,11 @@ This PostgreSQL plan supports standalone and clustered modes as well as continuo
 
 To run a standalone PostgreSQL instance simply run
 ```
-hab start starkandwayne/PostgreSQL
+hab start starkandwayne/postgresql
 ```
 or
 ```
-docker run starkandwayne/PostgreSQL
+docker run starkandwayne/postgresql
 ```
 if you want to bring up the pre-exported docker image.
 
