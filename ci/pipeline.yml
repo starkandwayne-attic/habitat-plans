@@ -1639,6 +1639,7 @@ resources:
   source:
     ignore_paths:
     - consul/tests/*
+    - consul/README.md
     paths:
     - consul/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1670,6 +1671,7 @@ resources:
   source:
     ignore_paths:
     - envdir/tests/*
+    - envdir/README.md
     paths:
     - envdir/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1707,6 +1709,7 @@ resources:
   source:
     ignore_paths:
     - mysql/tests/*
+    - mysql/README.md
     paths:
     - mysql/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1738,6 +1741,7 @@ resources:
   source:
     ignore_paths:
     - postgresql/tests/*
+    - postgresql/README.md
     paths:
     - postgresql/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1775,6 +1779,7 @@ resources:
   source:
     ignore_paths:
     - rabbitmq/tests/*
+    - rabbitmq/README.md
     paths:
     - rabbitmq/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1812,6 +1817,7 @@ resources:
   source:
     ignore_paths:
     - redis/tests/*
+    - redis/README.md
     paths:
     - redis/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1843,6 +1849,7 @@ resources:
   source:
     ignore_paths:
     - shield-agent/tests/*
+    - shield-agent/README.md
     paths:
     - shield-agent/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1874,6 +1881,7 @@ resources:
   source:
     ignore_paths:
     - shield-proxy/tests/*
+    - shield-proxy/README.md
     paths:
     - shield-proxy/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1911,6 +1919,7 @@ resources:
   source:
     ignore_paths:
     - shield/tests/*
+    - shield/README.md
     paths:
     - shield/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1948,6 +1957,7 @@ resources:
   source:
     ignore_paths:
     - varnish/tests/*
+    - varnish/README.md
     paths:
     - varnish/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -1979,6 +1989,7 @@ resources:
   source:
     ignore_paths:
     - wal-e/tests/*
+    - wal-e/README.md
     paths:
     - wal-e/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -2016,6 +2027,7 @@ resources:
   source:
     ignore_paths:
     - wordpress-proxy/tests/*
+    - wordpress-proxy/README.md
     paths:
     - wordpress-proxy/*
     uri: https://github.com/starkandwayne/habitat-plans.git
@@ -2053,6 +2065,7 @@ resources:
   source:
     ignore_paths:
     - wordpress/tests/*
+    - wordpress/README.md
     paths:
     - wordpress/*
     uri: https://github.com/starkandwayne/habitat-plans.git

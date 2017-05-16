@@ -130,7 +130,7 @@ resources:
   source:
     uri: https://github.com/starkandwayne/habitat-plans.git
     paths: [${package_name}/*]
-    ignore_paths: [${package_name}/tests/*]
+    ignore_paths: [${package_name}/tests/*, ${package_name}/README.md]
 
 - name: ${hab_origin}-${package_name}-image
   type: docker-image
