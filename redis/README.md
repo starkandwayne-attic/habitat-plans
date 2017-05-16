@@ -53,6 +53,8 @@ version: '3'
 services:
   redis:
     image: starkandwayne/redis:edge
+    volumes:
+    - backups-volume:/backups
     ports:
     - 6379:6379
     command: "start starkandwayne/redis --peer shield --group standalone --bind shield:shield.default"
@@ -63,16 +65,16 @@ services:
         backups_retention='shortterm'
         backups_store='default'
   shield:
+    ports:
+    - 443:443
     image: starkandwayne/shield
     command: "start starkandwayne/shield --peer database --bind database:postgresql.shield"
     links:
     - database
     - agent
-  agent: # to autoprovision the dependant store
+  agent: # to autoprovision the dependant entities
     image: starkandwayne/shield-agent
     command: "start starkandwayne/shield-agent --bind daemon:shield.default --peer database"
-    volumes:
-      - backups-volume:/backups
     environment:
       HAB_SHIELD_AGENT: |
         [[stores]]
