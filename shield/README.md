@@ -3,7 +3,7 @@
 This is a habitat plan for SHIELD a standalone system that can perform backup and restore functions for a wide variety of pluggable data systems. Please checkout the [github repo](https://github.com/starkandwayne/shield) for more information on the internals and how to use it.
 
 ## Dependencies
-- shield-proxy (packed and run as side-car with shield)
+- shield-proxy (packaged and run as side-car with shield)
 - postgresql
 
 ## Running shield
@@ -31,6 +31,8 @@ HAB_SHIELD_AGENT=$(cat agent-config.toml) hab start starkandwayne/shield-agent -
 
 ## docker-compose example
 
+Here is how to bring up a complete SHIELD installation with docker-compose
+
 ```
 cat <<EOF >docker-compose.yml
 version: '3'
@@ -49,11 +51,27 @@ services:
     environment:
       HAB_SHIELD_AGENT: |
         [schedules]
-        auto = "daily 4am"
+        daily='daily 4am'
+        [retention-policies]
+        shortterm='86400'
+    links:
+    - shield
   database:
     image: starkandwayne/postgresql:latest
     command: "start starkandwayne/postgresql --group shield"
 EOF
 
 docker-compose up
+```
+
+Once the containers have come up you can use the shield cli to check that the daily schedule was provisioned.
+```
+$ shield create-backend hab https://localhost
+Successfully created backend 'hab', pointing to 'https://localhost'
+
+Using https://localhost (hab) as SHIELD backend
+$ shield schedules -k
+Name  Summary  Frequency / Interval (UTC)
+====  =======  ==========================
+auto           daily 4am
 ```
