@@ -44,8 +44,6 @@ Due to issues in habitat core such as https://github.com/habitat-sh/habitat/issu
 
 If you have a shield daemon running (supervised via habitat or not) you can add configuration that will run regular backups and bootstrap an instance from a pre-existing backup. A `store` entity must be pre-configured in shield for this to work. In the example below a shield-agent is started just for this purpose.
 
-Demo:
-
 ```
 mkdir redis-hab-demo && cd redis-hab-demo
 cat <<EOF > docker-compose.yml
