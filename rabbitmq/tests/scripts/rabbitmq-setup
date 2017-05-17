@@ -1,5 +1,3 @@
 #!/bin/bash
 
 set -e
-
-curl --fail -u admin:admin http://standalone:15672/api/healthchecks/node/rabbit@stand

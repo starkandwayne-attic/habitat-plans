@@ -21,7 +21,7 @@ else
   rabbitmqctl stop_app
 
   echo "Joining cluster {{svc.rabbitmq.cluster_with}}"
-  rabbitmqctl join_cluster {{cfg.rabbitmq.name}}@{{cfg.rabbitmq.cluster_with}}
+  rabbitmqctl join_cluster {{#if cfg.rabbitmq.ram}} --ram {{/if}} {{cfg.rabbitmq.name}}@{{cfg.rabbitmq.cluster_with}}
 
   rabbitmqctl start_app
 

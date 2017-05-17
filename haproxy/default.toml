@@ -1,0 +1,52 @@
+maxconn = 32
+httpchk = "GET /"
+
+[defaults]
+timeout_connect = "5000ms"
+timeout_client = "50000ms"
+timeout_server = "50000ms"
+
+[[default_options]]
+option = "tcplog"
+
+[[default_options]]
+option = "redispatch"
+
+[backend]
+balance = "leastconn"
+timeout_client = "3h"
+timeout_server = "3h"
+option = "clitcpka"
+checks = "check inter 5s rise 2 fall 3"
+
+[front-end]
+listen = "*"
+port = 80
+mode = "http"
+
+[status]
+enabled = false
+listen = "*"
+port = 9000
+user = "admin"
+password = "password"
+uri = "/haproxy-stats"
+
+[[server]]
+name = "first"
+host_or_ip = "172.17.0.3"
+port = "8000"
+
+[[server]]
+name = "second"
+host_or_ip = "172.17.0.4"
+port = "8000"
+
+# optional
+[[listen_server]]
+name = "management"
+port = "15672"
+listen = "*"
+mode = "http"
+balance = "roundrobin"
+httpchk = "GET /"

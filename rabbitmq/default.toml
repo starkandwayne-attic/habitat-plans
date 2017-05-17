@@ -20,6 +20,7 @@ default_user_tags = ["administrator", "management"]
 
 cluster_with=""
 name="rabbit"
+ram=false
 
 [rabbitmq.management]
 
