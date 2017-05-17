@@ -103,12 +103,12 @@ docker-compose up
 Once everything has come up we can write a value to redis and take a backup from another terminal:
 ```
 $ redis-cli -a password SET hello world
-
 OK
 $ shield create-backend hab https://localhost
 Successfully created backend 'hab', pointing to 'https://localhost'
 
 Using https://localhost (hab) as SHIELD backend
+$ export SHIELD_API_TOKEN=autoprovision
 $ shield jobs -k
  Name           P?  Summary  Retention Policy  Schedule  Remote IP          Target
  ====           ==  =======  ================  ========  =========          ======
