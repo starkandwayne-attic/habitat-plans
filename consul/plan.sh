@@ -22,6 +22,7 @@ pkg_exports=(
 
 pkg_exposes=(port-dns port-http port-rpc)
 pkg_svc_user=root
+pkg_svc_group=${pkg_svc_user}
 
 do_unpack() {
   cd "${HAB_CACHE_SRC_PATH}" || exit

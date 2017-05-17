@@ -4,26 +4,27 @@ services:
   standalone:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul"
-    # command: "start starkandwayne/rabbitmq --config-from /config"
-    # volumes:
-    #   - ../:/config
     environment:
       HAB_CONSUL: |
-        [bootstrap]
-        expect = 1
+        bootstrap_expect=1
   consul1:
     image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer consul1"
+    command: "start starkandwayne/consul --group cluster --peer standalone"
     environment:
       HAB_CONSUL: |
-        [bootstrap]
-        expect = 3
+        bootstrap_expect=3
   consul2:
     image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer consul1"
+    command: "start starkandwayne/consul --group cluster --peer standalone"
+    environment:
+      HAB_CONSUL: |
+        bootstrap_expect=3
   consul3:
     image: starkandwayne/consul:edge
-    command: "start starkandwayne/consul --group cluster --peer consul1"
+    command: "start starkandwayne/consul --group cluster --peer standalone"
+    environment:
+      HAB_CONSUL: |
+        bootstrap_expect=3
   tests:
     image: starkandwayne-consul-tests
     build: ./
