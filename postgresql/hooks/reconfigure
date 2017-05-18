@@ -1,4 +1,4 @@
-#!/bin/sh
+#!{{pkgPathFor "core/bash"}}/bin/bash
 
 source {{pkg.svc_config_path}}/functions.sh
 
@@ -21,4 +21,3 @@ fi
 start_wale_service
 {{ /if }}
 {{~/unless}}
-

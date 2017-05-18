@@ -11,6 +11,7 @@ pkg_deps=(
   starkandwayne/wal-e
   starkandwayne/envdir
   core/postgresql/${pkg_version}
+  core/bash
 )
 pkg_exports=(
   [port]=port

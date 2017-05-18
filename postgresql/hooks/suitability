@@ -1,4 +1,4 @@
-#!/bin/bash
+#!{{pkgPathFor "core/bash"}}/bin/bash
 
 source {{pkg.svc_config_path}}/functions.sh
 
