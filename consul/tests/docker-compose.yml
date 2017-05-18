@@ -6,29 +6,45 @@ services:
     command: "start starkandwayne/consul"
     environment:
       HAB_CONSUL: |
-        bootstrap_expect=1
+        bootstrap_expect = 1
   consul1:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul --group cluster --peer standalone"
     environment:
       HAB_CONSUL: |
-        bootstrap_expect=3
+        bootstrap_expect = 3
   consul2:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul --group cluster --peer standalone"
     environment:
       HAB_CONSUL: |
-        bootstrap_expect=3
+        bootstrap_expect = 3
   consul3:
     image: starkandwayne/consul:edge
     command: "start starkandwayne/consul --group cluster --peer standalone"
     environment:
       HAB_CONSUL: |
-        bootstrap_expect=3
+        bootstrap_expect = 3
+  consul4:
+    image: starkandwayne/consul:edge
+    command: "start starkandwayne/consul --group cluster --peer standalone"
+    environment:
+      HAB_CONSUL: |
+        server = false
+  consul5:
+    image: starkandwayne/consul:edge
+    command: "start starkandwayne/consul --group cluster --peer standalone"
+    environment:
+      HAB_CONSUL: |
+        server = false
   tests:
     image: starkandwayne-consul-tests
     build: ./
     environment:
       STANDALONE_HOST: "standalone"
-      CLUSTER_HOST: "consul1"
+      CLUSTER_HOST1: "consul1"
+      CLUSTER_HOST2: "consul2"
+      CLUSTER_HOST3: "consul3"
+      CLUSTER_HOST4: "consul4"
+      CLUSTER_HOST5: "consul5"
       CONSUL_PORT: "4443"

@@ -1,7 +1,15 @@
 #!/bin/bash
 
 echo "checking for leader"
-leader=`curl -k -sL https://${CLUSTER_HOST}:${CONSUL_PORT}/v1/status/leader`
+if [[ "${1}" == 'cluster' ]]; then
+  consul_host=${CLUSTER_HOST1}
+  echo "Consul cluster address set to ${consul_host}:${CONSUL_PORT}"
+else
+  consul_host=${STANDALONE_HOST}
+  echo "Consul standalone address set to ${consul_host}:${CONSUL_PORT}"
+fi
+
+leader=`curl -k -sL https://${consul_host}:${CONSUL_PORT}/v1/status/leader`
 
 if [ ${leader} == '""' ]; then
   echo "leader is unset: ${leader}";

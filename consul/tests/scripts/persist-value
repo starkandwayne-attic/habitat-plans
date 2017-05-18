@@ -1,22 +1,24 @@
 #!/bin/bash
 
 if [[ "${1}" == 'cluster' ]]; then
-  consul_host=${CLUSTER_HOST}
+  consul_host=${CLUSTER_HOST1}
   echo "Consul cluster address set to ${consul_host}:${CONSUL_PORT}"
 else
   consul_host=${STANDALONE_HOST}
   echo "Consul standalone address set to ${consul_host}:${CONSUL_PORT}"
 fi
 
-# Put a value into Consul
-echo "Running: curl -k -sL -X PUT https://${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'"
-echo `curl -k -s -X PUT https://${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'rar'`
+# make up a random value to store and retrieve
+value=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z' | fold -w 10 | head -n 1)
+
+# Put a value into each Consul
+echo "curl -k -s -X PUT https://${consul_host}:${CONSUL_PORT}/v1/kv/moo -d'${value}'"
+echo $(curl -k -s -X PUT https://${consul_host}:${CONSUL_PORT}/v1/kv/moo -d"${value}")
 
 # Grab the value from Consul
-# echo "Running: curl $consul_host:${CONSUL_PORT}/v1/kv/moo"
-echo `curl -k -sL https://$consul_host:${CONSUL_PORT}/v1/kv/moo`
+echo "curl -k -sL https://$consul_host:${CONSUL_PORT}/v1/kv/moo"
+moovalue=$(curl -k -sL https://$consul_host:${CONSUL_PORT}/v1/kv/moo | jq '.[0].Value' | base64 -d)
 
-moovalue=`curl -k -sL https://$consul_host:${CONSUL_PORT}/v1/kv/moo | jq '.[0].Value' | base64 -d`
-if [ $moovalue == 'rar' ]; then exit 0; fi
+if [ $moovalue == $value ]; then exit 0; fi
 
 exit 1

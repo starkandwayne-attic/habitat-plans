@@ -20,8 +20,14 @@ tests:
   spec:
     - {wait: cluster-ready, timeout: 120}
     - {wait: has-leader, timeout: 120}
+    - assert:
+      - cluster-persist-value
     - stop: [consul3]
     - destroy: [consul3]
+    - assert:
+      - cluster-persist-value
+    - add: [consul3]
+    - start: [consul3]
     - assert:
       - cluster-persist-value
 

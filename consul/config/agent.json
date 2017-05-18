@@ -9,6 +9,9 @@
   "log_level": "INFO",
   "domain": "{{cfg.domain}}",
   "server": {{cfg.server}},
+  {{~#if cfg.server }}
+  "bootstrap_expect": {{cfg.bootstrap_expect}},
+  {{/if}}
   "rejoin_after_leave": true,
   "disable_update_check": true,
   "disable_anonymous_signature": true,
@@ -28,7 +31,7 @@
 
   "start_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
   "retry_join": [{{#each svc.members}}{{#if @index}},{{/if}}"{{sys.ip}}"{{/each}}],
-  "bootstrap_expect": {{cfg.bootstrap_expect}},
+
 
   {{~#if cfg.tls.ssl_key cfg.tls.ssl_cert cfg.tls.ssl_ca }}
   "ca_path": "{{pkg.path}}/cacerts",
