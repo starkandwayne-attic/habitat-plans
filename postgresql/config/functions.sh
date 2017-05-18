@@ -5,9 +5,9 @@ init_pgpass() {
 
 ensure_dir_ownership() {
   echo 'Making sure hab user owns var, config and data paths'
-  chown -R hab:hab {{pkg.svc_var_path}}
-  chown -R hab:hab {{pkg.svc_config_path}}
-  chown -R hab:hab {{pkg.svc_data_path}}
+  chown -RL hab:hab {{pkg.svc_var_path}}
+  chown -RL hab:hab {{pkg.svc_config_path}}
+  chown -RL hab:hab {{pkg.svc_data_path}}
 }
 
 write_local_conf() {
