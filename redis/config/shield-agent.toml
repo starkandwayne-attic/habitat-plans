@@ -37,6 +37,6 @@ base_dir = '{{pkg.svc_data_path}}'
 [[jobs]]
 name = '{{svc.service}}-{{svc.group}}'
 target = '{{svc.service}}-{{svc.group}}'
-store = '{{cfg.backup_store}}'
+store = '{{cfg.backups_store}}'
 retention = '{{cfg.backups_retention}}'
 schedule = '{{cfg.backups_schedule}}'
