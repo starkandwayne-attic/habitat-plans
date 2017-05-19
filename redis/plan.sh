@@ -14,9 +14,9 @@ pkg_exports=(
   [port]=port
   [password]=password
 )
-pkg_exposes=(port)
+pkg_exposes=(port shield_agent_port)
 pkg_binds_optional=(
-[shield]="port provisioning_key"
+  [shield]="port provisioning_key"
 )
 
 pkg_svc_user="root"

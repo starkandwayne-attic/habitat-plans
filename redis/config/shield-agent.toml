@@ -1,3 +1,12 @@
+{{#if cfg.shield_agent_advertise_ip}}
+advertise_ip = '{{cfg.shield_agent_advertise_ip}}'
+{{/if}}
+{{#if cfg.shield_agent_advertise_port}}
+advertise_port = '{{cfg.shield_agent_advertise_port}}'
+{{/if}}
+
+port = '{{cfg.shield_agent_port}}'
+
 {{ #if bind.shield.first }}
 {{ #with bind.shield.first }}
 shield_endpoint = 'https://{{sys.ip}}:{{cfg.port}}'

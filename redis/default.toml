@@ -9,6 +9,10 @@ shield_endpoint = ''
 shield_skip_ssl_verify = true
 shield_provisioning_key = 'autoprovision'
 
+shield_agent_port = '5444'
+shield_agent_advertise_ip = ''
+shield_agent_advertise_port = ''
+
 # backups_schedule = 'daily'
 # backups_schedule_value = 'daily 4am'
 #
