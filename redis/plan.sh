@@ -13,6 +13,7 @@ pkg_deps=(starkandwayne/shield-agent core/jq-static core/glibc)
 pkg_exports=(
   [port]=port
   [password]=password
+  [shield_agent_port]=shield_agent_port
 )
 pkg_exposes=(port shield_agent_port)
 pkg_binds_optional=(
