@@ -2,8 +2,8 @@ groups:
 - jobs:
   - build-consul
   - release-consul
-  - build-envdir
-  - release-envdir
+  - build-haproxy
+  - release-haproxy
   - build-mysql
   - release-mysql
   - build-postgresql
@@ -46,9 +46,9 @@ groups:
   - test-consul
   name: consul
 - jobs:
-  - build-envdir
-  - release-envdir
-  name: envdir
+  - build-haproxy
+  - release-haproxy
+  name: haproxy
 - jobs:
   - build-mysql
   - release-mysql
@@ -127,12 +127,16 @@ jobs:
         path: /setup-digitalocean
     task: docker-machine-setup
   serial: true
-- name: build-envdir
+- name: build-haproxy
   plan:
   - aggregate:
-    - get: core-python-3.5.2-pkg
+    - get: core-openssl-pkg
       trigger: true
-    - get: envdir-plan
+    - get: core-pcre-pkg
+      trigger: true
+    - get: core-zlib-pkg
+      trigger: true
+    - get: haproxy-plan
       trigger: true
     - get: habitat-plans-ci
   - config:
@@ -141,7 +145,7 @@ jobs:
           repository: starkandwayne/habitat-plans-pipeline
         type: docker-image
       inputs:
-      - name: envdir-plan
+      - name: haproxy-plan
       - name: habitat-plans-ci
       outputs:
       - name: result
@@ -149,28 +153,28 @@ jobs:
         HAB_ORIGIN: starkandwayne
         HAB_ORIGIN_KEY: REDACTED
         OUT: result
-        PACKAGE_CONTEXT: envdir-plan/envdir
-        PLAN_NAME: envdir
+        PACKAGE_CONTEXT: haproxy-plan/haproxy
+        PLAN_NAME: haproxy
       platform: linux
       run:
         path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
-    task: build-envdir
+    task: build-haproxy
   - aggregate:
     - params:
-        load_file: result/starkandwayne-envdir-docker.tar
-        load_repository: starkandwayne/envdir
+        load_file: result/starkandwayne-haproxy-docker.tar
+        load_repository: starkandwayne/haproxy
         load_tag: habitat
         tag: result/docker_tag
-      put: starkandwayne-envdir-image
+      put: starkandwayne-haproxy-image
     - params:
-        load_file: result/starkandwayne-envdir-docker.tar
-        load_repository: starkandwayne/envdir
+        load_file: result/starkandwayne-haproxy-docker.tar
+        load_repository: starkandwayne/haproxy
         load_tag: habitat
-      put: starkandwayne-envdir-edge-image
+      put: starkandwayne-haproxy-edge-image
     - params:
         file: result/*.hart
-      put: starkandwayne-envdir-artifact
+      put: starkandwayne-haproxy-artifact
   public: true
 - name: build-mysql
   plan:
@@ -244,9 +248,11 @@ jobs:
 - name: build-postgresql
   plan:
   - aggregate:
-    - get: core-postgresql-9.6.1-pkg
+    - get: core-bash-pkg
       trigger: true
-    - get: starkandwayne-envdir-pkg
+    - get: core-envdir-pkg
+      trigger: true
+    - get: core-postgresql-9.6.1-pkg
       trigger: true
     - get: starkandwayne-wal-e-pkg
       trigger: true
@@ -345,8 +351,6 @@ jobs:
     - get: core-glibc-pkg
       trigger: true
     - get: core-jq-static-pkg
-      trigger: true
-    - get: core-libarchive-pkg
       trigger: true
     - get: starkandwayne-shield-agent-pkg
       trigger: true
@@ -601,6 +605,8 @@ jobs:
 - name: build-wal-e
   plan:
   - aggregate:
+    - get: core-envdir-pkg
+      trigger: true
     - get: core-lzop-pkg
       trigger: true
     - get: core-postgresql-pkg
@@ -608,8 +614,6 @@ jobs:
     - get: core-pv-pkg
       trigger: true
     - get: core-python-3.5.2-pkg
-      trigger: true
-    - get: starkandwayne-envdir-pkg
       trigger: true
     - get: wal-e-plan
       trigger: true
@@ -810,25 +814,25 @@ jobs:
         result: starkandwayne-consul-artifact
       put: starkandwayne-consul-pkg
   public: true
-- name: release-envdir
+- name: release-haproxy
   plan:
   - aggregate:
-    - get: starkandwayne-envdir-artifact
+    - get: starkandwayne-haproxy-artifact
       passed:
-      - build-envdir
-    - get: starkandwayne-envdir-image
+      - build-haproxy
+    - get: starkandwayne-haproxy-image
       params:
         save: true
       passed:
-      - build-envdir
+      - build-haproxy
   - aggregate:
     - params:
-        load: starkandwayne-envdir-image
+        load: starkandwayne-haproxy-image
         tag_as_latest: true
-      put: starkandwayne-envdir-image
+      put: starkandwayne-haproxy-image
     - params:
-        result: starkandwayne-envdir-artifact
-      put: starkandwayne-envdir-pkg
+        result: starkandwayne-haproxy-artifact
+      put: starkandwayne-haproxy-pkg
   public: true
 - name: release-mysql
   plan:
@@ -1451,11 +1455,20 @@ resources:
     repository: starkandwayne/habitat-plans-pipeline
     username: REDACTED
   type: docker-image
-- name: core-python-3.5.2-pkg
+- name: core-openssl-pkg
   source:
-    name: python
+    name: openssl
     origin: core
-    version: 3.5.2
+  type: hab-pkg
+- name: core-pcre-pkg
+  source:
+    name: pcre
+    origin: core
+  type: hab-pkg
+- name: core-zlib-pkg
+  source:
+    name: zlib
+    origin: core
   type: hab-pkg
 - name: core-bash-pkg
   source:
@@ -1497,16 +1510,6 @@ resources:
     name: ncurses
     origin: core
   type: hab-pkg
-- name: core-openssl-pkg
-  source:
-    name: openssl
-    origin: core
-  type: hab-pkg
-- name: core-pcre-pkg
-  source:
-    name: pcre
-    origin: core
-  type: hab-pkg
 - name: core-perl-pkg
   source:
     name: perl
@@ -1522,17 +1525,16 @@ resources:
     name: sed
     origin: core
   type: hab-pkg
+- name: core-envdir-pkg
+  source:
+    name: envdir
+    origin: core
+  type: hab-pkg
 - name: core-postgresql-9.6.1-pkg
   source:
     name: postgresql
     origin: core
     version: 9.6.1
-  type: hab-pkg
-- name: starkandwayne-envdir-pkg
-  source:
-    auth_token: REDACTED
-    name: envdir
-    origin: starkandwayne
   type: hab-pkg
 - name: starkandwayne-wal-e-pkg
   source:
@@ -1548,11 +1550,6 @@ resources:
 - name: core-jq-static-pkg
   source:
     name: jq-static
-    origin: core
-  type: hab-pkg
-- name: core-libarchive-pkg
-  source:
-    name: libarchive
     origin: core
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
@@ -1574,6 +1571,11 @@ resources:
 - name: core-curl-pkg
   source:
     name: curl
+    origin: core
+  type: hab-pkg
+- name: core-libarchive-pkg
+  source:
+    name: libarchive
     origin: core
   type: hab-pkg
 - name: core-nginx-pkg
@@ -1612,6 +1614,12 @@ resources:
   source:
     name: pv
     origin: core
+  type: hab-pkg
+- name: core-python-3.5.2-pkg
+  source:
+    name: python
+    origin: core
+    version: 3.5.2
   type: hab-pkg
 - name: core-mysql-client-pkg
   source:
@@ -1667,35 +1675,41 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
-- name: envdir-plan
+- name: starkandwayne-haproxy-pkg
+  source:
+    auth_token: REDACTED
+    name: haproxy
+    origin: starkandwayne
+  type: hab-pkg
+- name: haproxy-plan
   source:
     ignore_paths:
-    - envdir/tests/*
-    - envdir/README.md
+    - haproxy/tests/*
+    - haproxy/README.md
     paths:
-    - envdir/*
+    - haproxy/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
-- name: starkandwayne-envdir-image
+- name: starkandwayne-haproxy-image
   source:
     email: REDACTED
     password: REDACTED
-    repository: starkandwayne/envdir
+    repository: starkandwayne/haproxy
     username: REDACTED
   type: docker-image
-- name: starkandwayne-envdir-edge-image
+- name: starkandwayne-haproxy-edge-image
   source:
     email: REDACTED
     password: REDACTED
-    repository: starkandwayne/envdir
+    repository: starkandwayne/haproxy
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-envdir-artifact
+- name: starkandwayne-haproxy-artifact
   source:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
-    regexp: starkandwayne-envdir/starkandwayne-envdir-(.*)-x86_64-linux.hart
+    regexp: starkandwayne-haproxy/starkandwayne-haproxy-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
