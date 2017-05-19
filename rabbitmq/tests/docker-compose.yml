@@ -24,8 +24,6 @@ services:
     image: starkandwayne/rabbitmq:edge
     hostname: standalone
     command: "start starkandwayne/rabbitmq"
-    volumes:
-    - ../:/config
     environment:
       HAB_RABBITMQ: |
         [rabbitmq]
@@ -35,8 +33,6 @@ services:
     image: starkandwayne/rabbitmq:edge
     hostname: cluster1
     command: "start starkandwayne/rabbitmq --peer standalone"
-    volumes:
-    - ../:/config
     links:
       - standalone
     environment:
@@ -48,10 +44,8 @@ services:
     image: starkandwayne/rabbitmq:edge
     hostname: cluster2
     command: "start starkandwayne/rabbitmq"
-    volumes:
-    - ../:/config
     links:
-      - haproxy
+      - standalone
     environment:
       HAB_RABBITMQ: |
         [rabbitmq]
