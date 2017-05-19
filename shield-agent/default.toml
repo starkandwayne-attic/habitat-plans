@@ -7,8 +7,8 @@ provisioning_key = 'autoprovision'
 log_level = "info"
 port = "5444"
 
-advertize_ip = ""
-advertize_port = ""
+advertise_ip = ""
+advertise_port = ""
 
 ssh_private_key = """
 -----BEGIN RSA PRIVATE KEY-----

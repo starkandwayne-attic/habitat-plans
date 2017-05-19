@@ -19,13 +19,13 @@ export SHIELD_SKIP_SSL_VERIFY=true
 # conditions in case we are colocated with shield-daemon.
 shield -c ${SHIELD_CONFIG} create-backend hab ${SHIELD_ENDPOINT}
 
-{{#if cfg.advertize_ip }}
-my_ip='{{cfg.advertize_ip}}'
+{{#if cfg.advertise_ip }}
+my_ip='{{cfg.advertise_ip}}'
 {{else}}
 my_ip='{{sys.ip}}'
 {{/if}}
-{{#if cfg.advertize_port}}
-my_port='{{cfg.advertize_port}}'
+{{#if cfg.advertise_port}}
+my_port='{{cfg.advertise_port}}'
 {{else}}
 my_port='{{cfg.port}}'
 {{/if}}
