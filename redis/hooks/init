@@ -36,9 +36,13 @@ if [[ "${SHIELD_ENDPOINT}" != "" ]]; then
   assert_shield_entity_exists policy {{cfg.backups_retention}} {{cfg.backups_retention_value}}
   assert_shield_entity_exists store {{cfg.backups_store}} ''
 
-  mkdir -p /hab/svc/shield-agent
-  cp {{pkg.svc_config_path}}/shield-agent.toml /hab/svc/shield-agent/user.toml
-  hab service load starkandwayne/shield-agent --group {{svc.group}} && exit 1
+  hab sup status | grep shield-agent
+  if [[ $? != 0 ]]; then
+    echo 'Starting shield-agent as side car'
+    mkdir -p /hab/svc/shield-agent
+    cp {{pkg.svc_config_path}}/shield-agent.toml /hab/svc/shield-agent/user.toml
+    hab service load starkandwayne/shield-agent --group {{svc.group}} && exit 1
+  fi
 
   {{ #if cfg.bootstrap_from_backup }}
   curl -s http://localhost:5444 >/dev/null
