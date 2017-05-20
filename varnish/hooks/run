@@ -1,7 +1,3 @@
-#!/usr/bin/env bash
+#!/bin/bash -xe
 
-
-# Start varnish on port 80
-# forwarding traffic to <proxy_to.ip>:<proxy_to.port>
-# Turns on the management interface on port <proxy_to.management_port>.
-varnishd -a :80 -b {{cfg.proxy_to.ip}}:{{cfg.proxy_to.port}}-T l {{cfg.proxy_to.ip}}:{{cfg.proxy_to.management_port}}
+exec varnishd -a :{{cfg.frontend.port}} -f {{pkg.svc_config_path}}/varnish.vcl.default 2>&1
