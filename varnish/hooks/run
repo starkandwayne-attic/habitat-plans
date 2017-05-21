@@ -1,3 +1,9 @@
 #!/bin/bash -xe
 
-exec varnishd -a :{{cfg.frontend.port}} -f {{pkg.svc_config_path}}/varnish.vcl.default 2>&1
+cat {{pkg.svc_config_path}}/{{cfg.files.vcl}}
+
+exec varnishd -a {{cfg.frontend.host}}:{{cfg.frontend.port}} \
+              -f {{pkg.svc_config_path}}/{{cfg.files.vcl}} \
+              -s malloc,{{cfg.system.malloc}} \
+              -p vcc_allow_inline_c=on \
+              2>&1
