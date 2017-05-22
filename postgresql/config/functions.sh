@@ -94,7 +94,7 @@ bootstrap_replica_via_wale() {
 
 stop_wale_service() {
   if hab sup status | grep wal-e; then
-    hab service unload starkandwayne/wal-e
+    hab svc unload starkandwayne/wal-e
   fi
 }
 
@@ -102,5 +102,5 @@ start_wale_service() {
   echo "Starting wal-e to perform regular backups"
   mkdir -p /hab/svc/wal-e/
   cp {{pkg.svc_config_path}}/wal-e.toml /hab/svc/wal-e/user.toml
-  hab service load starkandwayne/wal-e --group {{svc.group}}
+  hab svc load starkandwayne/wal-e --group {{svc.group}}
 }
