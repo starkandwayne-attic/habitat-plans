@@ -558,6 +558,8 @@ jobs:
   - aggregate:
     - get: core-docutils-pkg
       trigger: true
+    - get: core-gcc-pkg
+      trigger: true
     - get: core-glibc-pkg
       trigger: true
     - get: core-ncurses-pkg
@@ -1445,6 +1447,7 @@ resources:
   type: git
 - name: habitat-release
   source:
+    access_token: REDACTED
     repository: habitat
     user: habitat-sh
   type: github-release
@@ -1598,6 +1601,11 @@ resources:
 - name: core-docutils-pkg
   source:
     name: docutils
+    origin: core
+  type: hab-pkg
+- name: core-gcc-pkg
+  source:
+    name: gcc
     origin: core
   type: hab-pkg
 - name: core-lzop-pkg

@@ -81,6 +81,7 @@ resources:
   source:
     user:         habitat-sh
     repository:   habitat
+    access_token:  (( vault "secret/pipelines/habitat-plans/github:token" ))
 
 - name: habitat-plans-pipeline-image
   type: docker-image
