@@ -22,6 +22,7 @@ docker tag ${HAB_ORIGIN}/${PLAN_NAME}:latest ${HAB_ORIGIN}/${PLAN_NAME}:habitat
 docker save -o ${outdir}/${HAB_ORIGIN}-${PLAN_NAME}-docker.tar ${HAB_ORIGIN}/${PLAN_NAME}:habitat
 
 echo "${docker_tag}" > ${outdir}/docker_tag
-echo "Killing hab-sup that was started in the studio"
-set +e
-ps aux | grep hab-sup | awk '{print $2}' | xargs kill
+ps aux
+# echo "Killing hab-sup that was started in the studio"
+# set +e
+# ps aux | grep hab-sup | awk '{print $2}' | xargs kill
