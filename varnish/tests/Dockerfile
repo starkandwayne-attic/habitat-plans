@@ -9,3 +9,5 @@ ENV PATH $PATH:/bin
 COPY ./scripts/ /scripts
 
 ENTRYPOINT []
+
+CMD ["echo"]

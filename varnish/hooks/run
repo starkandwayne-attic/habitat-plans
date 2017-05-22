@@ -1,4 +1,6 @@
-#!/bin/bash -xe
+#!{{pkgPathFor "core/bash"}}/bin/bash
+
+set -xe
 
 cat {{pkg.svc_config_path}}/{{cfg.files.vcl}}
 
