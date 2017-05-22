@@ -23,4 +23,5 @@ docker save -o ${outdir}/${HAB_ORIGIN}-${PLAN_NAME}-docker.tar ${HAB_ORIGIN}/${P
 
 echo "${docker_tag}" > ${outdir}/docker_tag
 echo "Killing hab-sup that was started in the studio"
-ps aux | grep hab-sup | head -n1  | awk '{print $2}' | xargs kill
+set +e
+ps aux | grep hab-sup | awk '{print $2}' | xargs kill
