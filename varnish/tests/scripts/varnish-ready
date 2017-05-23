@@ -4,7 +4,9 @@ set -e
 
 STATUS=$(curl -s -o /dev/null -w '%{http_code}' "${VARNISH_HOST}")
 
+# some times delmo can't catch code because its to fast
+sleep 2
 
 if [ $STATUS -eq 200 ]; then
-   echo "Got 200! All done!"   
+   echo "Got 200! All done!"
 fi

@@ -1,3 +1,5 @@
 #!/bin/bash
 
 echo "Varnish not ready"
+
+exit 1
