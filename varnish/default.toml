@@ -10,7 +10,7 @@ max_connections=300
 
 [frontend]
 host="0.0.0.0"
-port=8080
+port=80
 
 [files]
 vcl= "varnish.default.vcl"

@@ -34,7 +34,6 @@ do_build() {
   sh autogen.sh
   sh configure --prefix=$pkg_prefix
   make
-  make check
 }
 
 do_check() {

@@ -10,4 +10,6 @@ COPY ./scripts/ /scripts
 
 ENTRYPOINT []
 
+ADD . /tests
+
 CMD ["echo"]
