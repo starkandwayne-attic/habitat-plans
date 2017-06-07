@@ -24,5 +24,6 @@ pkg_svc_user="root"
 pkg_svc_group="$pkg_svc_user"
 
 do_build() {
+  echo 'making plan'
   make
 }
