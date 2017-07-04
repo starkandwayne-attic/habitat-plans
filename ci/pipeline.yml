@@ -4,6 +4,8 @@ groups:
   - release-consul
   - build-haproxy
   - release-haproxy
+  - build-hashi-ui
+  - release-hashi-ui
   - build-mysql
   - release-mysql
   - build-postgresql
@@ -49,6 +51,10 @@ groups:
   - build-haproxy
   - release-haproxy
   name: haproxy
+- jobs:
+  - build-hashi-ui
+  - release-hashi-ui
+  name: hashi
 - jobs:
   - build-mysql
   - release-mysql
@@ -175,6 +181,51 @@ jobs:
     - params:
         file: result/*.hart
       put: starkandwayne-haproxy-artifact
+  public: true
+- name: build-hashi-ui
+  plan:
+  - aggregate:
+    - get: core-glibc-pkg
+      trigger: true
+    - get: hashi-ui-plan
+      trigger: true
+    - get: habitat-plans-ci
+  - config:
+      image_resource:
+        source:
+          repository: starkandwayne/habitat-plans-pipeline
+        type: docker-image
+      inputs:
+      - name: hashi-ui-plan
+      - name: habitat-plans-ci
+      outputs:
+      - name: result
+      params:
+        HAB_ORIGIN: starkandwayne
+        HAB_ORIGIN_KEY: REDACTED
+        OUT: result
+        PACKAGE_CONTEXT: hashi-ui-plan/hashi-ui
+        PLAN_NAME: hashi-ui
+      platform: linux
+      run:
+        path: ./habitat-plans-ci/ci/scripts/build-service
+    privileged: true
+    task: build-hashi-ui
+  - aggregate:
+    - params:
+        load_file: result/starkandwayne-hashi-ui-docker.tar
+        load_repository: starkandwayne/hashi-ui
+        load_tag: habitat
+        tag: result/docker_tag
+      put: starkandwayne-hashi-ui-image
+    - params:
+        load_file: result/starkandwayne-hashi-ui-docker.tar
+        load_repository: starkandwayne/hashi-ui
+        load_tag: habitat
+      put: starkandwayne-hashi-ui-edge-image
+    - params:
+        file: result/*.hart
+      put: starkandwayne-hashi-ui-artifact
   public: true
 - name: build-mysql
   plan:
@@ -462,7 +513,7 @@ jobs:
       trigger: true
     - get: starkandwayne-postgresql-pkg
       trigger: true
-    - get: starkandwayne-shield-proxy-pkg
+    - get: starkandwayne-shield-proxy-0.10.8-pkg
       trigger: true
     - get: shield-plan
       trigger: true
@@ -556,13 +607,33 @@ jobs:
 - name: build-varnish
   plan:
   - aggregate:
+    - get: core-bash-pkg
+      trigger: true
     - get: core-docutils-pkg
       trigger: true
     - get: core-gcc-pkg
       trigger: true
+    - get: core-gcc-libs-pkg
+      trigger: true
+    - get: core-gettext-pkg
+      trigger: true
     - get: core-glibc-pkg
       trigger: true
+    - get: core-groff-pkg
+      trigger: true
+    - get: core-libbsd-pkg
+      trigger: true
+    - get: core-libedit-pkg
+      trigger: true
+    - get: core-libpipeline-pkg
+      trigger: true
+    - get: core-libunistring-pkg
+      trigger: true
+    - get: core-man-db-pkg
+      trigger: true
     - get: core-ncurses-pkg
+      trigger: true
+    - get: core-pcre-pkg
       trigger: true
     - get: varnish-plan
       trigger: true
@@ -835,6 +906,26 @@ jobs:
     - params:
         result: starkandwayne-haproxy-artifact
       put: starkandwayne-haproxy-pkg
+  public: true
+- name: release-hashi-ui
+  plan:
+  - aggregate:
+    - get: starkandwayne-hashi-ui-artifact
+      passed:
+      - build-hashi-ui
+    - get: starkandwayne-hashi-ui-image
+      params:
+        save: true
+      passed:
+      - build-hashi-ui
+  - aggregate:
+    - params:
+        load: starkandwayne-hashi-ui-image
+        tag_as_latest: true
+      put: starkandwayne-hashi-ui-image
+    - params:
+        result: starkandwayne-hashi-ui-artifact
+      put: starkandwayne-hashi-ui-pkg
   public: true
 - name: release-mysql
   plan:
@@ -1473,6 +1564,11 @@ resources:
     name: zlib
     origin: core
   type: hab-pkg
+- name: core-glibc-pkg
+  source:
+    name: glibc
+    origin: core
+  type: hab-pkg
 - name: core-bash-pkg
   source:
     name: bash
@@ -1491,11 +1587,6 @@ resources:
 - name: core-gcc-libs-pkg
   source:
     name: gcc-libs
-    origin: core
-  type: hab-pkg
-- name: core-glibc-pkg
-  source:
-    name: glibc
     origin: core
   type: hab-pkg
 - name: core-grep-pkg
@@ -1592,11 +1683,11 @@ resources:
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
-- name: starkandwayne-shield-proxy-pkg
+- name: starkandwayne-shield-proxy-0.10.8-pkg
   source:
-    auth_token: REDACTED
     name: shield-proxy
     origin: starkandwayne
+    version: 0.10.8
   type: hab-pkg
 - name: core-docutils-pkg
   source:
@@ -1606,6 +1697,41 @@ resources:
 - name: core-gcc-pkg
   source:
     name: gcc
+    origin: core
+  type: hab-pkg
+- name: core-gettext-pkg
+  source:
+    name: gettext
+    origin: core
+  type: hab-pkg
+- name: core-groff-pkg
+  source:
+    name: groff
+    origin: core
+  type: hab-pkg
+- name: core-libbsd-pkg
+  source:
+    name: libbsd
+    origin: core
+  type: hab-pkg
+- name: core-libedit-pkg
+  source:
+    name: libedit
+    origin: core
+  type: hab-pkg
+- name: core-libpipeline-pkg
+  source:
+    name: libpipeline
+    origin: core
+  type: hab-pkg
+- name: core-libunistring-pkg
+  source:
+    name: libunistring
+    origin: core
+  type: hab-pkg
+- name: core-man-db-pkg
+  source:
+    name: man-db
     origin: core
   type: hab-pkg
 - name: core-lzop-pkg
@@ -1718,6 +1844,44 @@ resources:
     access_key_id: REDACTED
     bucket: snw-habitat-packages
     regexp: starkandwayne-haproxy/starkandwayne-haproxy-(.*)-x86_64-linux.hart
+    region_name: eu-central-1
+    secret_access_key: REDACTED
+  type: s3
+- name: starkandwayne-hashi-ui-pkg
+  source:
+    auth_token: REDACTED
+    name: hashi-ui
+    origin: starkandwayne
+  type: hab-pkg
+- name: hashi-ui-plan
+  source:
+    ignore_paths:
+    - hashi-ui/tests/*
+    - hashi-ui/README.md
+    paths:
+    - hashi-ui/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-hashi-ui-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/hashi-ui
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-hashi-ui-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/hashi-ui
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-hashi-ui-artifact
+  source:
+    access_key_id: REDACTED
+    bucket: snw-habitat-packages
+    regexp: starkandwayne-hashi-ui/starkandwayne-hashi-ui-(.*)-x86_64-linux.hart
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
@@ -1899,6 +2063,12 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: starkandwayne-shield-proxy-pkg
+  source:
+    auth_token: REDACTED
+    name: shield-proxy
+    origin: starkandwayne
+  type: hab-pkg
 - name: shield-proxy-plan
   source:
     ignore_paths:
