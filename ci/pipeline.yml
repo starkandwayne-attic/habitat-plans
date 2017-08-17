@@ -303,9 +303,9 @@ jobs:
       trigger: true
     - get: core-envdir-pkg
       trigger: true
-    - get: core-postgresql-9.6.1-pkg
+    - get: core-postgresql-9.6.3-pkg
       trigger: true
-    - get: starkandwayne-wal-e-pkg
+    - get: core-wal-e-pkg
       trigger: true
     - get: postgresql-plan
       trigger: true
@@ -513,7 +513,7 @@ jobs:
       trigger: true
     - get: starkandwayne-postgresql-pkg
       trigger: true
-    - get: starkandwayne-shield-proxy-0.10.8-pkg
+    - get: starkandwayne-shield-proxy-0.10.9-pkg
       trigger: true
     - get: shield-plan
       trigger: true
@@ -1551,222 +1551,264 @@ resources:
   type: docker-image
 - name: core-openssl-pkg
   source:
+    channel: stable
     name: openssl
     origin: core
   type: hab-pkg
 - name: core-pcre-pkg
   source:
+    channel: stable
     name: pcre
     origin: core
   type: hab-pkg
 - name: core-zlib-pkg
   source:
+    channel: stable
     name: zlib
     origin: core
   type: hab-pkg
 - name: core-glibc-pkg
   source:
+    channel: stable
     name: glibc
     origin: core
   type: hab-pkg
 - name: core-bash-pkg
   source:
+    channel: stable
     name: bash
     origin: core
   type: hab-pkg
 - name: core-coreutils-pkg
   source:
+    channel: stable
     name: coreutils
     origin: core
   type: hab-pkg
 - name: core-gawk-pkg
   source:
+    channel: stable
     name: gawk
     origin: core
   type: hab-pkg
 - name: core-gcc-libs-pkg
   source:
+    channel: stable
     name: gcc-libs
     origin: core
   type: hab-pkg
 - name: core-grep-pkg
   source:
+    channel: stable
     name: grep
     origin: core
   type: hab-pkg
 - name: core-inetutils-pkg
   source:
+    channel: stable
     name: inetutils
     origin: core
   type: hab-pkg
 - name: core-ncurses-pkg
   source:
+    channel: stable
     name: ncurses
     origin: core
   type: hab-pkg
 - name: core-perl-pkg
   source:
+    channel: stable
     name: perl
     origin: core
   type: hab-pkg
 - name: core-procps-ng-pkg
   source:
+    channel: stable
     name: procps-ng
     origin: core
   type: hab-pkg
 - name: core-sed-pkg
   source:
+    channel: stable
     name: sed
     origin: core
   type: hab-pkg
 - name: core-envdir-pkg
   source:
+    channel: stable
     name: envdir
     origin: core
   type: hab-pkg
-- name: core-postgresql-9.6.1-pkg
+- name: core-postgresql-9.6.3-pkg
   source:
+    channel: stable
     name: postgresql
     origin: core
-    version: 9.6.1
+    version: 9.6.3
   type: hab-pkg
-- name: starkandwayne-wal-e-pkg
+- name: core-wal-e-pkg
   source:
-    auth_token: REDACTED
+    channel: stable
     name: wal-e
-    origin: starkandwayne
+    origin: core
   type: hab-pkg
 - name: core-erlang-pkg
   source:
+    channel: stable
     name: erlang
     origin: core
   type: hab-pkg
 - name: core-jq-static-pkg
   source:
+    channel: stable
     name: jq-static
     origin: core
   type: hab-pkg
 - name: starkandwayne-shield-agent-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: shield-agent
     origin: starkandwayne
   type: hab-pkg
 - name: core-bzip2-pkg
   source:
+    channel: stable
     name: bzip2
     origin: core
   type: hab-pkg
 - name: core-cacerts-pkg
   source:
+    channel: stable
     name: cacerts
     origin: core
   type: hab-pkg
 - name: core-curl-pkg
   source:
+    channel: stable
     name: curl
     origin: core
   type: hab-pkg
 - name: core-libarchive-pkg
   source:
+    channel: stable
     name: libarchive
     origin: core
   type: hab-pkg
 - name: core-nginx-pkg
   source:
+    channel: stable
     name: nginx
     origin: core
   type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
-- name: starkandwayne-shield-proxy-0.10.8-pkg
+- name: starkandwayne-shield-proxy-0.10.9-pkg
   source:
+    channel: stable
     name: shield-proxy
     origin: starkandwayne
-    version: 0.10.8
+    version: 0.10.9
   type: hab-pkg
 - name: core-docutils-pkg
   source:
+    channel: stable
     name: docutils
     origin: core
   type: hab-pkg
 - name: core-gcc-pkg
   source:
+    channel: stable
     name: gcc
     origin: core
   type: hab-pkg
 - name: core-gettext-pkg
   source:
+    channel: stable
     name: gettext
     origin: core
   type: hab-pkg
 - name: core-groff-pkg
   source:
+    channel: stable
     name: groff
     origin: core
   type: hab-pkg
 - name: core-libbsd-pkg
   source:
+    channel: stable
     name: libbsd
     origin: core
   type: hab-pkg
 - name: core-libedit-pkg
   source:
+    channel: stable
     name: libedit
     origin: core
   type: hab-pkg
 - name: core-libpipeline-pkg
   source:
+    channel: stable
     name: libpipeline
     origin: core
   type: hab-pkg
 - name: core-libunistring-pkg
   source:
+    channel: stable
     name: libunistring
     origin: core
   type: hab-pkg
 - name: core-man-db-pkg
   source:
+    channel: stable
     name: man-db
     origin: core
   type: hab-pkg
 - name: core-lzop-pkg
   source:
+    channel: stable
     name: lzop
     origin: core
   type: hab-pkg
 - name: core-postgresql-pkg
   source:
+    channel: stable
     name: postgresql
     origin: core
   type: hab-pkg
 - name: core-pv-pkg
   source:
+    channel: stable
     name: pv
     origin: core
   type: hab-pkg
 - name: core-python-3.5.2-pkg
   source:
+    channel: stable
     name: python
     origin: core
     version: 3.5.2
   type: hab-pkg
 - name: core-mysql-client-pkg
   source:
+    channel: stable
     name: mysql-client
     origin: core
   type: hab-pkg
 - name: core-php-pkg
   source:
+    channel: stable
     name: php
     origin: core
   type: hab-pkg
 - name: starkandwayne-wordpress-proxy-4.7.4-pkg
   source:
+    channel: stable
     name: wordpress-proxy
     origin: starkandwayne
     version: 4.7.4
@@ -1774,6 +1816,7 @@ resources:
 - name: starkandwayne-consul-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: consul
     origin: starkandwayne
   type: hab-pkg
@@ -1812,6 +1855,7 @@ resources:
 - name: starkandwayne-haproxy-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: haproxy
     origin: starkandwayne
   type: hab-pkg
@@ -1850,6 +1894,7 @@ resources:
 - name: starkandwayne-hashi-ui-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: hashi-ui
     origin: starkandwayne
   type: hab-pkg
@@ -1888,6 +1933,7 @@ resources:
 - name: starkandwayne-mysql-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: mysql
     origin: starkandwayne
   type: hab-pkg
@@ -1958,6 +2004,7 @@ resources:
 - name: starkandwayne-rabbitmq-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: rabbitmq
     origin: starkandwayne
   type: hab-pkg
@@ -1996,6 +2043,7 @@ resources:
 - name: starkandwayne-redis-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: redis
     origin: starkandwayne
   type: hab-pkg
@@ -2066,6 +2114,7 @@ resources:
 - name: starkandwayne-shield-proxy-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: shield-proxy
     origin: starkandwayne
   type: hab-pkg
@@ -2104,6 +2153,7 @@ resources:
 - name: starkandwayne-shield-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: shield
     origin: starkandwayne
   type: hab-pkg
@@ -2142,6 +2192,7 @@ resources:
 - name: starkandwayne-varnish-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: varnish
     origin: starkandwayne
   type: hab-pkg
@@ -2177,6 +2228,13 @@ resources:
     region_name: eu-central-1
     secret_access_key: REDACTED
   type: s3
+- name: starkandwayne-wal-e-pkg
+  source:
+    auth_token: REDACTED
+    channel: stable
+    name: wal-e
+    origin: starkandwayne
+  type: hab-pkg
 - name: wal-e-plan
   source:
     ignore_paths:
@@ -2212,6 +2270,7 @@ resources:
 - name: starkandwayne-wordpress-proxy-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: wordpress-proxy
     origin: starkandwayne
   type: hab-pkg
@@ -2250,6 +2309,7 @@ resources:
 - name: starkandwayne-wordpress-pkg
   source:
     auth_token: REDACTED
+    channel: stable
     name: wordpress
     origin: starkandwayne
   type: hab-pkg

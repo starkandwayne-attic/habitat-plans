@@ -37,6 +37,7 @@ resources:
 - name: ${dep_origin}-${dep_name}${version}-pkg
   type: hab-pkg
   source:
+    channel: stable
     origin: ${dep_origin}
     name: ${dep_name}
 ${version_entry}
@@ -121,6 +122,7 @@ resources:
 - name: ${hab_origin}-${package_name}-pkg
   type: hab-pkg
   source:
+    channel: stable
     origin: (( grab meta.habitat.origin ))
     name: ${package_name}
     auth_token: (( grab meta.habitat.auth_token ))
