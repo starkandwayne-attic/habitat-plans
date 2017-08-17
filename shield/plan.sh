@@ -1,6 +1,6 @@
 pkg_name=shield
 pkg_origin=starkandwayne
-pkg_version="0.10.8"
+pkg_version="0.10.9"
 pkg_maintainer="Justin Carter <justin@starkandwayne.com>"
 pkg_license=('MIT')
 pkg_description="A standalone system that can perform backup and restore functions for a wide variety of pluggable data systems."
