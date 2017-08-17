@@ -10,7 +10,6 @@ cat <<EOF | hab origin key import
 ${HAB_ORIGIN_KEY}
 EOF
 
-source /docker-lib.sh
 start_docker
 
 hab studio run "build . && hab pkg export docker ${HAB_ORIGIN}/${PLAN_NAME}"
