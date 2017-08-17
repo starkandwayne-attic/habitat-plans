@@ -6,11 +6,11 @@ RUN curl https://raw.githubusercontent.com/habitat-sh/habitat/master/components/
 RUN hab -V
 RUN hab pkg install core/hab-pkg-dockerize
 
-RUN hab pkg install core/docker && \
-      hab pkg binlink core/docker docker && \
-      hab pkg binlink core/docker dockerd && \
-      hab pkg binlink core/docker docker-containerd && \
-      hab pkg binlink core/docker docker-init && \
-      hab pkg binlink core/docker docker-runc
+ENV DOCKER_VERSION 17.05.0-ce
+RUN curl -sSL -O "https://get.docker.com/builds/Linux/x86_64/docker-${DOCKER_VERSION}.tgz" \
+      && tar zxf "docker-${DOCKER_VERSION}.tgz" \
+      && mv ./docker/* /usr/local/bin/ \
+      && chmod +x /usr/local/bin/* \
+      && /usr/local/bin/docker --version
 
 COPY start_docker /bin/
