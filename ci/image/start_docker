@@ -51,7 +51,7 @@ run_docker() {
     mount -o remount,rw /proc/sys
   fi
 
-  dockerd >/tmp/docker.log 2>&1 &
+  dockerd --data-root /scratch/docker >/tmp/docker.log 2>&1 &
   echo $! > /tmp/docker.pid
 
   # trap stop_docker EXIT
