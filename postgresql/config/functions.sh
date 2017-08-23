@@ -26,21 +26,6 @@ write_env_var() {
   echo "$1" > "{{pkg.svc_config_path}}/env/$2"
 }
 
-write_wale_env() {
-  echo 'Writting environment variables required by wal-e'
-  mkdir -p "{{pkg.svc_config_path}}/env"
-  {{#with cfg.wal-e.aws as |aws| }}
-  write_env_var 's3://{{aws.bucket}}/{{../../../svc.service}}-{{../../../svc.group}}' 'WALE_S3_PREFIX'
-  write_env_var '{{aws.access_key_id}}' 'AWS_ACCESS_KEY_ID'
-  write_env_var '{{aws.secret_access_key}}' 'AWS_SECRET_ACCESS_KEY'
-  write_env_var '{{aws.region}}' 'AWS_REGION'
-  {{/with}}
-
-  write_env_var '{{cfg.superuser.name}}' 'PGUSER'
-  write_env_var '{{cfg.superuser.password}}' 'PGPASSWORD'
-  write_env_var 'postgres' 'PGDATABASE'
-}
-
 setup_replication_user_in_master() {
   echo 'Making sure replication role exists on Master'
   psql -U {{cfg.superuser.name}}  -h {{svc.leader.sys.ip}} -p {{cfg.port}} postgres >/dev/null 2>&1 << EOF
@@ -83,24 +68,4 @@ bootstrap_replica_via_pg_basebackup() {
 
   rm -rf {{pkg.svc_data_path}}/*
   pg_basebackup --pgdata={{pkg.svc_data_path}} --xlog-method=stream --dbname='postgres://{{cfg.replication.name}}@{{svc.leader.sys.ip}}:{{cfg.port}}/postgres'
-}
-
-bootstrap_replica_via_wale() {
-  echo 'Bootstrapping replica via wal-e'
-
-  rm -rf {{pkg.svc_data_path}}/*
-  envdir {{pkg.svc_config_path}}/env wal-e backup-fetch {{pkg.svc_data_path}} LATEST
-}
-
-stop_wale_service() {
-  if hab sup status | grep wal-e; then
-    hab svc unload starkandwayne/wal-e
-  fi
-}
-
-start_wale_service() {
-  echo "Starting wal-e to perform regular backups"
-  mkdir -p /hab/svc/wal-e/
-  cp {{pkg.svc_config_path}}/wal-e.toml /hab/svc/wal-e/user.toml
-  hab svc load starkandwayne/wal-e --group {{svc.group}}
 }

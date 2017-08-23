@@ -8,7 +8,6 @@ pkg_license=('PostgreSQL')
 pkg_source=https://ftp.postgresql.org/pub/source/v${pkg_version}/${pkg_name}-${pkg_version}.tar.bz2
 pkg_shasum=1645b3736901f6d854e695a937389e68ff2066ce0cde9d73919d6ab7c995b9c6
 pkg_deps=(
-  core/wal-e
   core/envdir
   core/postgresql/${pkg_version}
   core/bash

@@ -5,10 +5,6 @@ exec 2>&1
 echo 'Executing init hook'
 source {{pkg.svc_config_path}}/functions.sh
 
-{{ #if cfg.wal-e.enable }}
-write_wale_env
-{{ /if }}
-
 init_pgpass
 ensure_dir_ownership
 

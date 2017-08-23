@@ -1,6 +1,6 @@
 # PostgreSQL
 
-This PostgreSQL plan supports standalone and clustered modes as well as continuous archiving via wal-e integration.
+This PostgreSQL plan supports standalone and clustered modes.
 
 ## Standalone
 
@@ -62,8 +62,3 @@ PGHOST={{pg.sys.ip}}
 
 `.first` will always point to the leader when present.
 
-## Wal-e
-
-The `starkandwayne/postgresql` plan packages `starkandwayne/wal-e` as a dependency and supports running a side car process that will push regular backups to a cloud object store such as s3.
-
-When enabling wal-e continuous archiving is also turned on by default. Particularly for running clustered PostgreSQL we highly recommend using this feature so that replicas will always be able to catch up to the master should they fall behind further than the masters `wal_keep_segments` setting.
