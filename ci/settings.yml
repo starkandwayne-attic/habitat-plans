@@ -11,7 +11,7 @@ jobs:
       passed:
       - build-shield-agent
       trigger: true
-    - get: starkandwayne-shield-agent-artifact
+    - get: starkandwayne-shield-agent-unstable
       passed:
       - build-shield-agent
     - get: starkandwayne-shield-agent-image

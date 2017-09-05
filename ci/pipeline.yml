@@ -179,8 +179,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-haproxy-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-haproxy-artifact
+        result: result
+      put: starkandwayne-haproxy-unstable
   public: true
 - name: build-hashi-ui
   plan:
@@ -224,8 +224,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-hashi-ui-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-hashi-ui-artifact
+        result: result
+      put: starkandwayne-hashi-ui-unstable
   public: true
 - name: build-mysql
   plan:
@@ -293,8 +293,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-mysql-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-mysql-artifact
+        result: result
+      put: starkandwayne-mysql-unstable
   public: true
 - name: build-postgresql
   plan:
@@ -304,8 +304,6 @@ jobs:
     - get: core-envdir-pkg
       trigger: true
     - get: core-postgresql-9.6.3-pkg
-      trigger: true
-    - get: core-wal-e-pkg
       trigger: true
     - get: postgresql-plan
       trigger: true
@@ -344,8 +342,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-postgresql-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-postgresql-artifact
+        result: result
+      put: starkandwayne-postgresql-unstable
   public: true
 - name: build-rabbitmq
   plan:
@@ -393,8 +391,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-rabbitmq-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-rabbitmq-artifact
+        result: result
+      put: starkandwayne-rabbitmq-unstable
   public: true
 - name: build-redis
   plan:
@@ -442,8 +440,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-redis-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-redis-artifact
+        result: result
+      put: starkandwayne-redis-unstable
   public: true
 - name: build-shield-agent
   plan:
@@ -501,8 +499,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-shield-agent-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-shield-agent-artifact
+        result: result
+      put: starkandwayne-shield-agent-unstable
   public: true
 - name: build-shield
   plan:
@@ -552,8 +550,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-shield-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-shield-artifact
+        result: result
+      put: starkandwayne-shield-unstable
   public: true
 - name: build-shield-proxy
   plan:
@@ -601,8 +599,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-shield-proxy-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-shield-proxy-artifact
+        result: result
+      put: starkandwayne-shield-proxy-unstable
   public: true
 - name: build-varnish
   plan:
@@ -672,8 +670,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-varnish-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-varnish-artifact
+        result: result
+      put: starkandwayne-varnish-unstable
   public: true
 - name: build-wal-e
   plan:
@@ -725,8 +723,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-wal-e-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-wal-e-artifact
+        result: result
+      put: starkandwayne-wal-e-unstable
   public: true
 - name: build-wordpress
   plan:
@@ -776,8 +774,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-wordpress-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-wordpress-artifact
+        result: result
+      put: starkandwayne-wordpress-unstable
   public: true
 - name: build-wordpress-proxy
   plan:
@@ -821,8 +819,8 @@ jobs:
         load_tag: habitat
       put: starkandwayne-wordpress-proxy-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-wordpress-proxy-artifact
+        result: result
+      put: starkandwayne-wordpress-proxy-unstable
   public: true
 - name: build-consul
   plan:
@@ -864,13 +862,13 @@ jobs:
         load_tag: habitat
       put: starkandwayne-consul-edge-image
     - params:
-        file: result/*.hart
-      put: starkandwayne-consul-artifact
+        result: result
+      put: starkandwayne-consul-unstable
   public: true
 - name: release-consul
   plan:
   - aggregate:
-    - get: starkandwayne-consul-artifact
+    - get: starkandwayne-consul-unstable
       passed:
       - test-consul
     - get: starkandwayne-consul-image
@@ -884,13 +882,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-consul-image
     - params:
-        result: starkandwayne-consul-artifact
+        result: starkandwayne-consul-unstable
       put: starkandwayne-consul-pkg
   public: true
 - name: release-haproxy
   plan:
   - aggregate:
-    - get: starkandwayne-haproxy-artifact
+    - get: starkandwayne-haproxy-unstable
       passed:
       - build-haproxy
     - get: starkandwayne-haproxy-image
@@ -904,13 +902,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-haproxy-image
     - params:
-        result: starkandwayne-haproxy-artifact
+        result: starkandwayne-haproxy-unstable
       put: starkandwayne-haproxy-pkg
   public: true
 - name: release-hashi-ui
   plan:
   - aggregate:
-    - get: starkandwayne-hashi-ui-artifact
+    - get: starkandwayne-hashi-ui-unstable
       passed:
       - build-hashi-ui
     - get: starkandwayne-hashi-ui-image
@@ -924,13 +922,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-hashi-ui-image
     - params:
-        result: starkandwayne-hashi-ui-artifact
+        result: starkandwayne-hashi-ui-unstable
       put: starkandwayne-hashi-ui-pkg
   public: true
 - name: release-mysql
   plan:
   - aggregate:
-    - get: starkandwayne-mysql-artifact
+    - get: starkandwayne-mysql-unstable
       passed:
       - build-mysql
     - get: starkandwayne-mysql-image
@@ -944,13 +942,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-mysql-image
     - params:
-        result: starkandwayne-mysql-artifact
+        result: starkandwayne-mysql-unstable
       put: starkandwayne-mysql-pkg
   public: true
 - name: release-postgresql
   plan:
   - aggregate:
-    - get: starkandwayne-postgresql-artifact
+    - get: starkandwayne-postgresql-unstable
       passed:
       - test-postgresql
     - get: starkandwayne-postgresql-image
@@ -964,13 +962,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-postgresql-image
     - params:
-        result: starkandwayne-postgresql-artifact
+        result: starkandwayne-postgresql-unstable
       put: starkandwayne-postgresql-pkg
   public: true
 - name: release-rabbitmq
   plan:
   - aggregate:
-    - get: starkandwayne-rabbitmq-artifact
+    - get: starkandwayne-rabbitmq-unstable
       passed:
       - test-rabbitmq
     - get: starkandwayne-rabbitmq-image
@@ -984,13 +982,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-rabbitmq-image
     - params:
-        result: starkandwayne-rabbitmq-artifact
+        result: starkandwayne-rabbitmq-unstable
       put: starkandwayne-rabbitmq-pkg
   public: true
 - name: release-redis
   plan:
   - aggregate:
-    - get: starkandwayne-redis-artifact
+    - get: starkandwayne-redis-unstable
       passed:
       - test-redis
     - get: starkandwayne-redis-image
@@ -1004,13 +1002,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-redis-image
     - params:
-        result: starkandwayne-redis-artifact
+        result: starkandwayne-redis-unstable
       put: starkandwayne-redis-pkg
   public: true
 - name: release-shield-agent
   plan:
   - aggregate:
-    - get: starkandwayne-shield-agent-artifact
+    - get: starkandwayne-shield-agent-unstable
       passed:
       - test-shield
     - get: starkandwayne-shield-agent-image
@@ -1024,13 +1022,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-shield-agent-image
     - params:
-        result: starkandwayne-shield-agent-artifact
+        result: starkandwayne-shield-agent-unstable
       put: starkandwayne-shield-agent-pkg
   public: true
 - name: release-shield-proxy
   plan:
   - aggregate:
-    - get: starkandwayne-shield-proxy-artifact
+    - get: starkandwayne-shield-proxy-unstable
       passed:
       - build-shield-proxy
     - get: starkandwayne-shield-proxy-image
@@ -1044,13 +1042,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-shield-proxy-image
     - params:
-        result: starkandwayne-shield-proxy-artifact
+        result: starkandwayne-shield-proxy-unstable
       put: starkandwayne-shield-proxy-pkg
   public: true
 - name: release-shield
   plan:
   - aggregate:
-    - get: starkandwayne-shield-artifact
+    - get: starkandwayne-shield-unstable
       passed:
       - test-shield
     - get: starkandwayne-shield-image
@@ -1064,13 +1062,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-shield-image
     - params:
-        result: starkandwayne-shield-artifact
+        result: starkandwayne-shield-unstable
       put: starkandwayne-shield-pkg
   public: true
 - name: release-varnish
   plan:
   - aggregate:
-    - get: starkandwayne-varnish-artifact
+    - get: starkandwayne-varnish-unstable
       passed:
       - test-varnish
     - get: starkandwayne-varnish-image
@@ -1084,13 +1082,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-varnish-image
     - params:
-        result: starkandwayne-varnish-artifact
+        result: starkandwayne-varnish-unstable
       put: starkandwayne-varnish-pkg
   public: true
 - name: release-wal-e
   plan:
   - aggregate:
-    - get: starkandwayne-wal-e-artifact
+    - get: starkandwayne-wal-e-unstable
       passed:
       - build-wal-e
     - get: starkandwayne-wal-e-image
@@ -1104,13 +1102,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-wal-e-image
     - params:
-        result: starkandwayne-wal-e-artifact
+        result: starkandwayne-wal-e-unstable
       put: starkandwayne-wal-e-pkg
   public: true
 - name: release-wordpress-proxy
   plan:
   - aggregate:
-    - get: starkandwayne-wordpress-proxy-artifact
+    - get: starkandwayne-wordpress-proxy-unstable
       passed:
       - build-wordpress-proxy
     - get: starkandwayne-wordpress-proxy-image
@@ -1124,13 +1122,13 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-wordpress-proxy-image
     - params:
-        result: starkandwayne-wordpress-proxy-artifact
+        result: starkandwayne-wordpress-proxy-unstable
       put: starkandwayne-wordpress-proxy-pkg
   public: true
 - name: release-wordpress
   plan:
   - aggregate:
-    - get: starkandwayne-wordpress-artifact
+    - get: starkandwayne-wordpress-unstable
       passed:
       - test-wordpress
     - get: starkandwayne-wordpress-image
@@ -1144,7 +1142,7 @@ jobs:
         tag_as_latest: true
       put: starkandwayne-wordpress-image
     - params:
-        result: starkandwayne-wordpress-artifact
+        result: starkandwayne-wordpress-unstable
       put: starkandwayne-wordpress-pkg
   public: true
 - name: test-consul
@@ -1158,7 +1156,7 @@ jobs:
       trigger: true
     - get: consul-tests
       trigger: true
-    - get: starkandwayne-consul-artifact
+    - get: starkandwayne-consul-unstable
       passed:
       - build-consul
     - get: starkandwayne-consul-image
@@ -1209,7 +1207,7 @@ jobs:
       trigger: true
     - get: postgresql-tests
       trigger: true
-    - get: starkandwayne-postgresql-artifact
+    - get: starkandwayne-postgresql-unstable
       passed:
       - build-postgresql
     - get: starkandwayne-postgresql-image
@@ -1260,7 +1258,7 @@ jobs:
       trigger: true
     - get: rabbitmq-tests
       trigger: true
-    - get: starkandwayne-rabbitmq-artifact
+    - get: starkandwayne-rabbitmq-unstable
       passed:
       - build-rabbitmq
     - get: starkandwayne-rabbitmq-image
@@ -1311,7 +1309,7 @@ jobs:
       trigger: true
     - get: redis-tests
       trigger: true
-    - get: starkandwayne-redis-artifact
+    - get: starkandwayne-redis-unstable
       passed:
       - build-redis
     - get: starkandwayne-redis-image
@@ -1362,7 +1360,7 @@ jobs:
       trigger: true
     - get: shield-tests
       trigger: true
-    - get: starkandwayne-shield-artifact
+    - get: starkandwayne-shield-unstable
       passed:
       - build-shield
     - get: starkandwayne-shield-image
@@ -1376,7 +1374,7 @@ jobs:
       passed:
       - build-shield-agent
       trigger: true
-    - get: starkandwayne-shield-agent-artifact
+    - get: starkandwayne-shield-agent-unstable
       passed:
       - build-shield-agent
     - get: starkandwayne-shield-agent-image
@@ -1427,7 +1425,7 @@ jobs:
       trigger: true
     - get: varnish-tests
       trigger: true
-    - get: starkandwayne-varnish-artifact
+    - get: starkandwayne-varnish-unstable
       passed:
       - build-varnish
     - get: starkandwayne-varnish-image
@@ -1478,7 +1476,7 @@ jobs:
       trigger: true
     - get: wordpress-tests
       trigger: true
-    - get: starkandwayne-wordpress-artifact
+    - get: starkandwayne-wordpress-unstable
       passed:
       - build-wordpress
     - get: starkandwayne-wordpress-image
@@ -1645,12 +1643,6 @@ resources:
     name: postgresql
     origin: core
     version: 9.6.3
-  type: hab-pkg
-- name: core-wal-e-pkg
-  source:
-    channel: stable
-    name: wal-e
-    origin: core
   type: hab-pkg
 - name: core-erlang-pkg
   source:
@@ -1844,14 +1836,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-consul-artifact
+- name: starkandwayne-consul-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-consul/starkandwayne-consul-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: consul
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-haproxy-pkg
   source:
     auth_token: REDACTED
@@ -1883,14 +1874,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-haproxy-artifact
+- name: starkandwayne-haproxy-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-haproxy/starkandwayne-haproxy-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: haproxy
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-hashi-ui-pkg
   source:
     auth_token: REDACTED
@@ -1922,14 +1912,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-hashi-ui-artifact
+- name: starkandwayne-hashi-ui-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-hashi-ui/starkandwayne-hashi-ui-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: hashi-ui
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-mysql-pkg
   source:
     auth_token: REDACTED
@@ -1961,14 +1950,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-mysql-artifact
+- name: starkandwayne-mysql-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-mysql/starkandwayne-mysql-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: mysql
+    origin: starkandwayne
+  type: hab-pkg
 - name: postgresql-plan
   source:
     ignore_paths:
@@ -1993,14 +1981,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-postgresql-artifact
+- name: starkandwayne-postgresql-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-postgresql/starkandwayne-postgresql-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: postgresql
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-rabbitmq-pkg
   source:
     auth_token: REDACTED
@@ -2032,14 +2019,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-rabbitmq-artifact
+- name: starkandwayne-rabbitmq-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-rabbitmq/starkandwayne-rabbitmq-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: rabbitmq
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-redis-pkg
   source:
     auth_token: REDACTED
@@ -2071,14 +2057,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-redis-artifact
+- name: starkandwayne-redis-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-redis/starkandwayne-redis-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: redis
+    origin: starkandwayne
+  type: hab-pkg
 - name: shield-agent-plan
   source:
     ignore_paths:
@@ -2103,14 +2088,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-shield-agent-artifact
+- name: starkandwayne-shield-agent-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-shield-agent/starkandwayne-shield-agent-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: shield-agent
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-shield-proxy-pkg
   source:
     auth_token: REDACTED
@@ -2142,14 +2126,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-shield-proxy-artifact
+- name: starkandwayne-shield-proxy-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-shield-proxy/starkandwayne-shield-proxy-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: shield-proxy
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-shield-pkg
   source:
     auth_token: REDACTED
@@ -2181,14 +2164,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-shield-artifact
+- name: starkandwayne-shield-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-shield/starkandwayne-shield-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: shield
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-varnish-pkg
   source:
     auth_token: REDACTED
@@ -2220,14 +2202,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-varnish-artifact
+- name: starkandwayne-varnish-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-varnish/starkandwayne-varnish-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: varnish
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-wal-e-pkg
   source:
     auth_token: REDACTED
@@ -2259,14 +2240,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-wal-e-artifact
+- name: starkandwayne-wal-e-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-wal-e/starkandwayne-wal-e-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: wal-e
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-wordpress-proxy-pkg
   source:
     auth_token: REDACTED
@@ -2298,14 +2278,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-wordpress-proxy-artifact
+- name: starkandwayne-wordpress-proxy-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-wordpress-proxy/starkandwayne-wordpress-proxy-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: wordpress-proxy
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-wordpress-pkg
   source:
     auth_token: REDACTED
@@ -2337,14 +2316,13 @@ resources:
     tag: edge
     username: REDACTED
   type: docker-image
-- name: starkandwayne-wordpress-artifact
+- name: starkandwayne-wordpress-unstable
   source:
-    access_key_id: REDACTED
-    bucket: snw-habitat-packages
-    regexp: starkandwayne-wordpress/starkandwayne-wordpress-(.*)-x86_64-linux.hart
-    region_name: eu-central-1
-    secret_access_key: REDACTED
-  type: s3
+    auth_token: REDACTED
+    channel: unstable
+    name: wordpress
+    origin: starkandwayne
+  type: hab-pkg
 - name: consul-tests
   source:
     paths:

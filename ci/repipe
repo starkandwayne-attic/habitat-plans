@@ -98,14 +98,14 @@ jobs:
         load_file: result/${hab_origin}-${package_name}-docker.tar
         load_repository: ${hab_origin}/${package_name}
         load_tag: habitat
-    - put: ${hab_origin}-${package_name}-artifact
+    - put: ${hab_origin}-${package_name}-unstable
       params:
-        file: result/*.hart
+        result: result
 - name: release-${package_name}
   public: true
   plan:
   - aggregate:
-    - {get: ${hab_origin}-${package_name}-artifact, passed: [build-${package_name}]}
+    - {get: ${hab_origin}-${package_name}-unstable, passed: [build-${package_name}]}
     - get: ${hab_origin}-${package_name}-image
       passed: [build-${package_name}]
       params:
@@ -117,7 +117,7 @@ jobs:
         tag_as_latest: true
     - put: ${hab_origin}-${package_name}-pkg
       params:
-        result: ${hab_origin}-${package_name}-artifact
+        result: ${hab_origin}-${package_name}-unstable
 resources:
 - name: ${hab_origin}-${package_name}-pkg
   type: hab-pkg
@@ -151,14 +151,13 @@ resources:
     repository: starkandwayne/${package_name}
     tag: "edge"
 
-- name: ${hab_origin}-${package_name}-artifact
-  type: s3
+- name: ${hab_origin}-${package_name}-unstable
+  type: hab-pkg
   source:
-    bucket: (( grab meta.aws.habitat-artifacts-bucket ))
-    regexp: ${hab_origin}-${package_name}/${hab_origin}-${package_name}-(.*)-x86_64-linux.hart
-    access_key_id: (( grab meta.aws.access_key_id ))
-    secret_access_key: (( grab meta.aws.secret_access_key ))
-    region_name: (( grab meta.aws.region ))
+    channel: unstable
+    origin: (( grab meta.habitat.origin ))
+    name: ${package_name}
+    auth_token: (( grab meta.habitat.auth_token ))
 EOF
       if [[ -f ${package}/tests/delmo.yml ]]; then
         cat > tests/${package_name}-tests.yml <<EOF
@@ -184,7 +183,7 @@ jobs:
       trigger: true
       passed: [build-${package_name}]
     - {get: ${package_name}-tests, trigger: true}
-    - {get: ${hab_origin}-${package_name}-artifact, passed: [build-${package_name}]}
+    - {get: ${hab_origin}-${package_name}-unstable, passed: [build-${package_name}]}
     - get: ${hab_origin}-${package_name}-image
       passed: [build-${package_name}]
       params: {skip_download: true}
@@ -214,7 +213,7 @@ jobs:
   - (( inline ))
   - aggregate:
     - (( inline ))
-    - get: ${hab_origin}-${package_name}-artifact
+    - get: ${hab_origin}-${package_name}-unstable
       passed:
       - test-${package_name}
     - get: ${hab_origin}-${package_name}-image
