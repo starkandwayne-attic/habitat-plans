@@ -6,7 +6,7 @@ pkg_license=('MIT')
 pkg_description="A standalone system that can perform backup and restore functions for a wide variety of pluggable data systems."
 pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.gz"
-pkg_shasum="919324a9fbf307d99c205bf252cf6df72fe6ad43db7cef96c78c299e1b62b36a"
+pkg_shasum="1e7008b4e922de82348b14a4c15d88eb5b05b63cbbb2af6e3f619f66a59b35c2"
 pkg_dirname="shield-${pkg_version}"
 
 pkg_deps=(
