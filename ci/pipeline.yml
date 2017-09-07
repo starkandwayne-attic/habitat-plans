@@ -1519,7 +1519,7 @@ jobs:
 resource_types:
 - name: hab-pkg
   source:
-    repository: starkandwayne/habitat-resource
+    repository: cfcommunity/habitat-resource
   type: docker-image
 resources:
 - name: habitat-plans-pipeline

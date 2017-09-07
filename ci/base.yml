@@ -95,4 +95,4 @@ resource_types:
 - name: hab-pkg
   type: docker-image
   source:
-    repository: starkandwayne/habitat-resource
+    repository: cfcommunity/habitat-resource
