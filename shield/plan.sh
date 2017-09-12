@@ -6,7 +6,7 @@ pkg_license=('MIT')
 pkg_description="A standalone system that can perform backup and restore functions for a wide variety of pluggable data systems."
 pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.gz"
-pkg_shasum="919324a9fbf307d99c205bf252cf6df72fe6ad43db7cef96c78c299e1b62b36a"
+pkg_shasum="dbea689596bc496e2f16f8a4bf2aaade8fb693b3934f11b5b7e956573ebbc599"
 
 pkg_deps=(core/bash core/glibc starkandwayne/postgresql starkandwayne/shield-proxy/${pkg_version})
 pkg_build_deps=(core/go core/git core/gcc core/make core/gox)
@@ -74,7 +74,6 @@ do_prepare() {
   git config --global url."git://github.com/".insteadOf "https://github.com/"
   go get github.com/tools/godep
   cd ${SHIELD_SRC_PATH}
-  make restore-deps
 }
 
 do_build() {

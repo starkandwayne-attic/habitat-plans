@@ -6,7 +6,7 @@ pkg_license=('MIT')
 pkg_description="A standalone system that can perform backup and restore functions for a wide variety of pluggable data systems."
 pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.gz"
-pkg_shasum="1e7008b4e922de82348b14a4c15d88eb5b05b63cbbb2af6e3f619f66a59b35c2"
+pkg_shasum="dbea689596bc496e2f16f8a4bf2aaade8fb693b3934f11b5b7e956573ebbc599"
 pkg_dirname="shield-${pkg_version}"
 
 pkg_deps=(
@@ -60,7 +60,6 @@ do_prepare() {
   git config --global url."git://github.com/".insteadOf "https://github.com/"
   go get github.com/tools/godep
   cd ${SHIELD_SRC_PATH}
-  make restore-deps
 }
 
 do_build() {
