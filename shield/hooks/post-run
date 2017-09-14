@@ -1,7 +1,8 @@
 #!/bin/bash
 
+echo "Executing shield post run hook"
 if hab sup status | grep shield-proxy; then
-  hab svc unload starkandwayne/wal-e
+  hab svc unload starkandwayne/shield-proxy
 fi
 
 echo "Starting shield-proxy"
