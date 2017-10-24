@@ -8,17 +8,14 @@ pkg_upstream_url="https://github.com/starkandwayne/shield"
 pkg_source="https://github.com/starkandwayne/shield/archive/v${pkg_version}.tar.gz"
 pkg_shasum="dbea689596bc496e2f16f8a4bf2aaade8fb693b3934f11b5b7e956573ebbc599"
 
-pkg_deps=(core/bash core/glibc starkandwayne/postgresql starkandwayne/shield-proxy/${pkg_version})
+pkg_deps=(core/bash core/glibc starkandwayne/postgresql)
 pkg_build_deps=(core/go core/git core/gcc core/make core/gox)
 
 pkg_bin_dirs=(bin)
 
 pkg_exports=(
-  [port]=port
-  [http_port]=http_port
   [provisioning_key]=auth.provisioning_key
 )
-pkg_exposes=(http_port port)
 
 pkg_svc_user=root
 pkg_svc_group=$pkg_svc_user

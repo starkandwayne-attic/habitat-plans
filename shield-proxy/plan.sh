@@ -13,6 +13,12 @@ pkg_svc_group=$pkg_svc_user
 
 pkg_deps=(core/nginx core/openssl core/bash)
 
+pkg_exports=(
+  [port]=port
+  [http_port]=http_port
+)
+pkg_exposes=(http_port port)
+
 do_begin() {
   return 0
 }
