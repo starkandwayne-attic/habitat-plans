@@ -12,7 +12,7 @@ EOF
 
 start_docker
 
-hab studio run "build . && hab pkg export docker ${HAB_ORIGIN}/${PLAN_NAME}"
+hab studio run 'build . && hab pkg export docker $(ls results/*.hart)'
 
 mv results/* ${outdir}
 ls ${outdir}/${HAB_ORIGIN}* > ${outdir}/pkg_name
