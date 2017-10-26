@@ -1,4 +1,4 @@
-pkg_name=shield
+pkg_name=shield-daemon
 pkg_origin=starkandwayne
 pkg_version="0.10.9"
 pkg_maintainer="Justin Carter <justin@starkandwayne.com>"
@@ -54,14 +54,14 @@ pkg_binds=(
 # pkg_svc_group="$pkg_svc_user"
 
 do_begin() {
-  export SHIELD_SRC_PATH=${HAB_CACHE_SRC_PATH}/$pkg_dirname/src/github.com/starkandwayne/shield
-  export GOPATH="$HAB_CACHE_SRC_PATH/$pkg_dirname"
+  export SHIELD_SRC_PATH="${HAB_CACHE_SRC_PATH}/shield-$pkg_version/src/github.com/starkandwayne/shield"
+  export GOPATH="$HAB_CACHE_SRC_PATH/shield-$pkg_version"
 }
 
 do_prepare() {
   rm -rf $HAB_CACHE_SRC_PATH/shield
   mkdir -p ${HAB_CACHE_SRC_PATH}/shield
-  mv $HAB_CACHE_SRC_PATH/$pkg_dirname/* $HAB_CACHE_SRC_PATH/shield/
+  mv $HAB_CACHE_SRC_PATH/shield-$pkg_version/* $HAB_CACHE_SRC_PATH/shield/
 
   mkdir -p ${SHIELD_SRC_PATH}
   mv $HAB_CACHE_SRC_PATH/shield/* ${SHIELD_SRC_PATH}
