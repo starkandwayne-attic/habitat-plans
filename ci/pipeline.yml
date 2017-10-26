@@ -16,10 +16,10 @@ groups:
   - release-redis
   - build-shield-agent
   - release-shield-agent
+  - build-shield-daemon
+  - release-shield-daemon
   - build-shield-proxy
   - release-shield-proxy
-  - build-shield
-  - release-shield
   - build-varnish
   - release-varnish
   - build-wal-e
@@ -32,7 +32,7 @@ groups:
   - test-postgresql
   - test-rabbitmq
   - test-redis
-  - test-shield
+  - test-shield-daemon
   - test-varnish
   - test-wordpress
   name: all-packages
@@ -77,11 +77,11 @@ groups:
 - jobs:
   - build-shield-agent
   - release-shield-agent
+  - build-shield-daemon
+  - release-shield-daemon
   - build-shield-proxy
   - release-shield-proxy
-  - build-shield
-  - release-shield
-  - test-shield
+  - test-shield-daemon
   name: shield
 - jobs:
   - build-varnish
@@ -502,7 +502,7 @@ jobs:
         result: result
       put: starkandwayne-shield-agent-unstable
   public: true
-- name: build-shield
+- name: build-shield-daemon
   plan:
   - aggregate:
     - get: core-bash-pkg
@@ -511,9 +511,7 @@ jobs:
       trigger: true
     - get: starkandwayne-postgresql-pkg
       trigger: true
-    - get: starkandwayne-shield-proxy-0.10.9-pkg
-      trigger: true
-    - get: shield-plan
+    - get: shield-daemon-plan
       trigger: true
     - get: habitat-plans-ci
   - config:
@@ -522,7 +520,7 @@ jobs:
           repository: starkandwayne/habitat-plans-pipeline
         type: docker-image
       inputs:
-      - name: shield-plan
+      - name: shield-daemon-plan
       - name: habitat-plans-ci
       outputs:
       - name: result
@@ -530,28 +528,28 @@ jobs:
         HAB_ORIGIN: starkandwayne
         HAB_ORIGIN_KEY: REDACTED
         OUT: result
-        PACKAGE_CONTEXT: shield-plan/shield
-        PLAN_NAME: shield
+        PACKAGE_CONTEXT: shield-daemon-plan/shield-daemon
+        PLAN_NAME: shield-daemon
       platform: linux
       run:
         path: ./habitat-plans-ci/ci/scripts/build-service
     privileged: true
-    task: build-shield
+    task: build-shield-daemon
   - aggregate:
     - params:
-        load_file: result/starkandwayne-shield-docker.tar
-        load_repository: starkandwayne/shield
+        load_file: result/starkandwayne-shield-daemon-docker.tar
+        load_repository: starkandwayne/shield-daemon
         load_tag: habitat
         tag: result/docker_tag
-      put: starkandwayne-shield-image
+      put: starkandwayne-shield-daemon-image
     - params:
-        load_file: result/starkandwayne-shield-docker.tar
-        load_repository: starkandwayne/shield
+        load_file: result/starkandwayne-shield-daemon-docker.tar
+        load_repository: starkandwayne/shield-daemon
         load_tag: habitat
-      put: starkandwayne-shield-edge-image
+      put: starkandwayne-shield-daemon-edge-image
     - params:
         result: result
-      put: starkandwayne-shield-unstable
+      put: starkandwayne-shield-daemon-unstable
   public: true
 - name: build-shield-proxy
   plan:
@@ -1010,12 +1008,12 @@ jobs:
   - aggregate:
     - get: starkandwayne-shield-agent-unstable
       passed:
-      - test-shield
+      - test-shield-daemon
     - get: starkandwayne-shield-agent-image
       params:
         save: true
       passed:
-      - test-shield
+      - test-shield-daemon
   - aggregate:
     - params:
         load: starkandwayne-shield-agent-image
@@ -1024,6 +1022,26 @@ jobs:
     - params:
         result: starkandwayne-shield-agent-unstable
       put: starkandwayne-shield-agent-pkg
+  public: true
+- name: release-shield-daemon
+  plan:
+  - aggregate:
+    - get: starkandwayne-shield-daemon-unstable
+      passed:
+      - test-shield-daemon
+    - get: starkandwayne-shield-daemon-image
+      params:
+        save: true
+      passed:
+      - test-shield-daemon
+  - aggregate:
+    - params:
+        load: starkandwayne-shield-daemon-image
+        tag_as_latest: true
+      put: starkandwayne-shield-daemon-image
+    - params:
+        result: starkandwayne-shield-daemon-unstable
+      put: starkandwayne-shield-daemon-pkg
   public: true
 - name: release-shield-proxy
   plan:
@@ -1044,26 +1062,6 @@ jobs:
     - params:
         result: starkandwayne-shield-proxy-unstable
       put: starkandwayne-shield-proxy-pkg
-  public: true
-- name: release-shield
-  plan:
-  - aggregate:
-    - get: starkandwayne-shield-unstable
-      passed:
-      - test-shield
-    - get: starkandwayne-shield-image
-      params:
-        save: true
-      passed:
-      - test-shield
-  - aggregate:
-    - params:
-        load: starkandwayne-shield-image
-        tag_as_latest: true
-      put: starkandwayne-shield-image
-    - params:
-        result: starkandwayne-shield-unstable
-      put: starkandwayne-shield-pkg
   public: true
 - name: release-varnish
   plan:
@@ -1349,25 +1347,25 @@ jobs:
   serial: true
   serial_groups:
   - delmo
-- name: test-shield
+- name: test-shield-daemon
   plan:
   - aggregate:
-    - get: starkandwayne-shield-edge-image
+    - get: starkandwayne-shield-daemon-edge-image
       params:
         skip_download: true
       passed:
-      - build-shield
+      - build-shield-daemon
       trigger: true
-    - get: shield-tests
+    - get: shield-daemon-tests
       trigger: true
-    - get: starkandwayne-shield-unstable
+    - get: starkandwayne-shield-daemon-unstable
       passed:
-      - build-shield
-    - get: starkandwayne-shield-image
+      - build-shield-daemon
+    - get: starkandwayne-shield-daemon-image
       params:
         skip_download: true
       passed:
-      - build-shield
+      - build-shield-daemon
     - get: starkandwayne-shield-agent-edge-image
       params:
         skip_download: true
@@ -1388,7 +1386,7 @@ jobs:
           repository: bodymindarts/delmo-concourse
         type: docker-image
       inputs:
-      - name: shield-tests
+      - name: shield-daemon-tests
       params:
         AWS_ACCESS_KEY: REDACTED
         AWS_BUCKET: shield-habitat-test
@@ -1405,11 +1403,11 @@ jobs:
         - delmo
         - --only-build-task
         - -f
-        - shield-tests/shield/tests/delmo.yml
+        - shield-daemon-tests/shield-daemon/tests/delmo.yml
         - -m
         - habitat-plans-pipeline-machine
         path: /entrypoint.sh
-    task: test-shield
+    task: test-shield-daemon
   public: false
   serial: true
   serial_groups:
@@ -1687,12 +1685,6 @@ resources:
     name: libarchive
     origin: core
   type: hab-pkg
-- name: core-nginx-pkg
-  source:
-    channel: stable
-    name: nginx
-    origin: core
-  type: hab-pkg
 - name: starkandwayne-postgresql-pkg
   source:
     auth_token: REDACTED
@@ -1700,12 +1692,11 @@ resources:
     name: postgresql
     origin: starkandwayne
   type: hab-pkg
-- name: starkandwayne-shield-proxy-0.10.9-pkg
+- name: core-nginx-pkg
   source:
     channel: stable
-    name: shield-proxy
-    origin: starkandwayne
-    version: 0.10.9
+    name: nginx
+    origin: core
   type: hab-pkg
 - name: core-docutils-pkg
   source:
@@ -2095,6 +2086,44 @@ resources:
     name: shield-agent
     origin: starkandwayne
   type: hab-pkg
+- name: starkandwayne-shield-daemon-pkg
+  source:
+    auth_token: REDACTED
+    channel: stable
+    name: shield-daemon
+    origin: starkandwayne
+  type: hab-pkg
+- name: shield-daemon-plan
+  source:
+    ignore_paths:
+    - shield-daemon/tests/*
+    - shield-daemon/README.md
+    paths:
+    - shield-daemon/*
+    uri: https://github.com/starkandwayne/habitat-plans.git
+  type: git
+- name: starkandwayne-shield-daemon-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield-daemon
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-daemon-edge-image
+  source:
+    email: REDACTED
+    password: REDACTED
+    repository: starkandwayne/shield-daemon
+    tag: edge
+    username: REDACTED
+  type: docker-image
+- name: starkandwayne-shield-daemon-unstable
+  source:
+    auth_token: REDACTED
+    channel: unstable
+    name: shield-daemon
+    origin: starkandwayne
+  type: hab-pkg
 - name: starkandwayne-shield-proxy-pkg
   source:
     auth_token: REDACTED
@@ -2131,44 +2160,6 @@ resources:
     auth_token: REDACTED
     channel: unstable
     name: shield-proxy
-    origin: starkandwayne
-  type: hab-pkg
-- name: starkandwayne-shield-pkg
-  source:
-    auth_token: REDACTED
-    channel: stable
-    name: shield
-    origin: starkandwayne
-  type: hab-pkg
-- name: shield-plan
-  source:
-    ignore_paths:
-    - shield/tests/*
-    - shield/README.md
-    paths:
-    - shield/*
-    uri: https://github.com/starkandwayne/habitat-plans.git
-  type: git
-- name: starkandwayne-shield-image
-  source:
-    email: REDACTED
-    password: REDACTED
-    repository: starkandwayne/shield
-    username: REDACTED
-  type: docker-image
-- name: starkandwayne-shield-edge-image
-  source:
-    email: REDACTED
-    password: REDACTED
-    repository: starkandwayne/shield
-    tag: edge
-    username: REDACTED
-  type: docker-image
-- name: starkandwayne-shield-unstable
-  source:
-    auth_token: REDACTED
-    channel: unstable
-    name: shield
     origin: starkandwayne
   type: hab-pkg
 - name: starkandwayne-varnish-pkg
@@ -2347,10 +2338,10 @@ resources:
     - redis/tests/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
-- name: shield-tests
+- name: shield-daemon-tests
   source:
     paths:
-    - shield/tests/*
+    - shield-daemon/tests/*
     uri: https://github.com/starkandwayne/habitat-plans.git
   type: git
 - name: varnish-tests

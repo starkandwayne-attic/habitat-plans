@@ -1,6 +1,6 @@
 ---
 jobs:
-- name: test-shield
+- name: test-shield-daemon
   plan:
   - (( inline ))
   - aggregate:
@@ -26,6 +26,6 @@ jobs:
   - aggregate:
     - (( inline ))
     - passed:
-      - test-shield
+      - test-shield-daemon
     - passed:
-      - test-shield
+      - test-shield-daemon
